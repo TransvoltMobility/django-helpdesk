@@ -1,9 +1,88 @@
 {% load i18n %}
-<!-- Sticky Footer -->
-<footer class="sticky-footer">
+<!-- Non-Sticky Footer that appears at bottom of content -->
+<footer class="content-footer">
     <div class="container my-auto">
         <div class="copyright text-center my-auto">
-          <span>Powered by {% trans "<a href='https://github.com/django-helpdesk/django-helpdesk'>django-helpdesk</a>." %}</span>
+          <span>Copyright © 2025 All rights reserved by {% trans "<a href='https://transvolt.in/'>Transvolt Mobility Private Limited</a>." %}</span>
         </div>
     </div>
 </footer>
+
+<style>
+  footer.content-footer {
+    background-color: #183b6b !important;
+    border-top: 2px solid #4caf50;
+    padding: 1rem 0;
+    position: relative;
+    margin-top: 0;
+    width: 100%;
+  }
+  
+  body.sidebar-toggled footer.content-footer {
+    width: 100%;
+  }
+  
+  footer.content-footer .copyright {
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    text-align: center;
+  }
+  
+  footer.content-footer a {
+    color: #ffd700;
+    text-decoration: none;
+  }
+  
+  footer.content-footer a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Ensure no gap at bottom of page */
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    min-height: 100vh;
+  }
+  
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #wrapper {
+    flex: 1;
+    margin-bottom: 0 !important;
+  }
+  
+  /* Override the default padding-bottom in sb-admin.css */
+  #wrapper #content-wrapper {
+    padding-bottom: 0 !important;
+  }
+  
+  /* Specifically target and remove any gap after the footer */
+  body::after, html::after, 
+  .content-footer::after, 
+  #wrapper::after, 
+  #content-wrapper::after {
+    content: none !important;
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* Add minimum height to content-wrapper to ensure footer is at bottom for short content */
+  #content-wrapper {
+    min-height: calc(100vh - 56px); /* Adjust for header height */
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 0 !important; /* Override the padding in global.scss */
+  }
+  
+  /* Push footer to bottom when content is short */
+  .container-fluid {
+    flex: 1;
+    margin-bottom: 0;
+  }
+</style>
