@@ -36,8 +36,8 @@
         {% if helpdesk_settings.HELPDESK_TICKETS_TIMELINE_ENABLED %}
         <div class="card-header">
             <ul class="nav nav-tabs">
-                <li class="nav-item" style="width: 200px;">
-                    {% trans "Query Results" %}:
+                <li class="nav-item" style="width: 170px;">
+                    <h5 class="query-results-title">{% trans "Query Results" %}:</h5>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" href="#datatabletabcontents" id="datatabletabcontents-tab"
@@ -63,9 +63,9 @@
                      aria-labelledby="datatabletabcontents-tab">
                     <form method='post' action='{% url 'helpdesk:mass_update' %}' id="ticket_mass_update">
                         {% csrf_token %}
-                        <table class="table table-sm table-striped table-bordered table-hover"
+                        <table class="table table-sm table-bordered table-hover"
                                id="ticketTable" data-page-length='{{ default_tickets_per_page }}'>
-                            <thead class="thead-light">
+                            <thead>
                             <tr>
                                 <th></th>
                                 <th>{% trans "Ticket" %}</th>
@@ -83,21 +83,21 @@
                             </thead>
                         </table>
 
-                        <p>
-                            <label>{% trans "Select:" %}</label>
+                        <div class="select-controls">
+                            <label class="mr-2">{% trans "Select:" %}</label>
 
-                            <button id="select_all_btn" type="button" class="btn btn-primary btn-sm">
+                            <button id="select_all_btn" type="button" class="btn btn-sm">
                                 <i class="fas fa-check-circle"></i> {% trans "All" %}
                             </button>
 
-                            <button id='select_none_btn' type="button" class="btn btn-primary btn-sm">
+                            <button id='select_none_btn' type="button" class="btn btn-sm">
                                 <i class="fas fa-times-circle"></i> {% trans "None" %}
                             </button>
 
-                            <button id='select_inverse_btn' type="button" class="btn btn-primary btn-sm">
-                                <i class="fas fa-expand-arrows-alt"></i> {% trans "Invert" %}
+                            <button id='select_inverse_btn' type="button" class="btn btn-sm">
+                                <i class="fas fa-exchange-alt"></i> {% trans "Invert" %}
                             </button>
-                        </p>
+                        </div>
 
                         <p>
                             <label for='id_mass_action'>{% trans "With Selected Tickets:" %}</label>
@@ -332,6 +332,7 @@
 
 {% block helpdesk_js %}
     <script src='{% static "helpdesk/filter.js" %}'></script>
+    <script src='{% static "helpdesk/js/enhanced-tickets.js" %}'></script>
     <!-- Timeline 3 JavaScript -->
     {% if helpdesk_settings.HELPDESK_USE_CDN %}
     <script src="https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
@@ -389,7 +390,7 @@
                         data: "ticket",
                         render: function (data, type, row, meta) {
                             if (type === 'display') {
-                                data = '<div class="tickettitle"><a href="' + get_url(row) + '" >' +
+                                data = '<div class="tickettitle"><a href="' + get_url(row) + '" class="ticket-title">' +
                                     row.id + '. ' +
                                     htmlEntities(row.title) + '</a></div>';
                             }
@@ -399,27 +400,27 @@
                     {
                         data: "priority",
                         render: function (data, type, row, meta) {
-                            let priorityClass = "text-secondary";
+                            let priorityClass = "priority-5";
                             switch (data) {
                                 case 1:
-                                    priorityClass = "text-danger";
+                                    priorityClass = "priority-1";
                                     break;
                                 case 2:
-                                    priorityClass = "text-warning";
+                                    priorityClass = "priority-2";
                                     break;
                                 case 3:
-                                    priorityClass = "text-success";
+                                    priorityClass = "priority-3";
                                     break;
                                 case 4:
-                                    priorityClass = "text-info";
+                                    priorityClass = "priority-4";
                                     break;
                                 case 5:
-                                    priorityClass = "text-secondary";
+                                    priorityClass = "priority-5";
                                     break;
                             }
-                            return '<p class="' + priorityClass + '">' + data + '</p>';
+                            return '<span class="' + priorityClass + '">' + data + '</span>';
                         },
-                        visible: false,
+                        visible: true,
                     },
                     {
                         data: "queue",
@@ -428,7 +429,21 @@
                         },
                         visible: false,
                     },
-                    {data: "status"},
+                    {
+                        data: "status",
+                        render: function (data, type, row) {
+                            let statusClasses = {
+                                'Open': 'status-open',
+                                'Reopened': 'status-reopened',
+                                'Resolved': 'status-resolved',
+                                'Closed': 'status-closed',
+                                'In Progress': 'status-open',
+                                'On Hold': 'status-hold'
+                            };
+                            let statusClass = statusClasses[data] || 'status-open';
+                            return '<span class="ticket-status ' + statusClass + '">' + data + '</span>';
+                        }
+                    },
                     {data: "created"},
                     {data: "due_date", "visible": false},
                     {
