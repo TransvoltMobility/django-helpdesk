@@ -1,0 +1,640 @@
+/* Enhanced Ticket Listing Styles */
+
+/* General Table Improvements */
+.table {
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
+}
+
+#ticketTable {
+    border-collapse: collapse;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+}
+
+#ticketTable thead {
+    background-color: #183b6b;
+}
+
+#ticketTable thead th {
+    font-weight: 600;
+    color: #ffffff;
+    border-bottom: 0;
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+}
+
+#ticketTable tbody td {
+    padding: 8px 16px;
+    vertical-align: middle;
+    border-top: 1px solid #e9ecef;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+#ticketTable tbody tr {
+    transition: all 0.2s ease;
+}
+
+#ticketTable tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Better alternating row colors */
+#ticketTable tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Make ticket titles stand out more */
+#ticketTable a {
+    color: #0275d8;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+#ticketTable a:hover {
+    color: #014c8c;
+    text-decoration: underline;
+}
+
+/* Better status indicators */
+.ticket-status {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: inline-block;
+    text-align: center;
+    min-width: 70px;
+    background-color: #e3f2fd;
+    color: #0d47a1;
+}
+
+.status-open {
+    background-color: #e3f2fd;
+    color: #0d47a1;
+}
+
+.status-reopened {
+    background-color: #e1f5fe;
+    color: #01579b;
+}
+
+.status-resolved {
+    background-color: #e8f5e9;
+    color: #1b5e20;
+}
+
+.status-closed {
+    background-color: #eeeeee;
+    color: #424242;
+}
+
+.status-hold {
+    background-color: #fff3e0;
+    color: #e65100;
+}
+
+/* Priority indicators */
+.priority-1 {
+    font-weight: 700;
+    color: #d32f2f;
+}
+
+.priority-2 {
+    font-weight: 600;
+    color: #f57c00;
+}
+
+.priority-3 {
+    font-weight: 500;
+    color: #455a64;
+}
+
+.priority-4 {
+    font-weight: 400;
+    color: #546e7a;
+}
+
+.priority-5 {
+    font-weight: 400;
+    color: #78909c;
+}
+
+/* Better pagination styling - arrows instead of text buttons */
+.dataTables_paginate {
+    margin-top: 15px !important;
+    display: inline-block;
+    float: right;
+}
+
+.dataTables_length {
+    float: left;
+    display: inline-block;
+}
+
+.dataTables_paginate .paginate_button.previous:before {
+    content: "←";
+    font-size: 14px;
+}
+
+.dataTables_paginate .paginate_button.next:before {
+    content: "→";
+    font-size: 14px;
+}
+
+.dataTables_paginate .paginate_button.previous,
+.dataTables_paginate .paginate_button.next {
+    font-size: 0;
+    border-radius: 4px !important;
+    padding: 0.4em 0.8em !important;
+    margin: 0 3px !important;
+    border: 1px solid #dee2e6 !important;
+    background: white !important;
+    color: #495057 !important;
+}
+
+.dataTables_paginate .paginate_button {
+    border-radius: 4px !important;
+    padding: 0.4em 0.8em !important;
+    margin: 0 3px !important;
+    border: 1px solid #dee2e6 !important;
+    background: white !important;
+    color: #495057 !important;
+}
+
+.dataTables_paginate .paginate_button:hover {
+    background: #f8f9fa !important;
+    color: #0275d8 !important;
+    border-color: #dee2e6 !important;
+}
+
+.dataTables_paginate .paginate_button.current {
+    background: #0275d8 !important;
+    color: white !important;
+    border-color: #0275d8 !important;
+}
+
+.dataTables_paginate .paginate_button.current:hover {
+    background: #0267bf !important;
+}
+
+/* Search box enhancements */
+.dataTables_filter {
+    float: right;
+    margin-bottom: 15px;
+}
+
+.dataTables_filter input {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 6px 12px;
+    margin-left: 10px;
+    width: 200px;
+}
+
+.dataTables_filter input:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    outline: 0;
+}
+
+/* Length menu enhancements */
+.dataTables_length {
+    margin-bottom: 15px;
+}
+
+.dataTables_length select {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 5px 8px;
+    margin: 0 5px;
+}
+
+/* Better selection controls */
+.select-controls {
+    margin: 10px 0;
+}
+
+.select-controls .btn {
+    margin-right: 8px;
+    box-shadow: none;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    color: #495057;
+    padding: 4px 8px;
+    font-size: 13px;
+}
+
+/* Card styling */
+.card {
+    border-radius: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: none;
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: #ffffff;
+    border-bottom: none;
+    padding: 0;
+    color: #333;
+}
+
+.nav-tabs {
+    background-color: white !important;
+    border-bottom: none !important;
+    box-shadow: none;
+    margin-bottom: -1px;
+}
+
+.nav-tabs .nav-link {
+    border: none !important;
+    border-radius: 0;
+    padding: 8px 16px;
+    margin-right: 4px;
+    color: #888888 !important; /* Light gray text */
+    background-color: transparent !important;
+    border-bottom: 2px solid transparent !important;
+    font-weight: normal;
+}
+
+.nav-tabs .nav-link.active {
+    color: #333333 !important; /* Changed from blue to dark gray */
+    background-color: white !important;
+    font-weight: 600;
+    border: none !important;
+    border-bottom: 2px solid #cccccc !important; /* Changed to light gray */
+}
+
+.nav-tabs .nav-link:hover:not(.active) {
+    border: none !important;
+    border-bottom: 2px solid transparent !important;
+    color: #555555 !important; /* Changed from blue to medium gray */
+}
+
+/* Style the Query Results header */
+.card-header li:first-child {
+    display: inline-block;
+    color: #333;
+    font-weight: 600;
+    padding: 8px 0;
+    margin-right: 0;
+    background-color: white;
+}
+
+/* Remove any color from main card header */
+.card > .card-header {
+    background-color: white !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125) !important;
+    color: #333 !important;
+}
+
+/* Fix alignment of Query Results title */
+.query-results-title {
+    margin-bottom: 0;
+    line-height: 2;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    background-color: white;
+    padding-left: 0;
+}
+
+/* Remove borders from tab content */
+.tab-content {
+    border-top: none !important;
+}
+
+/* Ensure no double pagination displays */
+.dataTables_paginate:nth-child(n+2) {
+    display: none !important;
+}
+
+/* Enhanced pagination controls */
+.pagination-controls {
+    display: flex;
+    align-items: center;
+}
+
+.entries-control {
+    font-size: 14px;
+}
+
+.entries-control select {
+    margin: 0 5px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    border: 1px solid #ddd;
+}
+
+/* Improve DataTables controls appearance */
+.dt-controls {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 0 0 4px 4px;
+    border-top: none;
+    margin-top: 0 !important;
+}
+
+/* Enhance ticket status indicators */
+.ticket-status {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-open {
+    background-color: rgba(40, 167, 69, 0.15);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.status-closed {
+    background-color: rgba(108, 117, 125, 0.15);
+    color: #6c757d;
+    border: 1px solid rgba(108, 117, 125, 0.3);
+}
+
+.status-resolved {
+    background-color: rgba(0, 123, 255, 0.15);
+    color: #007bff;
+    border: 1px solid rgba(0, 123, 255, 0.3);
+}
+
+.status-in-progress {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+/* Improve ticket title links */
+.table a.ticket-link {
+    color: #183b6b;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.table a.ticket-link:hover {
+    text-decoration: underline;
+}
+
+/* Improve table styling */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.table td, .table th {
+    padding: .75rem;
+    vertical-align: middle;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Make column visibility button more modern */
+.dt-buttons button {
+    background-color: #fff !important;
+    border: 1px solid #ddd !important;
+    color: #333 !important;
+    border-radius: 3px !important;
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+    box-shadow: none !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.dt-buttons button:hover {
+    background-color: #f8f9fa !important;
+    border-color: #ced4da !important;
+}
+
+/* Fix DataTables search box */
+.dataTables_filter input {
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    padding: 4px 8px;
+    margin-left: 5px;
+}
+
+/* Fix pagination button styles */
+.paginate_button {
+    background: none !important;
+    border: 1px solid #dee2e6 !important;
+    padding: 3px 10px !important;
+    margin: 0 2px !important;
+    border-radius: 3px !important;
+    color: #183b6b !important;
+    cursor: pointer !important;
+}
+
+.paginate_button.current {
+    background-color: #183b6b !important;
+    border-color: #183b6b !important;
+    color: #fff !important;
+}
+
+.paginate_button:hover:not(.current) {
+    background-color: #f8f9fa !important;
+    border-color: #ced4da !important;
+}
+
+/* Improve card styling */
+.card {
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
+    border: none;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+/* Fix card-body padding */
+.card-body {
+    padding: 1.25rem;
+}
+
+/* Improve table appearance */
+table.dataTable {
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    width: 100% !important;
+}
+
+/* Fix header text color */
+.table thead th {
+    border-bottom: 2px solid rgba(0,0,0,0.08);
+    font-weight: 500;
+}
+
+.tab-content {
+    padding: 20px 0;
+}
+
+/* Mass update form */
+#ticket_mass_update {
+    padding: 0;
+}
+
+/* Responsive improvements */
+@media (max-width: 992px) {
+    #ticketTable thead th, #ticketTable tbody td {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+    
+    .dataTables_filter input {
+        width: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dataTables_filter {
+        float: left !important;
+        margin-top: 10px;
+    }
+    
+    .dataTables_filter input {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+/* Checkbox styling */
+.checkbox-container {
+    display: block;
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 0;
+    cursor: pointer;
+    font-size: 16px;
+    user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 18px;
+    width: 18px;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+}
+
+/* On mouse-over, add a background color */
+.checkbox-container:hover input ~ .checkmark {
+    background-color: #f8f9fa;
+}
+
+/* When the checkbox is checked, add a blue background */
+.checkbox-container input:checked ~ .checkmark {
+    background-color: #0275d8;
+    border-color: #0275d8;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkbox-container .checkmark:after {
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* Breadcrumb enhancements */
+.breadcrumb {
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    padding: 8px 16px;
+    margin-bottom: 20px;
+}
+
+.breadcrumb-item a {
+    color: #0275d8;
+}
+
+.breadcrumb-item.active {
+    color: #495057;
+    font-weight: 500;
+}
+
+/* Query Results heading */
+.query-results-title {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0;
+}
+
+/* Custom styling for the tabs */
+.card-header .nav-tabs {
+    padding-top: 0;
+    border-bottom: none;
+    background-color: white;
+    padding: 0;
+    box-shadow: none;
+}
+
+.card-header .nav-item {
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    background-color: white;
+}
+
+/* Make the column headers match reference */
+table.dataTable thead th {
+    background-color: #183b6b !important;
+    color: #ffffff !important;
+    border-bottom: 0 !important;
+    padding: 10px 16px !important;
+    font-weight: 500 !important;
+}
+
+/* Better row selection buttons */
+#select_all_btn, #select_none_btn, #select_inverse_btn {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+    background-color: #f8f9fa;
+    color: #495057;
+    border: 1px solid #ced4da;
+}
+
+#select_all_btn:hover, #select_none_btn:hover, #select_inverse_btn:hover {
+    background-color: #e9ecef;
+}
+
+/* Set all card headers to white background */
+.card-header {
+    background-color: white !important;
+    border-bottom: none !important;
+}

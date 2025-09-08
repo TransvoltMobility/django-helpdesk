@@ -11,6 +11,83 @@
     {% else %}
     <link title="timeline-styles" rel="stylesheet" href="{% static 'helpdesk/vendor/timeline3/css/timeline.css' %}">
     {% endif %}
+
+    <style>
+        /* Style for the select dropdown */
+        .card-header {
+            position: relative;
+            min-height: 48px; /* Ensure enough height for buttons */
+        }
+        
+        /* Position the select dropdown */
+        .select-dropdown {
+            position: absolute;
+            top: 15px; /* Move down to align with tabs */
+            right: 170px; /* Increase gap between buttons a bit more */
+            z-index: 100;
+        }
+        
+        .select-dropdown .dropdown-toggle {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            color: #212529;
+            font-size: 0.875rem;
+            padding: 0.25rem 0.5rem;
+            height: 31px; /* Match the height of the column visibility button */
+        }
+        
+        .select-dropdown .dropdown-item {
+            font-size: 0.875rem;
+            padding: 0.4rem 1rem;
+        }
+        
+        .select-dropdown .dropdown-item i {
+            margin-right: 0.5rem;
+        }
+        
+        /* Style for DataTables column visibility button */
+        div.dt-buttons {
+            position: absolute !important;
+            top: 15px !important; /* Move down to align with tabs */
+            right: 10px !important;
+            z-index: 100;
+        }
+        
+        div.dt-buttons .dt-button {
+            background-color: #f8f9fa !important;
+            border-color: #dee2e6 !important;
+            color: #212529 !important;
+            font-size: 0.875rem !important;
+            padding: 0.25rem 0.5rem !important;
+            height: 31px !important; /* Consistent height with select dropdown */
+        }
+        
+        /* Hide the original select controls */
+        .select-controls {
+            display: none;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .select-dropdown {
+                position: static;
+                margin-top: 10px;
+                margin-bottom: 5px;
+                margin-right: 10px;
+                float: right;
+            }
+            
+            div.dt-buttons {
+                position: static !important;
+                margin-top: 10px;
+                float: right;
+            }
+            
+            .card-header {
+                padding-bottom: 50px; /* Add space for the buttons in mobile view */
+            }
+        }
+    </style>
 {% endblock %}
 
 {% block h1_title %}Tickets
@@ -36,8 +113,8 @@
         {% if helpdesk_settings.HELPDESK_TICKETS_TIMELINE_ENABLED %}
         <div class="card-header">
             <ul class="nav nav-tabs">
-                <li class="nav-item" style="width: 200px;">
-                    {% trans "Query Results" %}:
+                <li class="nav-item" style="width: 170px;">
+                    <h5 class="query-results-title">{% trans "Query Results" %}:</h5>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" href="#datatabletabcontents" id="datatabletabcontents-tab"
@@ -54,6 +131,18 @@
                     </a>
                 </li>
             </ul>
+            
+            <!-- Select Options Dropdown -->
+            <div class="select-dropdown dropdown">
+                <button class="btn btn-sm dropdown-toggle" type="button" id="selectOptionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% trans "Select" %}
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="selectOptionsDropdown">
+                    <a class="dropdown-item" href="#" id="select_all_btn"><i class="fas fa-check-circle"></i> {% trans "All" %}</a>
+                    <a class="dropdown-item" href="#" id="select_none_btn"><i class="fas fa-times-circle"></i> {% trans "None" %}</a>
+                    <a class="dropdown-item" href="#" id="select_inverse_btn"><i class="fas fa-exchange-alt"></i> {% trans "Invert" %}</a>
+                </div>
+            </div>
         </div>
         {% endif %}
         <div class="card-body">
@@ -63,9 +152,9 @@
                      aria-labelledby="datatabletabcontents-tab">
                     <form method='post' action='{% url 'helpdesk:mass_update' %}' id="ticket_mass_update">
                         {% csrf_token %}
-                        <table class="table table-sm table-striped table-bordered table-hover"
+                        <table class="table table-sm table-bordered table-hover"
                                id="ticketTable" data-page-length='{{ default_tickets_per_page }}'>
-                            <thead class="thead-light">
+                            <thead>
                             <tr>
                                 <th></th>
                                 <th>{% trans "Ticket" %}</th>
@@ -83,21 +172,21 @@
                             </thead>
                         </table>
 
-                        <p>
-                            <label>{% trans "Select:" %}</label>
+                        <div class="select-controls">
+                            <label class="mr-2">{% trans "Select:" %}</label>
 
-                            <button id="select_all_btn" type="button" class="btn btn-primary btn-sm">
+                            <button id="select_all_btn" type="button" class="btn btn-sm">
                                 <i class="fas fa-check-circle"></i> {% trans "All" %}
                             </button>
 
-                            <button id='select_none_btn' type="button" class="btn btn-primary btn-sm">
+                            <button id='select_none_btn' type="button" class="btn btn-sm">
                                 <i class="fas fa-times-circle"></i> {% trans "None" %}
                             </button>
 
-                            <button id='select_inverse_btn' type="button" class="btn btn-primary btn-sm">
-                                <i class="fas fa-expand-arrows-alt"></i> {% trans "Invert" %}
+                            <button id='select_inverse_btn' type="button" class="btn btn-sm">
+                                <i class="fas fa-exchange-alt"></i> {% trans "Invert" %}
                             </button>
-                        </p>
+                        </div>
 
                         <p>
                             <label for='id_mass_action'>{% trans "With Selected Tickets:" %}</label>
@@ -332,6 +421,7 @@
 
 {% block helpdesk_js %}
     <script src='{% static "helpdesk/filter.js" %}'></script>
+    <script src='{% static "helpdesk/js/enhanced-tickets.js" %}'></script>
     <!-- Timeline 3 JavaScript -->
     {% if helpdesk_settings.HELPDESK_USE_CDN %}
     <script src="https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
@@ -389,7 +479,7 @@
                         data: "ticket",
                         render: function (data, type, row, meta) {
                             if (type === 'display') {
-                                data = '<div class="tickettitle"><a href="' + get_url(row) + '" >' +
+                                data = '<div class="tickettitle"><a href="' + get_url(row) + '" class="ticket-title">' +
                                     row.id + '. ' +
                                     htmlEntities(row.title) + '</a></div>';
                             }
@@ -399,27 +489,27 @@
                     {
                         data: "priority",
                         render: function (data, type, row, meta) {
-                            let priorityClass = "text-secondary";
+                            let priorityClass = "priority-5";
                             switch (data) {
                                 case 1:
-                                    priorityClass = "text-danger";
+                                    priorityClass = "priority-1";
                                     break;
                                 case 2:
-                                    priorityClass = "text-warning";
+                                    priorityClass = "priority-2";
                                     break;
                                 case 3:
-                                    priorityClass = "text-success";
+                                    priorityClass = "priority-3";
                                     break;
                                 case 4:
-                                    priorityClass = "text-info";
+                                    priorityClass = "priority-4";
                                     break;
                                 case 5:
-                                    priorityClass = "text-secondary";
+                                    priorityClass = "priority-5";
                                     break;
                             }
-                            return '<p class="' + priorityClass + '">' + data + '</p>';
+                            return '<span class="' + priorityClass + '">' + data + '</span>';
                         },
-                        visible: false,
+                        visible: true,
                     },
                     {
                         data: "queue",
@@ -428,7 +518,21 @@
                         },
                         visible: false,
                     },
-                    {data: "status"},
+                    {
+                        data: "status",
+                        render: function (data, type, row) {
+                            let statusClasses = {
+                                'Open': 'status-open',
+                                'Reopened': 'status-reopened',
+                                'Resolved': 'status-resolved',
+                                'Closed': 'status-closed',
+                                'In Progress': 'status-open',
+                                'On Hold': 'status-hold'
+                            };
+                            let statusClass = statusClasses[data] || 'status-open';
+                            return '<span class="ticket-status ' + statusClass + '">' + data + '</span>';
+                        }
+                    },
                     {data: "created"},
                     {data: "due_date", "visible": false},
                     {
@@ -471,6 +575,43 @@
                 ],
                 order: []
             });
+            
+            // Fix positioning and styling of DataTables buttons
+            setTimeout(function() {
+                // Ensure consistent styling and positioning
+                $('div.dt-buttons').css({
+                    'position': 'absolute',
+                    'top': '15px', // Move down to align with tabs
+                    'right': '10px',
+                    'z-index': '100',
+                });
+                
+                // Style the column visibility button
+                $('div.dt-buttons button.buttons-colvis').css({
+                    'background-color': '#f8f9fa',
+                    'border-color': '#dee2e6',
+                    'color': '#212529',
+                    'font-size': '0.875rem',
+                    'padding': '0.25rem 0.5rem',
+                    'height': '31px', // Match the height of the select dropdown
+                    'vertical-align': 'middle',
+                    'line-height': '1.5'
+                });
+                
+                // Set equal height and vertical alignment for select dropdown
+                $('.select-dropdown .dropdown-toggle').css({
+                    'height': '31px',
+                    'vertical-align': 'middle',
+                    'line-height': '1.5'
+                });
+                
+                // Hide any duplicate column visibility buttons that might be at the bottom
+                $('.column-visibility-bottom').hide();
+                
+                // Ensure both buttons are the same height and vertical alignment
+                var selectHeight = $('.select-dropdown .dropdown-toggle').outerHeight();
+                $('div.dt-buttons button.buttons-colvis').css('height', selectHeight + 'px');
+            }, 300);
 
             {# Timeline initialization when tab is displayed #}
             // The TL.Timeline constructor takes at least two arguments:
