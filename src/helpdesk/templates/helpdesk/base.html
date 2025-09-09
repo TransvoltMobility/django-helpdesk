@@ -12,6 +12,49 @@
     {% include 'helpdesk/base-head.html' %}
     {% block helpdesk_head %}{% endblock %}
     {% include 'helpdesk/base_js.html' %}
+    
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #wrapper {
+            display: flex;
+            flex: 1 0 auto;
+        }
+        
+        #content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container-fluid {
+            flex: 1 0 auto;
+            padding-bottom: 60px; /* Give space for footer */
+        }
+        
+        .content-footer {
+            flex-shrink: 0;
+            width: 100%;
+            position: relative;
+            margin-top: auto;
+        }
+        
+        /* Fix for the side-by-side layout */
+        @media (min-width: 992px) {
+            .content-footer {
+                width: calc(100% - 250px);
+                margin-left: auto;
+            }
+        }
+    </style>
 
 </head>
 
