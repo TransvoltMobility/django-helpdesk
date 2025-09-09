@@ -70,12 +70,14 @@
         {% endif %}
     {% else %}
         {# Public menu #}
+        {% if not user.is_authenticated %}
         <li class="nav-item{% if request.path == '/' %} active{% endif %}">
           <a class="nav-link" href="{% url 'helpdesk:home' %}">
             <i class="fas fa-fw fa-home"></i>
             <span>{% trans "Homepage" %}</span>
           </a>
         </li>
+        {% endif %}
         <li class="nav-item{% if 'submit' in request.path %} active{% endif %}">
           <a class="nav-link" href="{% url 'helpdesk:submit' %}">
             <i class="fas fa-fw fa-plus-circle"></i>
