@@ -65,6 +65,20 @@
         background-color: #e67e22;
     }
     
+    .ticket-title {
+        background: #f8f9fa;
+        padding: 15px 30px;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .ticket-title h2 {
+        margin: 0;
+        font-size: 1.6rem;
+        font-weight: 600;
+        line-height: 1.3;
+        color: #183b6b;
+    }
+    
     /* Ticket details table styling */
     .ticket-details {
         background: white;
@@ -375,11 +389,19 @@
         .ticket-header {
             flex-direction: column;
             align-items: flex-start;
-            padding: 20px;
+            padding: 15px;
         }
         
         .ticket-status {
             margin-top: 10px;
+        }
+        
+        .ticket-title {
+            padding: 15px;
+        }
+        
+        .ticket-title h2 {
+            font-size: 1.3rem;
         }
         
         .ticket-details th {
@@ -398,7 +420,9 @@
 <div class="ticket-container">
 
 <div class="ticket-header">
-    <h2>[#{{ ticket.ticket }}] {{ ticket.title }}</h2>
+    <div style="display: flex; align-items: center;">
+        <span style="background-color: #183b6b; padding: 8px 16px; border-radius: 4px; font-weight: 600;">{% trans "Ticket Details" %}</span>
+    </div>
     <span class="ticket-status {% if 'Resolved' in ticket.get_status %}resolved{% elif 'Closed' in ticket.get_status %}closed{% elif 'Hold' in ticket.get_status %}hold{% else %}open{% endif %}">
         {{ ticket.get_status }}
     </span>
