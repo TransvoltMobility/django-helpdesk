@@ -3,22 +3,43 @@
 
 {% with request|load_helpdesk_settings as helpdesk_settings %}
     {% if helpdesk_settings.HELPDESK_SUBMIT_A_TICKET_PUBLIC %}
-        <p>
-            {% trans "Unless otherwise stateddddddd, all fields are required." %}
-            {% trans "Ppppplease provide as descriptive a title and description as possible." %}
-        </p>
-
-        {% if form.errors %}
-            {% include 'helpdesk/include/alert_form_errors.html' %}
-        {% endif %}
-        <form role="form" method='post' enctype='multipart/form-data'>
-            {% csrf_token %}
-            {{ form|bootstrap4form }}
-            <button type="submit" class="btn btn-primary btn-lg btn-block">
-                {% trans "Submit Ticket" %} <i class="fa fa-paper-plane"></i>
-            </button>
-        </form>
+        <div class="ticket-form-container">
+            <div class="form-card">
+                <div class="form-header">
+                    <i class="fas fa-plus-circle mr-2"></i>{% trans "Submit a Ticket" %}
+                </div>
+                <div class="form-body">
+                    <div class="form-intro">
+                        <p>
+                            {% trans "Unless otherwise stated, all fields are required." %}
+                            {% trans "Please provide as descriptive a title and description as possible." %}
+                        </p>
+                    </div>
+                    
+                    {% if form.errors %}
+                        {% include 'helpdesk/include/alert_form_errors.html' %}
+                    {% endif %}
+                    
+                    <form role="form" method='post' enctype='multipart/form-data'>
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="form-col">
+                                {{ form|bootstrap4form }}
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <button type="submit" class="submit-btn">
+                                <i class="fas fa-paper-plane"></i> {% trans "Submit Ticket" %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     {% else %}
-        <p>{% trans "Public ticket submission is disabled. Please contact the administrator for assistance." %}</p>
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> {% trans "Public ticket submission is disabled. Please contact the administrator for assistance." %}
+        </div>
     {% endif %}
 {% endwith %}

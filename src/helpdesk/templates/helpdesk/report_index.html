@@ -2,6 +2,109 @@
 
 {% block helpdesk_title %}{% trans "Reports &amp; Statistics" %}{% endblock %}
 
+{% block helpdesk_head %}
+<style>
+    /* Enhanced styling for reports page */
+    .card {
+        margin-bottom: 25px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        border: none;
+        border-radius: 8px;
+    }
+    
+    .card-header {
+        background-color: #183b6b;
+        color: white;
+        font-weight: 600;
+        padding: 15px 20px;
+        border-radius: 8px 8px 0 0;
+    }
+    
+    .card-header i {
+        margin-right: 10px;
+        font-size: 1.1rem;
+    }
+    
+    .card-body {
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 0 0 8px 8px;
+    }
+    
+    /* Table styling */
+    .table {
+        margin-bottom: 0;
+    }
+    
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(0,0,0,.02);
+    }
+    
+    .table th {
+        background-color: #f8f9fa;
+        color: #183b6b;
+        font-weight: 600;
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .table td, .table th {
+        padding: 12px 15px;
+        vertical-align: middle;
+    }
+    
+    /* Stats styling */
+    .stats-value {
+        color: #183b6b;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    
+    /* Links styling */
+    a {
+        color: #007bff;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+    
+    a:hover {
+        color: #0056b3;
+        text-decoration: underline;
+    }
+    
+    /* List styling */
+    ul.report-list {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    
+    ul.report-list li {
+        padding: 8px 0;
+        border-bottom: 1px solid #f1f1f1;
+    }
+    
+    ul.report-list li:last-child {
+        border-bottom: none;
+    }
+    
+    ul.report-list li i {
+        margin-right: 8px;
+        color: #183b6b;
+    }
+    
+    ul.report-sublist {
+        list-style-type: none;
+        margin: 10px 0 10px 25px;
+        padding-left: 15px;
+        border-left: 3px solid #e9ecef;
+    }
+    
+    ul.report-sublist li {
+        padding: 6px 0;
+        border-bottom: none;
+    }
+</style>
+{% endblock %}
+
 {% block helpdesk_breadcrumb %}
 <li class="breadcrumb-item">
     <a href="{% url 'helpdesk:report_index' %}">{% trans "Reports &amp; Statistics" %}</a>
@@ -10,15 +113,19 @@
 {% endblock %}
 
 {% block helpdesk_body %}
-<h2>{% trans "Reports &amp; Statistics" %}</h2>
+<div class="page-header">
+    <h2>{% trans "Reports &amp; Statistics" %}</h2>
+</div>
 
 {% if number_tickets == 0 %}
-<p>{% trans "You haven't created any tickets yet, so you cannot run any reports." %}</p>
+<div class="alert alert-info">
+    <i class="fas fa-info-circle"></i> {% trans "You haven't created any tickets yet, so you cannot run any reports." %}
+</div>
 {% else %}
 
 <div class="card mb-3">
     <div class="card-header">
-        <i class="fas fa-info-circle"></i>
+        <i class="fas fa-chart-line"></i>
         {% trans "Current Ticket Stats" %}
     </div>
     <div class="card-body">
@@ -26,39 +133,48 @@
             <table class="table table-striped table-bordered table-hover">
                 <tbody>
                     <tr>
-                        <td>{% trans "Average number of days until ticket is closed (all tickets): " %}</td>
-                        <td><strong style="color: red;">{{ basic_ticket_stats.average_nbr_days_until_ticket_closed|floatformat:2 }}</strong>.</td>
+                        <td class="w-75">{% trans "Average number of days until ticket is closed (all tickets): " %}</td>
+                        <td class="text-center"><span class="stats-value">{{ basic_ticket_stats.average_nbr_days_until_ticket_closed|floatformat:2 }}</span></td>
                     </tr>
                     <tr>
-                        <td>{% trans "Average number of days until ticket is closed (tickets opened in last 60 days): " %}</td>
-                        <td><strong style="color: red;">{{ basic_ticket_stats.average_nbr_days_until_ticket_closed_last_60_days|floatformat:2 }}</strong>. {% trans "Click" %} <strong><a href="{% url 'helpdesk:report_index' %}daysuntilticketclosedbymonth">here</a></strong> {% trans "for detailed average by month." %} </td>
+                        <td class="w-75">{% trans "Average number of days until ticket is closed (tickets opened in last 60 days): " %}</td>
+                        <td class="text-center">
+                            <span class="stats-value">{{ basic_ticket_stats.average_nbr_days_until_ticket_closed_last_60_days|floatformat:2 }}</span>
+                            <div class="mt-2">
+                                <a href="{% url 'helpdesk:report_index' %}daysuntilticketclosedbymonth" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-calendar-alt"></i> {% trans "View by month" %}
+                                </a>
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <!-- /.table-responsive -->
+        
+        <h4 class="mt-4 mb-3 text-primary">{% trans "Queue Statistics" %}</h4>
         <div class="table-responsive">
             <table class="table table-striped table-bordered table-hover">
                 <thead>
                     <tr>
                         <th>{% trans "Queue" %}</th>
-                        <th>{% trans "Open" %}</th>
-                        <th>{% trans "Resolved" %}</th>
-                        <th>{% trans "Closed" %}</th>
-                        {% if helpdesk_settings.HELPDESK_ENABLE_TIME_SPENT_ON_TICKET %}<th>{% trans "Time spent" %}</th>{% endif %}
+                        <th class="text-center">{% trans "Open" %}</th>
+                        <th class="text-center">{% trans "Resolved" %}</th>
+                        <th class="text-center">{% trans "Closed" %}</th>
+                        {% if helpdesk_settings.HELPDESK_ENABLE_TIME_SPENT_ON_TICKET %}<th class="text-center">{% trans "Time spent" %}</th>{% endif %}
                     </tr>
                 </thead>
                 <tbody>
                     {% for queue in dash_tickets %}
                     <tr>{% url 'helpdesk:list' as hdlist %}
                         <td><a href='{{ hdlist }}?queue={{ queue.queue }}&status=1&status=2'>{{ queue.name }}</a></td>
-                        <td>{% if queue.open %}<a href='{{ hdlist }}?queue={{ queue.queue }}&status=1&status=2'>{% endif %}{{ queue.open }}{% if queue.open %}</a>{% endif %}</td>
-                        <td>{% if queue.resolved %}<a href='{{ hdlist }}?queue={{ queue.queue }}&status=3'>{% endif %}{{ queue.resolved }}{% if queue.resolved %}</a>{% endif %}</td>
-                        <td>{% if queue.closed %}<a href='{{ hdlist }}?queue={{ queue.queue }}&status=4'>{% endif %}{{ queue.closed }}{% if queue.closed %}</a>{% endif %}</td>
-                        {% if helpdesk_settings.HELPDESK_ENABLE_TIME_SPENT_ON_TICKET %}<td>{{ queue.time_spent }}{% if queue.dedicated_time %} / {{ queue.dedicated_time }}{% endif %}</td>{% endif %}
+                        <td class="text-center">{% if queue.open %}<a href='{{ hdlist }}?queue={{ queue.queue }}&status=1&status=2' class="badge badge-primary">{% endif %}{{ queue.open }}{% if queue.open %}</a>{% endif %}</td>
+                        <td class="text-center">{% if queue.resolved %}<a href='{{ hdlist }}?queue={{ queue.queue }}&status=3' class="badge badge-success">{% endif %}{{ queue.resolved }}{% if queue.resolved %}</a>{% endif %}</td>
+                        <td class="text-center">{% if queue.closed %}<a href='{{ hdlist }}?queue={{ queue.queue }}&status=4' class="badge badge-secondary">{% endif %}{{ queue.closed }}{% if queue.closed %}</a>{% endif %}</td>
+                        {% if helpdesk_settings.HELPDESK_ENABLE_TIME_SPENT_ON_TICKET %}<td class="text-center">{{ queue.time_spent }}{% if queue.dedicated_time %} / {{ queue.dedicated_time }}{% endif %}</td>{% endif %}
                     </tr>
                     {% empty %}
-                    <tr><td colspan='6'>{% trans "There are no unassigned tickets." %}</td></tr>
+                    <tr><td colspan='6' class="text-center">{% trans "There are no unassigned tickets." %}</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -71,28 +187,55 @@
 
 <div class="card mb-3">
     <div class="card-header">
-        <i class="fas fa-print"></i>
+        <i class="fas fa-file-alt"></i>
         {% trans "Generate Report" %}
     </div>
     <div class="card-body">
-        <ul>
-            <li>{% trans "Reports By User" %}
-                <ul>
-                    <li><a href='userpriority/{% if saved_query %}?saved_query={{ saved_query }}{% endif %}'>{% trans "by Priority" %}</a></li>
-                    <li><a href='userqueue/{% if saved_query %}?saved_query={{ saved_query }}{% endif %}'>{% trans "by Queue" %}</a></li>
-                    <li><a href='userstatus/{% if saved_query %}?saved_query={{ saved_query }}{% endif %}'>{% trans "by Status" %}</a></li>
-                    <li><a href='usermonth/{% if saved_query %}?saved_query={{ saved_query }}{% endif %}'>{% trans "by Month" %}</a></li>
-                </ul>
-            </li>
-            <li>{% trans "Reports By Queue" %}
-                <ul>
-                    <li><a href='queuepriority/{% if saved_query %}?saved_query={{ saved_query }}{% endif %}'>{% trans "by Priority" %}</a></li>
-                    <li><a href='queuestatus/{% if saved_query %}?saved_query={{ saved_query }}{% endif %}'>{% trans "by Status" %}</a></li>
-                    <li><a href='queuemonth/{% if saved_query %}?saved_query={{ saved_query }}{% endif %}'>{% trans "by Month" %}</a></li>
-                    <li><a href='daysuntilticketclosedbymonth/{% if saved_query %}?saved_query={{ saved_query }}{% endif %}'>{% trans "Days until ticket closed by Month" %}</a></li>
-                </ul>
-            </li>
-        </ul>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="report-section mb-4">
+                    <h4 class="text-primary mb-3">
+                        <i class="fas fa-user-chart"></i> {% trans "Reports By User" %}
+                    </h4>
+                    <div class="list-group">
+                        <a href='userpriority/{% if saved_query %}?saved_query={{ saved_query }}{% endif %}' class="list-group-item list-group-item-action">
+                            <i class="fas fa-sort-amount-down"></i> {% trans "by Priority" %}
+                        </a>
+                        <a href='userqueue/{% if saved_query %}?saved_query={{ saved_query }}{% endif %}' class="list-group-item list-group-item-action">
+                            <i class="fas fa-list"></i> {% trans "by Queue" %}
+                        </a>
+                        <a href='userstatus/{% if saved_query %}?saved_query={{ saved_query }}{% endif %}' class="list-group-item list-group-item-action">
+                            <i class="fas fa-tasks"></i> {% trans "by Status" %}
+                        </a>
+                        <a href='usermonth/{% if saved_query %}?saved_query={{ saved_query }}{% endif %}' class="list-group-item list-group-item-action">
+                            <i class="fas fa-calendar-alt"></i> {% trans "by Month" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="report-section">
+                    <h4 class="text-primary mb-3">
+                        <i class="fas fa-layer-group"></i> {% trans "Reports By Queue" %}
+                    </h4>
+                    <div class="list-group">
+                        <a href='queuepriority/{% if saved_query %}?saved_query={{ saved_query }}{% endif %}' class="list-group-item list-group-item-action">
+                            <i class="fas fa-sort-amount-down"></i> {% trans "by Priority" %}
+                        </a>
+                        <a href='queuestatus/{% if saved_query %}?saved_query={{ saved_query }}{% endif %}' class="list-group-item list-group-item-action">
+                            <i class="fas fa-tasks"></i> {% trans "by Status" %}
+                        </a>
+                        <a href='queuemonth/{% if saved_query %}?saved_query={{ saved_query }}{% endif %}' class="list-group-item list-group-item-action">
+                            <i class="fas fa-calendar-alt"></i> {% trans "by Month" %}
+                        </a>
+                        <a href='daysuntilticketclosedbymonth/{% if saved_query %}?saved_query={{ saved_query }}{% endif %}' class="list-group-item list-group-item-action">
+                            <i class="fas fa-clock"></i> {% trans "Days until ticket closed by Month" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- /.card-body -->
 </div>

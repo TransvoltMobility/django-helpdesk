@@ -3,6 +3,197 @@
 
 {% block helpdesk_title %}{% trans "Create Ticket" %}{% endblock %}
 
+{% block helpdesk_head %}
+<style>
+    /* Reduce the height of the navbar to match public page */
+    .navbar {
+        padding-top: 0.2rem !important;
+        padding-bottom: 0.2rem !important;
+        min-height: 60px !important;
+    }
+    
+    .navbar-brand {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        height: 40px !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    
+    .form-control, .btn {
+        height: calc(1.5em + 0.5rem + 2px) !important;
+        padding: 0.30rem 1rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    /* Ticket Form Styling */
+    .ticket-form-container {
+        width: 98%; /* Increased from 95% for more width */
+        max-width: 1400px; /* Increased from 1200px for wider form */
+        margin: 2rem auto;
+        margin-bottom: 4rem; /* Extra space at bottom to ensure no overlap with footer */
+    }
+    
+    .form-card {
+        background-color: #fff;
+        border-radius: 10px; /* Slightly increased from 8px */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Enhanced shadow for better depth */
+    }
+    
+    .form-header {
+        background-color: #183b6b;
+        color: white;
+        padding: 1.2rem 2rem; /* Slightly increased padding */
+        font-size: 1.4rem; /* Slightly larger font */
+        font-weight: 600;
+    }
+    
+    .form-body {
+        padding: 2rem; /* Increased from 1.5rem */
+    }
+    
+    .form-intro {
+        background-color: #f8f9fc;
+        border-left: 4px solid #183b6b;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        color: #555;
+    }
+    
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -15px 20px -15px; /* Adjusted to match the padding of form-col */
+    }
+    
+    .form-col {
+        flex: 1;
+        padding: 0 15px;
+        min-width: 300px; /* Increased from 250px */
+    }
+    
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+    
+    .form-label {
+        display: block;
+        color: #183b6b;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .text-danger {
+        color: #dc3545 !important;
+        font-weight: bold;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        transition: border-color 0.2s;
+        height: auto !important;
+    }
+    
+    .form-control:focus {
+        border-color: #183b6b;
+        box-shadow: 0 0 0 0.2rem rgba(24, 59, 107, 0.25);
+        outline: none;
+    }
+    
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 16px 12px;
+        padding-right: 2rem;
+        text-overflow: ellipsis;
+    }
+    
+    /* Fix for dropdown visibility */
+    select option {
+        background-color: white;
+        color: #333;
+        padding: 6px;
+    }
+    
+    textarea.form-control {
+        min-height: 150px;
+        resize: vertical;
+    }
+    
+    .form-help {
+        display: block;
+        margin-top: 0.25rem;
+        color: #6c757d;
+        font-size: 0.85rem;
+    }
+    
+    .form-error {
+        color: #dc3545;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+    }
+    
+    .text-muted {
+        color: #6b7280;
+        font-weight: normal;
+    }
+    
+    .file-upload {
+        position: relative;
+        display: block;
+    }
+    
+    .file-upload input[type="file"] {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        width: 100%;
+    }
+    
+    .submit-btn {
+        background-color: #183b6b;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        width: auto;
+        min-width: 200px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.2s;
+    }
+    
+    .submit-btn:hover {
+        background-color: #0e2c57;
+    }
+    
+    .submit-btn i {
+        margin-right: 8px;
+    }
+    
+    /* Select and dropdown fixes */
+    .select-wrapper {
+        position: relative;
+        display: block;
+        width: 100%;
+    }
+    
+    select.form-control {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+</style>
+{% endblock %}
+
 {% block helpdesk_breadcrumb %}
     <li class="breadcrumb-item">
         <a href="{% url 'helpdesk:home' %}">Public</a>
@@ -11,14 +202,7 @@
 {% endblock %}
 
 {% block helpdesk_body %}
-    <div class="container">
-        <div class="card card-register mx-auto mt-5">
-            <div class="card-header">{% trans "Submit a Ticket" %}</div>
-            <div class="card-body">
-                {% include 'helpdesk/public_create_ticket_base.html' %}
-            </div>
-        </div>
-    </div>
+    {% include 'helpdesk/public_create_ticket_base.html' %}
 {% endblock %}
 
 {% block helpdesk_js %}
