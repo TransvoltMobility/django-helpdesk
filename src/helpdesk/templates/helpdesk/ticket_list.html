@@ -13,53 +13,78 @@
     {% endif %}
 
     <style>
-        /* Style for the select dropdown */
+        /* Style for headers and controls */
         .card-header {
             position: relative;
             min-height: 48px; /* Ensure enough height for buttons */
         }
         
-        /* Position the select dropdown */
-        .select-dropdown {
+        /* Common styles for all action buttons in the top area */
+        .action-buttons-container {
             position: absolute;
-            top: 15px; /* Move down to align with tabs */
-            right: 170px; /* Increase gap between buttons a bit more */
+            top: 9px;
+            right: 10px;
             z-index: 100;
+            display: flex;
+            align-items: center;
         }
         
+        .action-buttons-container > div,
+        .action-buttons-container > .dropdown {
+            margin-left: 8px;
+        }
+        
+        /* Filter menu dropdown styling */
+        /* Common button styling for all control buttons */
+        .action-buttons-container .btn,
+        .action-buttons-container .dt-button,
+        .filter-menu-dropdown .dropdown-toggle,
         .select-dropdown .dropdown-toggle {
-            background-color: #f8f9fa;
-            border-color: #dee2e6;
-            color: #212529;
-            font-size: 0.875rem;
-            padding: 0.25rem 0.5rem;
-            height: 31px; /* Match the height of the column visibility button */
-        }
-        
-        .select-dropdown .dropdown-item {
-            font-size: 0.875rem;
-            padding: 0.4rem 1rem;
-        }
-        
-        .select-dropdown .dropdown-item i {
-            margin-right: 0.5rem;
-        }
-        
-        /* Style for DataTables column visibility button */
-        div.dt-buttons {
-            position: absolute !important;
-            top: 15px !important; /* Move down to align with tabs */
-            right: 10px !important;
-            z-index: 100;
-        }
-        
-        div.dt-buttons .dt-button {
             background-color: #f8f9fa !important;
             border-color: #dee2e6 !important;
             color: #212529 !important;
             font-size: 0.875rem !important;
             padding: 0.25rem 0.5rem !important;
-            height: 31px !important; /* Consistent height with select dropdown */
+            height: 31px !important;
+            vertical-align: middle !important;
+            line-height: 1.5 !important;
+        }
+        
+        /* Dropdown menu styling */
+        .filter-dropdown-menu {
+            padding: 15px 0;
+            min-width: 320px;
+        }
+        
+        /* Container styles */
+        .filter-dropdown-container,
+        .select-dropdown,
+        div.dt-buttons {
+            display: inline-block;
+        }
+        
+        /* Dropdown item styling */
+        .dropdown-item {
+            font-size: 0.875rem;
+            padding: 0.4rem 1rem;
+        }
+        
+        .dropdown-item i {
+            margin-right: 0.5rem;
+        }
+        
+        /* With Selected Tickets dropdown styling */
+        .with-selected-dropdown .dropdown-menu {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .dropdown-header {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #6c757d;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
         }
         
         /* Hide the original select controls */
@@ -69,22 +94,26 @@
         
         /* Responsive adjustments */
         @media (max-width: 768px) {
-            .select-dropdown {
+            .action-buttons-container {
                 position: static;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: flex-end;
                 margin-top: 10px;
-                margin-bottom: 5px;
-                margin-right: 10px;
-                float: right;
             }
             
-            div.dt-buttons {
-                position: static !important;
-                margin-top: 10px;
-                float: right;
+            .action-buttons-container > div,
+            .action-buttons-container > .dropdown {
+                margin-top: 5px;
+                margin-bottom: 5px;
             }
             
             .card-header {
-                padding-bottom: 50px; /* Add space for the buttons in mobile view */
+                padding-bottom: 60px; /* Add space for the buttons in mobile view */
+            }
+            
+            .filter-dropdown-menu {
+                min-width: 250px;
             }
         }
     </style>
@@ -132,15 +161,120 @@
                 </li>
             </ul>
             
-            <!-- Select Options Dropdown -->
-            <div class="select-dropdown dropdown">
-                <button class="btn btn-sm dropdown-toggle" type="button" id="selectOptionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {% trans "Select" %}
-                </button>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="selectOptionsDropdown">
-                    <a class="dropdown-item" href="#" id="select_all_btn"><i class="fas fa-check-circle"></i> {% trans "All" %}</a>
-                    <a class="dropdown-item" href="#" id="select_none_btn"><i class="fas fa-times-circle"></i> {% trans "None" %}</a>
-                    <a class="dropdown-item" href="#" id="select_inverse_btn"><i class="fas fa-exchange-alt"></i> {% trans "Invert" %}</a>
+            <!-- Action buttons container for all controls -->
+            <div class="action-buttons-container">
+                <!-- Filter Dropdown -->
+                <div class="dropdown filter-menu-dropdown">
+                    <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="filterMenuButton" 
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-filter"></i> {% trans "Filters" %}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right filter-dropdown-menu" aria-labelledby="filterMenuButton">
+                        <form method="get" class="px-3 py-2">
+                            <!-- Sorting Filter -->
+                            <div class="form-group">
+                                <label for='id_sort' class="font-weight-bold">{% trans "Sorting" %}:</label>
+                                <select id='id_sort' name='sort' class="form-control form-control-sm">
+                                    <option value='created'{% if query_params.sorting == "created"%} selected='selected'{% endif %}>
+                                        {% trans "Created" %}
+                                    </option>
+                                    <option value='title'{% if query_params.sorting == "title"%} selected='selected'{% endif %}>
+                                        {% trans "Title" %}
+                                    </option>
+                                    <option value='queue'{% if query_params.sorting == "queue"%} selected='selected'{% endif %}>
+                                        {% trans "Queue" %}
+                                    </option>
+                                    <option value='status'{% if query_params.sorting == "status"%} selected='selected'{% endif %}>
+                                        {% trans "Status" %}
+                                    </option>
+                                    <option value='priority'{% if query_params.sorting == "priority"%} selected='selected'{% endif %}>
+                                        {% trans "Priority" %}
+                                    </option>
+                                    <option value='assigned_to'{% if query_params.sorting == "assigned_to"%} selected='selected'{% endif %}>
+                                        {% trans "Owner" %}
+                                    </option>
+                                </select>
+                                <div class="form-check mt-1">
+                                    <input type='checkbox' name='sortreverse' id='id_sortreverse' class="form-check-input"{% if query_params.sortreverse %} checked='checked'{% endif %} />
+                                    <label for='id_sortreverse' class="form-check-label">{% trans "Reverse" %}</label>
+                                </div>
+                            </div>
+                            
+                            <!-- Priority Filter -->
+                            <div class="form-group">
+                                <label for='id_priority' class="font-weight-bold">{% trans "Priority" %}:</label>
+                                <select id='id_priority' name='priority' class="form-control form-control-sm">
+                                    <option value=''>{% trans "Any" %}</option>
+                                    {% for p in priorities %}
+                                        <option value='{{ p.pk }}'{% if query_params.filtering.priority__in and p.pk|in_list:query_params.filtering.priority__in %} selected='selected'{% endif %}>{{ p }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <!-- Status Filter -->
+                            <div class="form-group">
+                                <label for='id_status' class="font-weight-bold">{% trans "Status" %}:</label>
+                                <select id='id_status' name='status' class="form-control form-control-sm">
+                                    <option value=''>{% trans "Any" %}</option>
+                                    {% for s in status_choices %}
+                                        <option value='{{ s.0 }}'{% if query_params.filtering.status__in and s.0|in_list:query_params.filtering.status__in %} selected='selected'{% endif %}>{{ s.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <!-- Apply Button -->
+                            <div class="form-group mt-3 mb-0">
+                                <input class="btn btn-primary btn-sm btn-block" type='submit' value='{% trans "Apply Filters" %}'/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Column Visibility button will be placed here by DataTables -->
+                <div id="column-visibility-container"></div>
+                
+                <!-- Select Options Dropdown -->
+                <div class="select-dropdown dropdown">
+                    <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="selectOptionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% trans "Select" %}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="selectOptionsDropdown">
+                        <a class="dropdown-item" href="#" id="select_all_btn"><i class="fas fa-check-circle"></i> {% trans "All" %}</a>
+                        <a class="dropdown-item" href="#" id="select_none_btn"><i class="fas fa-times-circle"></i> {% trans "None" %}</a>
+                        <a class="dropdown-item" href="#" id="select_inverse_btn"><i class="fas fa-exchange-alt"></i> {% trans "Invert" %}</a>
+                    </div>
+                </div>
+                
+                <!-- With Selected Tickets Dropdown -->
+                <div class="dropdown with-selected-dropdown">
+                    <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="withSelectedDropdown" 
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-tasks"></i> {% trans "Actions" %}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="withSelectedDropdown">
+                        <h6 class="dropdown-header">{% trans "With Selected Tickets" %}</h6>
+                        <a class="dropdown-item mass-action-item" href="#" data-action="take"><i class="fas fa-hand-paper"></i> {% trans "Take (Assign to me)" %}</a>
+                        <a class="dropdown-item mass-action-item" href="#" data-action="delete"><i class="fas fa-trash"></i> {% trans "Delete" %}</a>
+                        <a class="dropdown-item mass-action-item" href="#" data-action="merge"><i class="fas fa-object-group"></i> {% trans "Merge" %}</a>
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">{% trans "Close" %}</h6>
+                        <a class="dropdown-item mass-action-item" href="#" data-action="close"><i class="fas fa-times-circle"></i> {% trans "Close (Don't Send E-Mail)" %}</a>
+                        <a class="dropdown-item mass-action-item" href="#" data-action="close_public"><i class="fas fa-envelope"></i> {% trans "Close (Send E-Mail)" %}</a>
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">{% trans "Assign To" %}</h6>
+                        <a class="dropdown-item mass-action-item" href="#" data-action="unassign"><i class="fas fa-user-slash"></i> {% trans "Nobody (Unassign)" %}</a>
+                        {% for u in assignable_users %}
+                            <a class="dropdown-item mass-action-item" href="#" data-action="assign_{{ u.id }}"><i class="fas fa-user"></i> {{ u.get_username }}</a>
+                        {% endfor %}
+                        {% if kb_items %}
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">{% trans "Set KB Item" %}</h6>
+                        <a class="dropdown-item mass-action-item" href="#" data-action="kbitem_none"><i class="fas fa-minus-circle"></i> {% trans "No KB Item" %}</a>
+                        {% for kbi in kb_items %}
+                            <a class="dropdown-item mass-action-item" href="#" data-action="kbitem_{{ kbi.id }}"><i class="fas fa-book"></i> {{ kbi.category.title }}: {{ kbi.title }}</a>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -150,6 +284,7 @@
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="datatabletabcontents" role="tabpanel"
                      aria-labelledby="datatabletabcontents-tab">
+                    
                     <form method='post' action='{% url 'helpdesk:mass_update' %}' id="ticket_mass_update">
                         {% csrf_token %}
                         <table class="table table-sm table-bordered table-hover"
@@ -172,49 +307,10 @@
                             </thead>
                         </table>
 
-                        <div class="select-controls">
-                            <label class="mr-2">{% trans "Select:" %}</label>
-
-                            <button id="select_all_btn" type="button" class="btn btn-sm">
-                                <i class="fas fa-check-circle"></i> {% trans "All" %}
-                            </button>
-
-                            <button id='select_none_btn' type="button" class="btn btn-sm">
-                                <i class="fas fa-times-circle"></i> {% trans "None" %}
-                            </button>
-
-                            <button id='select_inverse_btn' type="button" class="btn btn-sm">
-                                <i class="fas fa-exchange-alt"></i> {% trans "Invert" %}
-                            </button>
+                        <!-- Hidden form elements for mass actions -->
+                        <div class="select-controls" style="display: none;">
+                            <input type="hidden" name="action" id="id_mass_action" value="" />
                         </div>
-
-                        <p>
-                            <label for='id_mass_action'>{% trans "With Selected Tickets:" %}</label>
-                            <select name='action' id='id_mass_action'>
-                                <option value='take'>{% trans "Take (Assign to me)" %}</option>
-                                <option value='delete'>{% trans "Delete" %}</option>
-                                <option value='merge'>{% trans "Merge" %}</option>
-                                <optgroup label='{% trans "Close" %}'>
-                                    <option value='close'>{% trans "Close (Don't Send E-Mail)" %}</option>
-                                    <option value='close_public'>{% trans "Close (Send E-Mail)" %}</option>
-                                </optgroup>
-                                <optgroup label='{% trans "Assign To" %}'>
-                                    <option value='unassign'>{% trans "Nobody (Unassign)" %}</option>
-                                    {% for u in assignable_users %}
-                                        <option value='assign_{{ u.id }}'>{{ u.get_username }}</option>
-                                    {% endfor %}
-                                </optgroup>
-                                <optgroup label='{% trans "Set KB Item" %}'>
-                                    <option value='kbitem_none'>{% trans "No KB Item" %}</option>
-                                    {% for kbi in kb_items %}
-                                        <option value='kbitem_{{ kbi.id }}'>{{ kbi.category.title }}: {{ kbi.title }}</option>
-                                    {% endfor %}
-                                </optgroup>
-                            </select>
-                            <button type="submit" class="btn btn-primary btn-sm">
-                                <i class="fas fa-arrow-circle-right"></i> {% trans "Go" %}
-                            </button>
-                        </p>
                     </form>
                 </div>
                 {% if helpdesk_settings.HELPDESK_TICKETS_TIMELINE_ENABLED %}
@@ -228,193 +324,7 @@
     </div>
     <!-- /.panel -->
 
-    <div class="card mb-3">
-        <div class="card-header">
-            <i class="fas fa-hand-pointer"></i>
-            {% trans "Query Selection" %}
-        </div>
-        <div class="card-body">
-            <!-- start accordion -->
-            <div class="accordion" id="queryAccordion">
-                <div class="card">
-                    <div class="card-header" id="headingOne">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link btn-sm" type="button" data-toggle="collapse"
-                                    data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                <i class="fas fa-filter"></i>
-                                {% trans "Filters" %}
-                            </button>
-                        </h5>
-                    </div>
 
-                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
-                         data-parent="#queryAccordion">
-                        <div class="card-body">
-                            <form method="get">
-                                <div class="form-group float-right">
-                                    <label for="filterBuilderSelect">{% trans "Add filter" %}:</label>
-                                    <select class="custom-select custom-select-sm mb-0"
-                                            aria-describedby="select-description" name="select" id="filterBuilderSelect"
-                                            onChange="onFilterChange(this.value)">
-                                        <option value="">--</option>
-                                        <option id="filterBuilderSelect-Sort" value="Sort"{% if query_params.sorting %} disabled{% endif %}>
-                                            {% trans "Sorting" %}
-                                        </option>
-                                        <option id="filterBuilderSelect-Priority" value="Priority"{% if query_params.filtering.priority__in %} disabled{% endif %}>
-                                            {% trans "Priority" %}
-                                        </option>
-                                        <option id="filterBuilderSelect-Owner" value="Owner"{% if query_params.filtering.assigned_to__id__in or query_params.filtering_null.assigned_to__id__isnull %} disabled{% endif %}>
-                                            {% trans "Owner" %}
-                                        </option>
-                                        <option id="filterBuilderSelect-Queue" value="Queue"{% if query_params.filtering.queue__id__in or query_params.filtering_null.queue__id__isnull %} disabled{% endif %}>
-                                            {% trans "Queue" %}
-                                        </option>
-                                        <option id="filterBuilderSelect-Status" value="Status"{% if query_params.filtering.status__in %} disabled{% endif %}>
-                                            {% trans "Status" %}
-                                        </option>
-                                        <option id="filterBuilderSelect-Keywords" value="Keywords"{% if query_params.search_string %} disabled{% endif %}>
-                                            {% trans "Keywords" %}
-                                        </option>
-                                        <option id="filterBuilderSelect-Dates" value="Dates"{% if query_params.filtering.created__gte or query_params.filtering.created__lte %} disabled{% endif %}>
-                                            {% trans "Date Range" %}
-                                        </option>
-                                        <option id="filterBuilderSelect-KBItems" value="KBItems"{% if query_params.filtering.kbitem__in or query_params.filtering_null.kbitem__isnull %} disabled{% endif %}>
-                                            {% trans "Knowledge base items" %}
-                                        </option>
-                                    </select>
-                                </div>
-                            </form>
-                        </div>
-
-                        <form method="get">
-                            <ul class="list-group list-group-flush">
-                                <li id="filterBoxSort"
-                                    class="filterBox{% if query_params.sorting %} filterBoxShow{% endif %} list-group-item"
-                                    id="filterBoxSort">
-                                    {% include 'helpdesk/filters/sorting.html' %}
-                                </li>
-                                <li class="list-group-item filterBox{% if query_params.filtering.priority__in %} filterBoxShow{% endif %}"
-                                    id="filterBoxPriority">
-                                    {% include 'helpdesk/filters/priority.html' %}
-                                </li>
-                                <li class="filterBox{% if query_params.filtering.assigned_to__id__in or query_params.filtering_null.assigned_to__id__isnull %} filterBoxShow{% endif %} list-group-item"
-                                    id=filterBoxOwner>
-                                    {% include 'helpdesk/filters/owner.html' %}
-                                </li>
-                                <li class="list-group-item filterBox{% if query_params.filtering.queue__id__in or query_params.filtering_null.queue__id__isnull %} filterBoxShow{% endif %}"
-                                    id="filterBoxQueue">
-                                    {% include 'helpdesk/filters/queue.html' %}
-                                </li>
-                                <li class="list-group-item filterBox{% if query_params.filtering.status__in %} filterBoxShow{% endif %}"
-                                    id="filterBoxStatus">
-                                    {% include 'helpdesk/filters/status.html' %}
-                                </li>
-                                <li class="list-group-item filterBox{% if query_params.filtering.created__gte or query_params.filtering.created__lte %} filterBoxShow{% endif %}"
-                                    id='filterBoxDates'>
-                                    {% include 'helpdesk/filters/date.html' %}
-                                </li>
-                                <li class="list-group-item filterBox{% if query_params.search_string %} filterBoxShow{% endif %}"
-                                    id="filterBoxKeywords">
-                                    {% include 'helpdesk/filters/keywords.html' %}
-                                </li>
-                                <li class="list-group-item filterBox{% if query_params.filtering.kbitem__in or query_params.filtering_null.kbitem__isnull %} filterBoxShow{% endif %}"
-                                    id="filterBoxKBItems">
-                                    {% include 'helpdesk/filters/kbitems.html' %}
-                                </li>
-                                <li class="list-group-item">
-                                    <input class="btn btn-primary btn-sm" type='submit' value='{% trans "Apply Filters" %}'/>
-                                </li>
-                                {% if from_saved_query and saved_query.user == user %}
-                                    <li class="list-group-item">
-                                        {% blocktrans with saved_query.title as query_name %}You are currently viewing saved query <strong>"{{ query_name }}"</strong>.{% endblocktrans %}
-                                        <a href='{% url 'helpdesk:delete_query' saved_query.id %}'>
-                                            {% trans "Delete Saved Query" %}
-                                        </a>
-                                    </li>
-                                {% endif %}
-                                {% if from_saved_query %}
-                                    <li class="list-group-item">
-                                        {% blocktrans with saved_query.id as query_id %}<a href='../reports/?saved_query={{ query_id }}'>Run a report</a> on this query to see stats and charts for the data listed below.{% endblocktrans %}
-                                    </li>
-                                {% endif %}
-                            </ul>
-                        </form>
-                    </div>
-                </div> <!-- end card -->
-
-                <div class="card">
-                    <div class="card-header" id="headingTwo">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link collapsed btn-sm" type="button" data-toggle="collapse"
-                                    data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                <i class="fas fa-save"></i>
-                                {% trans "Save Query" %}
-                            </button>
-                        </h5>
-                    </div>
-                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#queryAccordion">
-                        <div class="card-body">
-                            <form method='post' action='{% url 'helpdesk:savequery' %}'>
-                                {% csrf_token %}
-                                <input type='hidden' name='query_encoded' value='{{ urlsafe_query }}'/>
-                                <dl>
-                                    <dt><label for='id_title'>{% trans "Query Name" %}</label></dt>
-                                    <dd><input type='text' name='title' id='id_title'/></dd>
-                                    <dd class='form_help_text'>{% trans "This name appears in the drop-down list of saved queries. If you share your query, other users will see this name, so choose something clear and descriptive!" %}</dd>
-
-                                    <dt><label for='id_shared'>{% trans "Shared?" %}</label></dt>
-                                    <dd><input type='checkbox' name='shared'
-                                               id='id_shared'/> {% trans "Yes, share this query with other users." %}
-                                    </dd>
-                                    <dd class='form_help_text'>{% trans "If you share this query, it will be visible by <em>all</em> other logged-in users." %}</dd>
-
-                                </dl>
-                                <div class='buttons'>
-                                    <input class="btn btn-primary" type='submit' value='{% trans "Save Query" %}'>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div> <!-- end card -->
-
-                {% if user_saved_queries %}
-                    <div class="card">
-                        <div class="card-header" id="headingThree">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link collapsed btn-sm" type="button" data-toggle="collapse"
-                                        data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                    <i class="fas fa-clipboard-check"></i>
-                                    {% trans "Use Saved Query" %}
-                                </button>
-                            </h5>
-                        </div>
-                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
-                             data-parent="#queryAccordion">
-                            <div class="card-body">
-                                <form action='{% url 'helpdesk:list' %}'>
-                                    <p>
-                                        <label for='id_query_selector'>{% trans "Query" %}</label>
-                                        <select name='saved_query' id='id_query_selector'>
-                                        {% for q in user_saved_queries %}
-                                            <option value='{{ q.id }}'>
-                                                {{ q.title }}{% if q.shared %}
-                                                    (Shared{% if user != q.user %} by {{ q.user.get_username }}{% endif %})
-                                                {% endif %}
-                                            </option>
-                                        {% endfor %}
-                                    </select></p>
-                                    <input class="btn btn-primary" type='submit' value='{% trans "Run Query" %}'>
-                                </form>
-                            </div>
-                        </div>
-                    </div> <!-- end card -->
-                {% endif %}
-            </div>
-            <!-- end accordion -->
-        </div>
-        <!-- end card-body -->
-    </div>
-    <!-- end top card -->
 
 {% endblock %}
 
@@ -578,13 +488,8 @@
             
             // Fix positioning and styling of DataTables buttons
             setTimeout(function() {
-                // Ensure consistent styling and positioning
-                $('div.dt-buttons').css({
-                    'position': 'absolute',
-                    'top': '15px', // Move down to align with tabs
-                    'right': '10px',
-                    'z-index': '100',
-                });
+                // Move the column visibility button to our container
+                $('div.dt-buttons').detach().appendTo('#column-visibility-container');
                 
                 // Style the column visibility button
                 $('div.dt-buttons button.buttons-colvis').css({
@@ -593,13 +498,13 @@
                     'color': '#212529',
                     'font-size': '0.875rem',
                     'padding': '0.25rem 0.5rem',
-                    'height': '31px', // Match the height of the select dropdown
+                    'height': '31px', 
                     'vertical-align': 'middle',
                     'line-height': '1.5'
                 });
                 
-                // Set equal height and vertical alignment for select dropdown
-                $('.select-dropdown .dropdown-toggle').css({
+                // Set equal height and vertical alignment for all dropdown buttons
+                $('.action-buttons-container .dropdown-toggle, .action-buttons-container .dt-button').css({
                     'height': '31px',
                     'vertical-align': 'middle',
                     'line-height': '1.5'
@@ -608,9 +513,9 @@
                 // Hide any duplicate column visibility buttons that might be at the bottom
                 $('.column-visibility-bottom').hide();
                 
-                // Ensure both buttons are the same height and vertical alignment
-                var selectHeight = $('.select-dropdown .dropdown-toggle').outerHeight();
-                $('div.dt-buttons button.buttons-colvis').css('height', selectHeight + 'px');
+                // Ensure all buttons have the same height for consistency
+                var buttonHeight = $('.select-dropdown .dropdown-toggle').outerHeight();
+                $('.action-buttons-container .btn, .action-buttons-container .dt-button').css('height', buttonHeight + 'px');
             }, 300);
 
             {# Timeline initialization when tab is displayed #}
@@ -643,6 +548,23 @@
                 $(".ticket_multi_select").each(function () {
                     $(this).prop('checked', !$(this).prop('checked'));
                 });
+            });
+            
+            {# Handle mass actions from dropdown #}
+            $(".mass-action-item").click(function(e) {
+                e.preventDefault();
+                
+                // Check if any tickets are selected
+                if ($(".ticket_multi_select:checked").length === 0) {
+                    alert("{% trans 'Please select at least one ticket first.' %}");
+                    return false;
+                }
+                
+                // Set the action value
+                $("#id_mass_action").val($(this).data('action'));
+                
+                // Submit the form
+                $("#ticket_mass_update").submit();
             });
         })
     </script>

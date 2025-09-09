@@ -65,6 +65,20 @@
         background-color: #e67e22;
     }
     
+    .ticket-title {
+        background: #f8f9fa;
+        padding: 15px 30px;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .ticket-title h2 {
+        margin: 0;
+        font-size: 1.6rem;
+        font-weight: 600;
+        line-height: 1.3;
+        color: #183b6b;
+    }
+    
     /* Ticket details table styling */
     .ticket-details {
         background: white;
@@ -366,6 +380,48 @@
         }
     }
     
+    /* Tab styling */
+    .nav-tabs {
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .nav-tabs .nav-item {
+        margin-bottom: -1px;
+    }
+    
+    .nav-tabs .nav-link {
+        border: 1px solid transparent;
+        border-top-left-radius: 0.25rem;
+        border-top-right-radius: 0.25rem;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        color: #6c757d;
+    }
+    
+    .nav-tabs .nav-link:hover, 
+    .nav-tabs .nav-link:focus {
+        border-color: #e9ecef #e9ecef #dee2e6;
+        color: #183b6b;
+    }
+    
+    .nav-tabs .nav-link.active {
+        color: #183b6b;
+        background-color: #fff;
+        border-color: #dee2e6 #dee2e6 #fff;
+    }
+    
+    .tab-content {
+        padding: 20px 0;
+    }
+    
+    .tab-content > .tab-pane {
+        display: none;
+    }
+    
+    .tab-content > .active {
+        display: block;
+    }
+    
     @media (max-width: 768px) {
         .ticket-container {
             width: 100%;
@@ -375,11 +431,19 @@
         .ticket-header {
             flex-direction: column;
             align-items: flex-start;
-            padding: 20px;
+            padding: 15px;
         }
         
         .ticket-status {
             margin-top: 10px;
+        }
+        
+        .ticket-title {
+            padding: 15px;
+        }
+        
+        .ticket-title h2 {
+            font-size: 1.3rem;
         }
         
         .ticket-details th {
@@ -390,6 +454,11 @@
         .ticket-details td {
             padding: 10px 15px;
         }
+        
+        .nav-tabs .nav-link {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+        }
     }
 </style>
 {% endblock %}
@@ -398,15 +467,33 @@
 <div class="ticket-container">
 
 <div class="ticket-header">
-    <h2>[#{{ ticket.ticket }}] {{ ticket.title }}</h2>
+    <div style="display: flex; align-items: center;">
+        <span style="background-color: #183b6b; padding: 8px 16px; border-radius: 4px; font-weight: 600;">{% trans "Ticket Details" %}</span>
+    </div>
     <span class="ticket-status {% if 'Resolved' in ticket.get_status %}resolved{% elif 'Closed' in ticket.get_status %}closed{% elif 'Hold' in ticket.get_status %}hold{% else %}open{% endif %}">
         {{ ticket.get_status }}
     </span>
 </div>
 
-<div class="ticket-details">
-    <table>
-        <tbody>
+<div class="ticket-tabs">
+    <ul class="nav nav-tabs" id="ticketTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">
+                <i class="fas fa-info-circle"></i> {% trans "Details" %}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="followups-tab" data-toggle="tab" href="#followups" role="tab" aria-controls="followups" aria-selected="false">
+                <i class="fas fa-comments"></i> {% trans "Follow-ups" %}
+            </a>
+        </li>
+    </ul>
+    
+    <div class="tab-content" id="ticketTabsContent">
+        <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
+            <div class="ticket-details">
+                <table>
+                    <tbody>
             <tr>
                 <th>{% blocktrans with ticket.queue as queue_name %}Queue{% endblocktrans %}</th>
                 <td>{{ ticket.queue }}</td>
@@ -469,12 +556,98 @@
             {% endif %}
         </tbody>
     </table>
+            
+            <form method='post' action="{% url 'helpdesk:update' ticket.id %}" enctype='multipart/form-data' class="comment-form">
+                <h3>{% trans "Update Ticket" %}</h3>
+                <input type="hidden" name="key" value="{{ key }}" />
+                <input type="hidden" name="mail" value="{{ mail }}" />
+            
+                {% if preset_replies %}
+                <div class="form-group">
+                    <label for='id_preset'>{% trans "Use a Pre-set Reply" %} <span style="color: #6c757d; font-weight: normal;">{% trans "(Optional)" %}</span></label>
+                    <select name='preset' id='id_preset' class="form-control">
+                        <option value=''>-- {% trans "Select a pre-set reply" %} --</option>
+                        {% for preset in preset_replies %}
+                        <option value='{{ preset.id }}'>{{ preset.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <p class="form-help-text">{% trans "Selecting a pre-set reply will over-write your comment below. You can then modify the pre-set reply to your liking before saving this update." %}</p>
+                </div>
+                {% endif %}
+            
+                <div class="form-group">
+                    <label for='commentBox'>{% trans "Comment / Resolution" %}</label>
+                    <textarea rows='8' name='comment' id='commentBox' class="form-control" placeholder="{% trans 'Enter your comment or resolution here...' %}"></textarea>
+                    {% url "helpdesk:help_context" as context_help_url %}
+                    <p class="form-help-text">
+                        {% blocktrans %}You can insert ticket and queue details in your message. For more information, see the <a href='{{ context_help_url }}'>context help page</a>.{% endblocktrans %}
+                    </p>
+                </div>
+            
+                {% if not ticket.can_be_resolved %}
+                <div class="form-group">
+                    <div class="alert alert-warning">
+                        {% trans "This ticket cannot be resolved or closed until the tickets it depends on are resolved." %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if ticket.status != 1 %}
+                <div class="form-group">
+                    <label>{% trans "Status" %}</label>
+                    <div class="status-options">
+                        <label><input type="radio" name='new_status' value='1' /> {% trans "Open" %}</label>
+                        <label><input type="radio" name='new_status' value='2' /> {% trans "Reopened" %}</label>
+                        <label><input type="radio" name='new_status' value='3' /> {% trans "Resolved" %}</label>
+                        <label><input type="radio" name='new_status' value='4' /> {% trans "Closed" %}</label>
+                        <label><input type="radio" name='new_status' value='5' /> {% trans "Duplicate" %}</label>
+                    </div>
+                </div>
+                {% else %}
+                <input type="hidden" name="new_status" value="{{ ticket.status }}" />
+                {% endif %}
+            
+                <input type='hidden' name='public' value='1'>
+                    
+            {% if helpdesk_settings.HELPDESK_ENABLE_ATTACHMENTS %}
+                <div class="form-group">
+                    <p id='ShowFileUploadPara'>
+                        <button type='button' id='ShowFileUpload' class='btn btn-primary btn-sm'>{% trans "Attach File" %}</button>
+                        <span class='small'>{% trans "Maximum of 5 files, each no larger than 2MB" %}</span>
+                    </p>
+                    
+                    <div id='FileUpload' style='display: none;'>
+                        <div class='add_file_fields_wrap'>
+                            <div>
+                                <label class='btn btn-primary btn-sm btn-file'>
+                                    {% trans "Browse..." %} <input type='file' name='attachment' id='file0' multiple style='display: none;'/>
+                                </label>
+                                <span>&nbsp;</span>
+                                <span id='selectedfilename0'>{% trans "No files selected." %}</span>
+                            </div>
+                        </div>
+                        <em>{% trans "Note that large file uploads will take some time, depending on your upload speed. Please be patient." %}</em>
+                        <button type='button' class='btn btn-primary btn-sm add_file_field_button'>{% trans "Add another file" %}</button>
+                    </div>
+                </div>
+            {% endif %}
+            
+                <div class="form-group" style="margin-top: 30px;">
+                    <button class="btn btn-primary btn-lg" type='submit'>
+                        {% trans "Update This Ticket" %}
+                    </button>
+                </div>
+            
+                {% csrf_token %}
+            </form>
 </div>
-
-{% if ticket.followup_set.public_followups %}
-<div class="followups-section">
-    <h3>{% trans "Follow-Ups" %}</h3>
-    <div class="followups-container">
+        </div>
+        
+        <div class="tab-pane fade" id="followups" role="tabpanel" aria-labelledby="followups-tab">
+            {% if ticket.followup_set.public_followups %}
+            <div class="followups-section">
+                <h3>{% trans "Follow-Ups" %}</h3>
+                <div class="followups-container">
         {% load ticket_to_link %}
         {% for followup in ticket.followup_set.public_followups %}
         <div class="followup">
@@ -518,8 +691,12 @@
     </div>
 </div>
 {% endif %}
+        </div>
+    </div>
+</div>
 
-<form method='post' action="{% url 'helpdesk:update' ticket.id %}" enctype='multipart/form-data' class="comment-form">
+<!-- Keep form outside of tab structure for accessibility -->
+<form method='post' action="{% url 'helpdesk:update' ticket.id %}" enctype='multipart/form-data' class="comment-form" style="display: none;">
     <h3>{% trans "Update Ticket" %}</h3>
     <input type="hidden" name="key" value="{{ key }}" />
     <input type="hidden" name="mail" value="{{ mail }}" />
@@ -655,5 +832,15 @@
 </script>
 {% endif %}
 
+<!-- Tab Navigation JavaScript -->
+<script>
+$(document).ready(function() {
+    // Tab functionality
+    $('#ticketTabs a').on('click', function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+    });
+});
+</script>
 </div> <!-- End of ticket-container -->
 {% endblock %}
