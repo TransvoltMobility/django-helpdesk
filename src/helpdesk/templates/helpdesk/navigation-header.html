@@ -1,11 +1,14 @@
-{% load i18n helpdesk_staff %}
+{% load i18n helpdesk_staff static %}
 
     {% include 'helpdesk/custom_navigation_header.html' %}
     {% include 'helpdesk/navigation-header-style.html' %}
 
     <nav class="navbar navbar-expand navbar-light bg-white static-top">
 
-      <a class="navbar-brand text-primary" href="{% url 'helpdesk:home' %}">{% trans 'Helpdesk' %}</a>
+      <a class="navbar-brand text-primary" href="{% url 'helpdesk:home' %}">
+        <img src="{% static 'helpdesk/img/Arrow.png' %}" alt="SupportVolt" height="30" class="mr-2">
+        {% trans 'SupportVolt' %}
+      </a>
 
       <button class="btn btn-link btn-sm text-white order-1 order-sm-0 mr-auto" id="sidebarToggle" href="#">
         <i class="fas fa-bars"></i>
@@ -63,7 +66,7 @@
                 <button type="submit" class="dropdown-item">
                   <i class="fas fa-fw fa-sign-out-alt"></i> {% trans "Logout" %}
                 </button>
-            </form>
+            </form> 
           </div>
         </li>
       {% else %}

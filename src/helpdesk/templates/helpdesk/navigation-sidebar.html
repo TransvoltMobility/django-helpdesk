@@ -15,31 +15,6 @@
             <span>{% trans "All Tickets" %}</span>
           </a>
         </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="ticketsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-fw fa-search"></i>
-            <span>{% trans "Saved Queries" %}</span>
-          </a>
-          <div class="dropdown-menu" aria-labelledby="ticketsDropdown">
-            {% if user_saved_queries_ %}
-            {% for q in user_saved_queries_ %}
-            <a class="dropdown-item small" href="{% url 'helpdesk:list' %}?saved_query={{ q.id }}" style="white-space: normal;">{{ q.title }}
-                {% if q.shared %}
-                (Shared{% if user != q.user %} by {{ q.user.get_username }}{% endif %})
-                {% endif %}
-            </a>
-            {% endfor %}
-            {% else %}
-            <p class="dropdown-item small text-wrap">{% trans "No saved queries currently available. You can create one in the All Tickets page." %}</p>
-            {% endif %}
-          </div>
-        </li>
-        <li class="nav-item{% if 'saved-searches' in request.path %} active{% endif %}">
-          <a class="nav-link" href="{% url 'helpdesk:saved_searches_list' %}">
-            <i class="fas fa-fw fa-save"></i>
-            <span>{% trans "Manage Saved Queries" %}</span>
-          </a>
-        </li>
         <li class="nav-item{% if 'submit' in request.path %} active{% endif %}">
           <a class="nav-link" href="{% url 'helpdesk:submit' %}">
             <i class="fas fa-fw fa-plus-circle"></i>
@@ -60,14 +35,6 @@
             <span>{% trans "Reports" %}</span>
           </a>
         </li>
-        {% if helpdesk_settings.HELPDESK_KB_ENABLED %}
-        <li class="nav-item{% if 'kb' in request.path %} active{% endif %}">
-          <a class="nav-link" href="{% url 'helpdesk:kb_index' %}">
-            <i class="fas fa-fw fa-database"></i>
-            <span>{% trans "Knowledgebase" %}</span>
-          </a>
-        </li>
-        {% endif %}
     {% else %}
         {# Public menu #}
         {% if not user.is_authenticated %}
@@ -92,14 +59,6 @@
             </a>
         </li>
 
-        {% endif %}
-        {% if helpdesk_settings.HELPDESK_KB_ENABLED %}
-        <li class="nav-item{% if 'kb' in request.path %} active{% endif %}">
-          <a class="nav-link" href="{% url 'helpdesk:kb_index' %}">
-            <i class="fas fa-fw fa-database"></i>
-            <span>{% trans "Knowledgebase" %}</span>
-          </a>
-        </li>
         {% endif %}
     {% endif %}
     </ul>
