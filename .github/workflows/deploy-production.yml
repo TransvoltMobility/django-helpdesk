@@ -21,4 +21,3 @@ jobs:
             docker compose down
             docker pull transvolt1/django-helpdesk:latest
             docker compose up -d
-          
