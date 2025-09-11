@@ -1,13 +1,13 @@
-#see github workflows for docker build command
+# This Dockerfile should be in the same directory as your manage.py file.
 FROM python:3.11-slim-bullseye
 LABEL src=https://github.com/django-helpdesk/django-helpdesk
 RUN apt-get update
 RUN apt-get install -yqq \
-   postgresql-common \
-   postgresql-client \
-   cron \
-   git \
-   dos2unix
+    postgresql-common \
+    postgresql-client \
+    cron \
+    git \
+    dos2unix
 
 # Copy everything needed
 COPY . /opt/django-helpdesk/
@@ -26,6 +26,11 @@ RUN pip install -r standalone/requirements.txt
 WORKDIR /opt/django-helpdesk/standalone
 ENV DJANGO_SETTINGS_MODULE=standalone.config.settings
 ENV PYTHONPATH=/opt/django-helpdesk/src:/opt/django-helpdesk
+
+# Create the /data/media directory and ensure it is writable by Caddy.
+# The `media` subdirectory is necessary for Django's file storage logic.
+RUN mkdir -p /data/media \
+    && chmod -R 777 /data/media
 
 RUN DJANGO_HELPDESK_SECRET_KEY=foo python3 manage.py collectstatic --noinput
 
