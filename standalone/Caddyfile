@@ -1,3 +1,14 @@
 localhost {
-        reverse_proxy django-helpdesk:8000
+# Serve media files from the shared volume
+route /media/* {
+uri strip_prefix /media
+file_server {
+root /var/www/helpdesk_media
+browse
+}
+}
+
+# Proxy all other requests to the Django application
+reverse_proxy django-helpdesk:8000
+
 }

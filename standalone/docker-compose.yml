@@ -13,6 +13,7 @@ services:
       - caddy_data:/data
       - caddy_config:/config
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - helpdesk_data:/var/www/helpdesk_media
     ports:
       - "80:80"
       - "443:443"
