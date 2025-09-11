@@ -484,7 +484,7 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" id="followups-tab" data-toggle="tab" href="#followups" role="tab" aria-controls="followups" aria-selected="false">
-                <i class="fas fa-comments"></i> {% trans "Follow-ups" %}
+                <i class="fas fa-comments"></i> {% trans "History" %}
             </a>
         </li>
     </ul>
@@ -646,7 +646,7 @@
         <div class="tab-pane fade" id="followups" role="tabpanel" aria-labelledby="followups-tab">
             {% if ticket.followup_set.public_followups %}
             <div class="followups-section">
-                <h3>{% trans "Follow-Ups" %}</h3>
+                <h3>{% trans "History" %}</h3>
                 <div class="followups-container">
         {% load ticket_to_link %}
         {% for followup in ticket.followup_set.public_followups %}

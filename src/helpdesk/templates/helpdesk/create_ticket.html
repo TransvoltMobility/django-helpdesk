@@ -273,7 +273,7 @@
                         <div class="form-col">
                             <div class="form-group">
                                 <label for='id_queue' class="form-label">
-                                    {{ form.queue.label }}{% if form.queue.field.required %} <span class="text-danger">*</span>{% endif %}
+                                    {% trans "Select Department for Query" %}{% if form.queue.field.required %} <span class="text-danger">*</span>{% endif %}
                                     {% if not form.queue.field.required %}
                                         <span class="text-muted">({% trans "Optional" %})</span>
                                     {% endif %}
@@ -413,7 +413,7 @@
                     {# 4. Fourth line: Summary (Title) field #}
                     <div class="form-group">
                         <label for='id_title' class="form-label">
-                            {{ form.title.label }}{% if form.title.field.required %} <span class="text-danger">*</span>{% endif %}
+                            {% trans "Subject" %}{% if form.title.field.required %} <span class="text-danger">*</span>{% endif %}
                             {% if not form.title.field.required %}
                                 <span class="text-muted">({% trans "Optional" %})</span>
                             {% endif %}

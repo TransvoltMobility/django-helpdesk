@@ -24,7 +24,35 @@
                         {% csrf_token %}
                         <div class="form-row">
                             <div class="form-col">
-                                {{ form|bootstrap4form }}
+                                <div class="form-group">
+                                    <label for="id_queue" class="form-label">
+                                        {% trans "Select Department for Query" %}{% if form.queue.field.required %} <span class="text-danger">*</span>{% endif %}
+                                    </label>
+                                    {{ form.queue }}
+                                    {% if form.queue.errors %}
+                                        <div class="form-error">{{ form.queue.errors }}</div>
+                                    {% endif %}
+                                    {% if form.queue.help_text %}
+                                        <small class="form-help">{{ form.queue.help_text }}</small>
+                                    {% endif %}
+                                </div>
+                                
+                                {% for field in form %}
+                                    {% if field.name != 'queue' %}
+                                        <div class="form-group">
+                                            <label for="id_{{ field.name }}" class="form-label">
+                                                {% if field.name == 'title' %}{% trans "Subject" %}{% else %}{{ field.label }}{% endif %}{% if field.field.required %} <span class="text-danger">*</span>{% endif %}
+                                            </label>
+                                            {{ field }}
+                                            {% if field.errors %}
+                                                <div class="form-error">{{ field.errors }}</div>
+                                            {% endif %}
+                                            {% if field.help_text %}
+                                                <small class="form-help">{{ field.help_text }}</small>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
                             </div>
                         </div>
                         

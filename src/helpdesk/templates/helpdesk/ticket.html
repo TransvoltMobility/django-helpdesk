@@ -147,7 +147,7 @@
                 <li class="nav-item">
                     <a class="nav-link" id="followups-tab" data-toggle="tab" href="#followups" 
                        role="tab" aria-controls="followups" aria-selected="false">
-                        <i class="fas fa-comments"></i> {% trans "Follow-ups" %}
+                        <i class="fas fa-comments"></i> {% trans "History" %}
                     </a>
                 </li>
             </ul>
@@ -188,6 +188,13 @@
                                 {% blocktrans %}
                                 <dd class='form_help_text'>You can insert ticket and queue details in your message. For more information, see the <a href='{{ context_help_url }}'>context help page</a>.</dd>
                                 {% endblocktrans %}
+                                
+                                {% if helpdesk_settings.HELPDESK_ENABLE_ATTACHMENTS %}
+                                {% if form.errors.attachment %}
+                                    <small class='error'>{{ form.errors.attachment }}</small>
+                                {% endif %}
+                                <dd><button type="button" class="btn btn-warning btn-sm" id='ShowFileUpload'>{% trans "Attach File(s) &raquo;" %}</button></dd>
+                                {% endif %}
 
                                 <dt><label>{% trans "New Status" %}</label></dt>
                                 {% if not ticket.can_be_resolved %}<dd>{% trans "This ticket cannot be resolved or closed until the tickets it depends on are resolved." %}</dd>{% endif %}
@@ -205,15 +212,6 @@
                                 </dt>
                                 <dd><input type='checkbox' name='public' value='1' checked='checked' />&nbsp; {% trans 'Yes, make this update public.' %}</dd>
                                 <dd class='form_help_text'>{% trans "If this is public, the submitter will be e-mailed your comment or resolution." %}</dd>
-                                {% endif %}
-
-                                {% if helpdesk_settings.HELPDESK_ENABLE_TIME_SPENT_ON_TICKET %}
-                                {% if user.is_staff %}
-                                <dt>
-                                    <label for='id_time_spent'>{% trans "Time spent" %}</label> <span class='form_optional'>{% trans "(Optional)" %}</span>
-                                </dt>
-                                <dd><input name='time_spent' type="time" value="{% if form.errors %}{{ xform.time_spent }}{% endif %}"/></dd>
-                                {% endif %}
                                 {% endif %}
                             </dl>
 
@@ -253,47 +251,6 @@
 
                         </div>
 
-                        {% if ticket.checklists.exists %}
-                            <p>
-                                <button type="button" class="btn btn-warning btn-sm" id='ShowChecklistEditOptions'>
-                                    {% trans "Update checklists" %} &raquo;
-                                </button>
-                            </p>
-
-                            <div id="checklistEdit" style="display: none">
-                                <div class="row">
-                                    {% for checklist in ticket.checklists.all %}
-                                        <div class="col-sm-4 col-xs-12">
-                                            <div class="card mb-4">
-                                                <div class="card-header">
-                                                    <h5>{{ checklist }}</h5>
-                                                </div>
-                                                <div class="card-body">
-                                                    <div class="list-group">
-                                                        {% for task in checklist.tasks.all %}
-                                                            <div class="list-group-item"{% if task.completion_date %} title="{% trans "Completed on" %} {{ task.completion_date }}" {% endif %}>
-                                                                <label>
-                                                                    <input type="checkbox" name="checklist-{{ checklist.id }}" value="{{ task.id }}" {% if task.completion_date %} checked{% endif %}>
-                                                                    {{ task }}
-                                                                </label>
-                                                            </div>
-                                                        {% endfor %}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        {% endif %}
-
-                        {% if helpdesk_settings.HELPDESK_ENABLE_ATTACHMENTS %}
-                            {% if form.errors.attachment %}
-                                    <small class='error'>{{ form.errors.attachment }}</small>
-                            {% endif %}
-                        <p id='ShowFileUploadPara'><button type="button" class="btn btn-warning btn-sm" id='ShowFileUpload'>{% trans "Attach File(s) &raquo;" %}</button></p>
-                        {% endif %}
-
                         <div id='FileUpload' style='display: none;'>
 
                             <dl>
@@ -326,7 +283,7 @@
                     {% if ticket.followup_set.all %}
                     {% load ticket_to_link %}
                         <div class="card mb-3">
-                            <div class="card-header"><i class="fas fa-clock fa-fw fa-lg"></i>{% trans "Follow-Ups" %}</div>
+                            <div class="card-header"><i class="fas fa-clock fa-fw fa-lg"></i>{% trans "History" %}</div>
                             <div class="card-body">
                                 <div class="list-group">
                                 {% for followup in ticket.followup_set.all %}
@@ -397,7 +354,7 @@
                         <!-- /.card -->
                     {% else %}
                         <div class="alert alert-info">
-                            {% trans "This ticket has no follow-ups yet." %}
+                            {% trans "This ticket has no history yet." %}
                         </div>
                     {% endif %}
                 </div>
@@ -409,32 +366,7 @@
     </div>
     <!-- /.card -->
 
-    <div class="modal fade" id="createChecklistModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="modal-header">
-                        <h5 class="modal-title">{% trans "Add a new checklist" %}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Close' %}">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>{% trans "You can select a template to generate a checklist with a predefined set of tasks." %}</p>
-                        <p>{% trans "Ignore it and only give a name to create an empty checklist." %}</p>
-                        {{ checklist_form.as_p }}
-                    </div>
-                    <div class="modal-footer">
-                        <a class="btn btn-secondary" href="{% url 'helpdesk:checklist_templates' %}">
-                            {% trans "Manage templates" %}
-                        </a>
-                        <button type="submit" class="btn btn-primary">{% trans "Add" %}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+
 {% endblock %}
 
 
@@ -451,10 +383,6 @@ $( function() {
           $("#FurtherEditOptions").toggle();
       });
 
-      $("#ShowChecklistEditOptions").click(function() {
-          $("#checklistEdit").toggle();
-      });
-
       $('#id_preset').change(function() {
           preset = $('#id_preset').val();
           if (preset != '') {
@@ -462,19 +390,6 @@ $( function() {
                   $("#commentBox").val(data)
               });
           }
-      });
-
-      // Preset name of checklist when a template is selected
-      $('#id_checklist_template').on('change', function() {
-          const nameField = $('#id_name')
-          const selectedTemplate = $(this).children(':selected')
-          if (nameField.val() === '' && selectedTemplate.val()) {
-              nameField.val(selectedTemplate.text())
-          }
-      })
-
-      $('.disabledTask').on('click', function() {
-          alert("{% trans 'If you want to update state of checklist tasks, please do a Follow-Up response and click on \"Update checklists\"' %}");
       });
 
       $("[data-toggle=tooltip]").tooltip();
