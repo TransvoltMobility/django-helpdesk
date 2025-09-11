@@ -4,7 +4,7 @@ volumes:
   caddy_config:
   helpdesk_data:
   postgres_data:
-
+ 
 services:
   caddy:
     image: caddy:2
@@ -16,7 +16,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-
+ 
   django-helpdesk:
     build:
       context: ..
@@ -28,7 +28,7 @@ services:
     env_file: docker.env
     depends_on:
       - postgres
-
+ 
   postgres:
     image: postgres:${POSTGRES_MAJOR_VERSION:-17}-bullseye
     volumes:
