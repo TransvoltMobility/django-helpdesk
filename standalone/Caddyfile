@@ -1,14 +1,16 @@
 localhost {
-# Serve media files from the shared volume
+# This route tells Caddy to serve files from the /media/ path.
+# It's configured to look in the /data directory, which is a
+# shared volume with the Django container.
 route /media/* {
 uri strip_prefix /media
 file_server {
-root /var/www/helpdesk_media
+root /data
 browse
 }
 }
 
-# Proxy all other requests to the Django application
+# This line proxies all other requests to the Django application.
 reverse_proxy django-helpdesk:8000
 
 }
