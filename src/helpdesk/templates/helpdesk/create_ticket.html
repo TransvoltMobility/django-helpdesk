@@ -363,7 +363,7 @@
                         </div>
                     </div>
                     
-                    {# 3. Third line: Submitter Email and Case Owner fields #}
+                    {# 3. Third line: Submitter Email field only (Case Owner removed) #}
                     <div class="form-row">
                         {# Submitter Email field #}
                         <div class="form-col">
@@ -374,7 +374,7 @@
                                         <span class="text-muted">({% trans "Optional" %})</span>
                                     {% endif %}
                                 </label>
-                                <input type="email" name="submitter_email" id="id_submitter_email" class="form-control" value="{{ form.submitter_email.value|default:'' }}">
+                                <input type="email" name="submitter_email" id="id_submitter_email" class="form-control" value="{{ form.submitter_email.value|default:'' }}" readonly>
                                 {% if form.submitter_email.errors %}
                                     <div class='form-error'>{{ form.submitter_email.errors }}</div>
                                 {% endif %}
@@ -384,30 +384,10 @@
                             </div>
                         </div>
                         
-                        {# Assigned To field #}
-                        <div class="form-col">
-                            <div class="form-group">
-                                <label for='id_assigned_to' class="form-label">
-                                    {{ form.assigned_to.label }}{% if form.assigned_to.field.required %} <span class="text-danger">*</span>{% endif %}
-                                    {% if not form.assigned_to.field.required %}
-                                        <span class="text-muted">({% trans "Optional" %})</span>
-                                    {% endif %}
-                                </label>
-                                <div class="select-wrapper">
-                                    <select name="assigned_to" id="id_assigned_to" class="form-control">
-                                        {% for choice in form.assigned_to.field.choices %}
-                                        <option value="{{ choice.0 }}" {% if form.assigned_to.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                {% if form.assigned_to.errors %}
-                                    <div class='form-error'>{{ form.assigned_to.errors }}</div>
-                                {% endif %}
-                                {% if form.assigned_to.help_text %}
-                                    <small class='form-help'>{% trans form.assigned_to.help_text %}</small>
-                                {% endif %}
-                            </div>
-                        </div>
+                        {# Hidden input to maintain assigned_to value if present #}
+                        {% if form.assigned_to.value %}
+                            <input type="hidden" name="assigned_to" value="{{ form.assigned_to.value }}">
+                        {% endif %}
                     </div>
                     
                     {# 4. Fourth line: Summary (Title) field #}

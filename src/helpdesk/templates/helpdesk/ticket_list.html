@@ -25,9 +25,6 @@
             top: 9px;
             right: 10px;
             z-index: 100;
-            display: flex;
-            align-items: center;
-        }
         
         .action-buttons-container > div,
         .action-buttons-container > .dropdown {
@@ -39,9 +36,10 @@
         .action-buttons-container .btn,
         .action-buttons-container .dt-button,
         .filter-menu-dropdown .dropdown-toggle,
-        .select-dropdown .dropdown-toggle {
+        .select-dropdown .dropdown-toggle,
+        .with-selected-dropdown .dropdown-toggle {
             background-color: #f8f9fa !important;
-            border-color: #dee2e6 !important;
+            border: 1px solid #dee2e6 !important;
             color: #212529 !important;
             font-size: 0.875rem !important;
             padding: 0.25rem 0.5rem !important;
@@ -54,12 +52,13 @@
         .filter-dropdown-menu {
             padding: 15px 0;
             min-width: 320px;
+            max-height: 80vh; /* Limit height to 80% of viewport height */
+            overflow-y: auto; /* Add scrollbar when content overflows */
         }
         
         /* Container styles */
         .filter-dropdown-container,
-        .select-dropdown,
-        div.dt-buttons {
+        .select-dropdown {
             display: inline-block;
         }
         
@@ -84,6 +83,60 @@
             font-weight: bold;
             color: #6c757d;
             padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+        
+        /* Column Visibility Dropdown Styling */
+        /* Base dropdown styling */
+        .dt-button-collection {
+            padding: 0 !important;
+            border-radius: 4px !important;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+            max-height: 70vh !important;
+            overflow-y: auto !important;
+            min-width: 200px !important;
+            max-width: 90vw !important;
+            transform: none !important;
+            position: absolute !important; /* Using absolute positioning for proper alignment */
+            z-index: 1050 !important;
+            background-color: white !important;
+            border: 1px solid #dee2e6 !important;
+        }
+        
+        /* Remove any background overlay/backdrop */
+        .dt-button-background {
+            display: none !important; /* Hide the dark backdrop */
+        }
+        
+        .dt-button-collection .dt-button {
+            display: block !important;
+            width: 100% !important;
+            text-align: left !important;
+            border: none !important;
+            border-radius: 0 !important;
+            padding: 8px 16px !important;
+            white-space: nowrap !important;
+            font-size: 14px !important;
+            color: #333 !important;
+            background: #fff !important;
+            transition: background-color 0.2s !important;
+            margin: 0 !important;
+        }
+        
+        .dt-button-collection .dt-button:hover {
+            background-color: #f0f0f0 !important;
+            color: #000 !important;
+        }
+        
+        .dt-button-collection .dt-button.active {
+            background-color: #f8f9fa !important; /* Light gray instead of blue */
+            color: #212529 !important; /* Darker text color */
+            font-weight: 500 !important;
+        }
+        
+        .dt-button-collection .dt-button:focus {
+            outline: none !important;
+            box-shadow: none !important;
             padding-bottom: 0.5rem;
         }
         
@@ -114,6 +167,163 @@
             
             .filter-dropdown-menu {
                 min-width: 250px;
+                max-height: 70vh; /* Smaller height on mobile */
+                overflow-y: auto;
+                position: fixed !important; /* Force position to be fixed on mobile */
+                left: 5% !important;
+                right: 5% !important;
+                width: 90% !important; /* Use most of screen width */
+                top: 10vh !important; /* Position from the top */
+                max-width: 90vw !important;
+                transform: none !important;
+            }
+            
+            /* Make buttons text stay on one line */
+            .btn {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            /* Ensure dropdowns don't get cut off */
+            .dropdown-menu {
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+            
+            /* Improve the column visibility dropdown */
+            .dt-button-collection {
+                max-height: 70vh !important;
+                overflow-y: auto !important;
+                width: 90vw !important;
+                margin: 0 auto !important;
+                left: 5% !important;
+                right: 5% !important;
+            }
+        }
+        
+        /* Small mobile devices */
+        @media (max-width: 480px) {
+            .select-dropdown .dropdown-toggle,
+            .filter-menu-dropdown .dropdown-toggle,
+            .with-selected-dropdown .dropdown-toggle,
+            .custom-colvis-button {
+                max-width: 120px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                padding-right: 20px !important; /* Space for the dropdown caret */
+            }
+            
+            .dt-button-collection {
+                left: 5% !important;
+                width: 90% !important;
+                max-width: 90% !important;
+                right: 5% !important;
+                position: fixed !important;
+                top: 20% !important;
+                transform: none !important;
+                margin: 0 !important;
+            }
+            
+            .dt-button-collection .dt-button {
+                font-size: 16px !important; /* Larger font on mobile */
+                padding: 12px 16px !important; /* Larger tap target */
+            }
+        }
+        
+        /* Custom Column Visibility Dropdown Styling */
+        .custom-colvis-dropdown {
+            border: 1px solid #dee2e6 !important;
+            border-radius: 4px !important;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+            background-color: white !important;
+            padding: 0 !important;
+            margin-top: 5px !important;
+            z-index: 1050 !important;
+        }
+        
+        .custom-colvis-dropdown .dropdown-header {
+            padding: 10px 16px !important;
+            font-size: 14px !important;
+            font-weight: bold !important;
+            background-color: #f8f9fa !important;
+            border-bottom: 1px solid #dee2e6 !important;
+            margin-bottom: 5px !important;
+        }
+        
+        .custom-colvis-button {
+            width: auto !important;
+            min-width: 160px !important;
+        }
+        
+        /* Improve column visibility dropdown items */
+        .dt-button-collection .dt-button {
+            display: block !important;
+            width: 100% !important;
+            text-align: left !important;
+            border: none !important;
+            border-radius: 0 !important;
+            padding: 10px 16px !important;
+            margin: 0 !important;
+            font-size: 14px !important;
+            color: #333 !important;
+            background-color: white !important;
+            transition: background-color 0.2s !important;
+        }
+        
+        .dt-button-collection .dt-button:hover {
+            background-color: #f0f0f0 !important;
+            color: #000 !important;
+        }
+        
+        .dt-button-collection .dt-button.active {
+            background-color: #f8f9fa !important;
+            color: #212529 !important;
+            font-weight: 500 !important;
+        }
+        
+        /* Hide DataTables background */
+        .dt-button-background {
+            display: none !important;
+        }
+        
+        /* Make column visibility work well on all devices and zoom levels */
+        @media (min-width: 1200px) {
+            .dt-button-collection {
+                width: 300px !important;
+            }
+        }
+        
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .dt-button-collection {
+                width: 280px !important;
+            }
+        }
+        
+        @media (min-width: 768px) and (max-width: 991px) {
+            .dt-button-collection {
+                width: 250px !important;
+            }
+        }
+        
+        @media (min-width: 576px) and (max-width: 767px) {
+            .dt-button-collection {
+                width: 240px !important;
+                max-height: 65vh !important;
+            }
+        }
+        
+        @media (max-width: 575px) {
+            .dt-button-collection {
+                width: 90% !important;
+                left: 5% !important;
+                right: 5% !important;
+                max-height: 60vh !important;
+            }
+            
+            .dt-button-collection .dt-button {
+                padding: 12px 16px !important;
+                font-size: 16px !important;
             }
         }
     </style>
@@ -142,9 +352,7 @@
         {% if helpdesk_settings.HELPDESK_TICKETS_TIMELINE_ENABLED %}
         <div class="card-header">
             <ul class="nav nav-tabs">
-                <li class="nav-item" style="width: 170px;">
-                    <h5 class="query-results-title">{% trans "Query Results" %}:</h5>
-                </li>
+                <li class="nav-item" style="visibility: hidden; width: 0;"></li>
                 <li class="nav-item">
                     <a class="nav-link active" href="#datatabletabcontents" id="datatabletabcontents-tab"
                        data-toggle="tab" role="tab" aria-controls="datatabletabcontents" aria-selected=true>
@@ -159,12 +367,24 @@
                         {% trans "Timeline" %}
                     </a>
                 </li>
+                <li class="nav-item" style="margin-left: 15px; margin-top: 4px;">
+                    <div class="select-dropdown dropdown">
+                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="selectOptionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border: 1px solid #dee2e6;">
+                            {% trans "Select" %}
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="selectOptionsDropdown">
+                            <a class="dropdown-item" href="#" id="select_all_btn"><i class="fas fa-check-circle"></i> {% trans "All" %}</a>
+                            <a class="dropdown-item" href="#" id="select_none_btn"><i class="fas fa-times-circle"></i> {% trans "None" %}</a>
+                            <a class="dropdown-item" href="#" id="select_inverse_btn"><i class="fas fa-exchange-alt"></i> {% trans "Invert" %}</a>
+                        </div>
+                    </div>
+                </li>
             </ul>
             
             <!-- Action buttons container for all controls -->
-            <div class="action-buttons-container">
+            <div class="action-buttons-container" style="display: flex; align-items: center; justify-content: flex-end; height: 35px;">
                 <!-- Filter Dropdown -->
-                <div class="dropdown filter-menu-dropdown">
+                <div class="dropdown filter-menu-dropdown" style="margin-right: 10px;">
                     <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="filterMenuButton" 
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-filter"></i> {% trans "Filters" %}
@@ -231,24 +451,12 @@
                 </div>
                 
                 <!-- Column Visibility button will be placed here by DataTables -->
-                <div id="column-visibility-container"></div>
-                
-                <!-- Select Options Dropdown -->
-                <div class="select-dropdown dropdown">
-                    <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="selectOptionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {% trans "Select" %}
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="selectOptionsDropdown">
-                        <a class="dropdown-item" href="#" id="select_all_btn"><i class="fas fa-check-circle"></i> {% trans "All" %}</a>
-                        <a class="dropdown-item" href="#" id="select_none_btn"><i class="fas fa-times-circle"></i> {% trans "None" %}</a>
-                        <a class="dropdown-item" href="#" id="select_inverse_btn"><i class="fas fa-exchange-alt"></i> {% trans "Invert" %}</a>
-                    </div>
-                </div>
+                <div id="column-visibility-container" style="margin-right: 10px;"></div>
                 
                 <!-- With Selected Tickets Dropdown -->
                 <div class="dropdown with-selected-dropdown">
                     <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="withSelectedDropdown" 
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border: 1px solid #dee2e6;">
                         <i class="fas fa-tasks"></i> {% trans "Actions" %}
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="withSelectedDropdown">
@@ -260,12 +468,6 @@
                         <h6 class="dropdown-header">{% trans "Close" %}</h6>
                         <a class="dropdown-item mass-action-item" href="#" data-action="close"><i class="fas fa-times-circle"></i> {% trans "Close (Don't Send E-Mail)" %}</a>
                         <a class="dropdown-item mass-action-item" href="#" data-action="close_public"><i class="fas fa-envelope"></i> {% trans "Close (Send E-Mail)" %}</a>
-                        <div class="dropdown-divider"></div>
-                        <h6 class="dropdown-header">{% trans "Assign To" %}</h6>
-                        <a class="dropdown-item mass-action-item" href="#" data-action="unassign"><i class="fas fa-user-slash"></i> {% trans "Nobody (Unassign)" %}</a>
-                        {% for u in assignable_users %}
-                            <a class="dropdown-item mass-action-item" href="#" data-action="assign_{{ u.id }}"><i class="fas fa-user"></i> {{ u.get_username }}</a>
-                        {% endfor %}
                         {% if kb_items %}
                         <div class="dropdown-divider"></div>
                         <h6 class="dropdown-header">{% trans "Set KB Item" %}</h6>
@@ -354,6 +556,84 @@
         }
         
         $(document).ready(function () {
+                // Custom handling of column visibility dropdown
+            $(document).on('click', 'button.buttons-colvis', function(e) {
+                e.preventDefault();
+                
+                // Store reference to button for later positioning
+                window.lastClickedColvisBtn = this;
+                
+                // Add a tiny delay to ensure the dropdown is created before we try to modify it
+                setTimeout(function() {
+                    if (window.lastClickedColvisBtn) {
+                        var $btn = $(window.lastClickedColvisBtn);
+                        var btnPos = $btn.offset();
+                        var btnHeight = $btn.outerHeight();
+                        
+                        // Position the dropdown properly below the button
+                        $('.dt-button-collection').css({
+                            'position': 'absolute',
+                            'top': (btnPos.top + btnHeight) + 'px',
+                            'left': btnPos.left + 'px',
+                            'width': '250px',
+                            'z-index': 1050
+                        });
+                        
+                        // Add styling to make it look better
+                        $('.dt-button-collection').addClass('custom-colvis-dropdown');
+                        
+                        // Add headers if needed
+                        if (!$('.dt-button-collection').find('.dropdown-header').length) {
+                            $('.dt-button-collection').prepend('<h6 class="dropdown-header" style="padding: 10px 16px; font-weight: bold; background-color: #f8f9fa; border-bottom: 1px solid #dee2e6;">{% trans "Toggle Column Visibility" %}</h6>');
+                        }
+                        
+                        // Style all buttons in the dropdown
+                        $('.dt-button-collection .dt-button').css({
+                            'display': 'block',
+                            'width': '100%',
+                            'text-align': 'left',
+                            'border': 'none',
+                            'border-radius': '0',
+                            'padding': '10px 16px',
+                            'background': 'white',
+                            'color': '#333',
+                            'font-size': '14px',
+                            'margin': '0'
+                        });
+                        
+                        // Add active state styling - use light gray instead of blue
+                        $('.dt-button-collection .dt-button.active').css({
+                            'background-color': '#f8f9fa',
+                            'color': '#212529',
+                            'font-weight': '500'
+                        });
+                        
+                        // Add hover effects for better accessibility - consistent gray colors
+                        $('.dt-button-collection .dt-button').hover(
+                            function() { 
+                                $(this).css('background-color', '#f0f0f0'); 
+                            },
+                            function() { 
+                                if ($(this).hasClass('active')) {
+                                    $(this).css('background-color', '#f8f9fa'); 
+                                } else {
+                                    $(this).css('background-color', 'white'); 
+                                }
+                            }
+                        );
+                        
+                        // Close dropdown when clicking outside
+                        $(document).one('click', function closeColvis(e) {
+                            if (!$(e.target).closest('.dt-button-collection').length && !$(e.target).closest('button.buttons-colvis').length) {
+                                $('.dt-button-collection').hide();
+                            } else if (!$(e.target).closest('button.buttons-colvis').length) {
+                                $(document).one('click', closeColvis);
+                            }
+                        });
+                    }
+                }, 10);
+            });
+            
             // Ticket DataTable Initialization
 	    $.fn.dataTable.ext.errMode = function(settings, helpPage, message) {
 		alert("{% trans 'Error fetching tickets occured, please contact the system administrators of this server providing the message below:\n    ' %}" + message)
@@ -372,7 +652,29 @@
                     $(row).addClass(data.row_class);
                 },
                 dom: 'ltBp',
-                buttons: ["colvis"],
+                buttons: [
+                    {
+                        extend: 'colvis',
+                        className: 'custom-colvis-button',
+                        collectionLayout: 'fixed',
+                        fade: 0, // Disable fade effect
+                        background: false, // Disable background/backdrop
+                        text: '<i class="fas fa-columns"></i> {% trans "Column visibility" %}',
+                        titleAttr: '{% trans "Toggle column visibility" %}',
+                        postfixButtons: [
+                            {
+                                extend: 'colvisGroup',
+                                text: '{% trans "Show all" %}',
+                                show: ':hidden'
+                            },
+                            {
+                                extend: 'colvisGroup',
+                                text: '{% trans "Hide all" %}',
+                                hide: ':visible'
+                            }
+                        ]
+                    }
+                ],
                 columns: [
                     {
                         data: "id",
@@ -488,34 +790,78 @@
             
             // Fix positioning and styling of DataTables buttons
             setTimeout(function() {
+                // Make sure there's only one Column Visibility button
+                if ($('div.dt-buttons').length > 1) {
+                    $('div.dt-buttons:not(:first)').remove();
+                }
+                
+                // Event handler for dropdown positioning is now defined further down
+                
                 // Move the column visibility button to our container
                 $('div.dt-buttons').detach().appendTo('#column-visibility-container');
                 
-                // Style the column visibility button
-                $('div.dt-buttons button.buttons-colvis').css({
+                // Enhance the column visibility button with better text and icon
+                $('div.dt-buttons button.buttons-colvis')
+                    .html('<i class="fas fa-columns"></i> {% trans "Column visibility" %}')
+                    .attr('title', '{% trans "Toggle column visibility" %}')
+                    .addClass('custom-colvis-button');
+                    
+                // Positioning is now handled in the button click handler
+                
+                // Create completely new styled button (better approach than replacing)
+                var $colvisBtn = $('div.dt-buttons button.buttons-colvis');
+                $colvisBtn.addClass('btn btn-light btn-sm');
+                
+                // Apply common styling
+                $colvisBtn.css({
                     'background-color': '#f8f9fa',
-                    'border-color': '#dee2e6',
+                    'border': '1px solid #dee2e6',
                     'color': '#212529',
                     'font-size': '0.875rem',
                     'padding': '0.25rem 0.5rem',
-                    'height': '31px', 
+                    'height': '31px',
                     'vertical-align': 'middle',
-                    'line-height': '1.5'
+                    'line-height': '1.5',
+                    'margin': '0',
+                    'white-space': 'nowrap',
+                    'text-overflow': 'ellipsis',
+                    'min-width': '160px'
+                });
+                
+                // Modify the button's click behavior to improve dropdown positioning
+                $colvisBtn.on('mousedown', function(e) {
+                    e.stopPropagation();
+                });
+                
+                // Add custom handler for the column visibility dropdown
+                $(document).on('click', '.dt-button-collection .dt-button', function() {
+                    // Apply active state for better visual feedback
+                    $(this).toggleClass('active');
                 });
                 
                 // Set equal height and vertical alignment for all dropdown buttons
                 $('.action-buttons-container .dropdown-toggle, .action-buttons-container .dt-button').css({
                     'height': '31px',
                     'vertical-align': 'middle',
-                    'line-height': '1.5'
+                    'line-height': '1.5',
+                    'border': '1px solid #dee2e6'
                 });
                 
                 // Hide any duplicate column visibility buttons that might be at the bottom
                 $('.column-visibility-bottom').hide();
                 
-                // Ensure all buttons have the same height for consistency
-                var buttonHeight = $('.select-dropdown .dropdown-toggle').outerHeight();
-                $('.action-buttons-container .btn, .action-buttons-container .dt-button').css('height', buttonHeight + 'px');
+                // Remove any DataTables backgrounds that might cause dark overlay
+                $('.dt-button-background').remove();
+                
+                // Handle future backgrounds that might be created
+                $(document).on('buttons-action', function() {
+                    $('.dt-button-background').remove();
+                });
+                
+                // Handle future backgrounds that might be created
+                $(document).on('buttons-action', function() {
+                    $('.dt-button-background').remove();
+                });
             }, 300);
 
             {# Timeline initialization when tab is displayed #}
