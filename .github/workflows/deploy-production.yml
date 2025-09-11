@@ -18,5 +18,7 @@ jobs:
           key: ${{ secrets.PROD_SSH_KEY }}
           script: |
             echo '${{ secrets.DOCKER_HUB_PASS }}' | docker login -u transvolt1 --password-stdin
+            docker compose down
             docker pull transvolt1/django-helpdesk:latest
-            docker run -d --name helpdesk_1 -p 8000:8000 transvolt1/django-helpdesk:latest
+            docker compose up -d
+          
