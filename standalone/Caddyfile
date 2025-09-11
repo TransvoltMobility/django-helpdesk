@@ -1,11 +1,11 @@
 localhost {
 # This route tells Caddy to serve files from the /media/ path.
-# It's configured to look in the /data/media directory, which is a
+# It's configured to look in the /data directory, which is a
 # shared volume with the Django container.
 route /media/* {
 uri strip_prefix /media
 file_server {
-root /data/media
+root /data
 browse
 }
 }
