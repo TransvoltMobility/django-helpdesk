@@ -1,15 +1,9 @@
 """
 Django settings for django-helpdesk demodesk project.
 
-For more information on this file, see
-https://docs.djangoproject.com/en/1.11/topics/settings/
-
-For the full list of settings and their values, see
-https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-from django.core.exceptions import ImproperlyConfigured
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -19,25 +13,32 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
-# Read SECRET_KEY from DJANGO_HELPDESK_SECRET_KEY env var
-try:
-    SECRET_KEY = os.environ["DJANGO_HELPDESK_SECRET_KEY"]
-except KeyError:
-    raise Exception("DJANGO_HELPDESK_SECRET_KEY environment variable is not set")
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = "_crkn1+fnzu5$vns_-d+^ayiq%z4k*s!!ag0!mfy36(y!vrazd"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = os.environ.get(
-    "DJANGO_HELPDESK_ALLOWED_HOSTS", "*, localhost, 0.0.0.0"
-).split(",")
+ALLOWED_HOSTS = []
 
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# SECURITY WARNING: you probably want to configure your server
+# to use HTTPS with secure cookies, then you'd want to set
+# the following settings:
+#
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+#
+# We leave them commented out here because most likely for
+# an internal demo you don't need such security, but please
+# remember when setting up your own development / production server!
+
+# Default teams mode to enabled unless overridden by an environment variable set to "false"
+HELPDESK_TEAMS_MODE_ENABLED = (
+    os.getenv("HELPDESK_TEAMS_MODE_ENABLED", "true").lower() == "true"
+)
 
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -48,13 +49,18 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.humanize",
     "bootstrap4form",
-    "account",  # Required by pinax-teams
-    "pinax.invitations",  # required by pinax-teams
-    "pinax.teams",  # team support
-    "reversion",  # required by pinax-teams
     "helpdesk",  # This is us!
     "rest_framework",  # required for the API
 ]
+if HELPDESK_TEAMS_MODE_ENABLED:
+    INSTALLED_APPS.extend(
+        [
+            "account",  # Required by pinax-teams
+            "pinax.invitations",  # required by pinax-teams
+            "pinax.teams",  # team support
+            "reversion",  # required by pinax-teams
+        ]
+    )
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -64,10 +70,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
-ROOT_URLCONF = "standalone.config.urls"
+ROOT_URLCONF = "demodesk.config.urls"
 
 TEMPLATES = [
     {
@@ -86,7 +91,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "standalone.config.wsgi.application"
+WSGI_APPLICATION = "demodesk.config.wsgi.application"
 
 
 # django-helpdesk configuration settings
@@ -96,57 +101,45 @@ WSGI_APPLICATION = "standalone.config.wsgi.application"
 # Some common settings are below.
 
 HELPDESK_DEFAULT_SETTINGS = {
-    "use_email_as_submitter": os.environ.get("HELPDESK_USE_EMAIL_AS_SUBMITTER", "True")
-    == "True",
-    "email_on_ticket_assign": os.environ.get("HELPDESK_EMAIL_ON_TICKET_ASSIGN", "True")
-    == "True",
-    "email_on_ticket_change": os.environ.get("HELPDESK_EMAIL_ON_TICKET_CHANGE", "True")
-    == "True",
-    "login_view_ticketlist": os.environ.get("HELPDESK_LOGIN_VIEW_TICKETLIST", "True")
-    == "True",
-    "preset_replies": os.environ.get("HELPDESK_PRESET_REPLIES", "True") == "True",
-    "tickets_per_page": os.environ.get("HELPDESK_TICKETS_PER_PAGE", "25"),
+    "use_email_as_submitter": True,
+    "email_on_ticket_assign": True,
+    "email_on_ticket_change": True,
+    "login_view_ticketlist": True,
+    "email_on_ticket_apichange": True,
+    "preset_replies": True,
+    "tickets_per_page": 25,
 }
 
 # Should the public web portal be enabled?
-HELPDESK_PUBLIC_ENABLED = os.environ.get("HELPDESK_PUBLIC_ENABLED", "True") == "True"
-HELPDESK_VIEW_A_TICKET_PUBLIC = (
-    os.environ.get("HELPDESK_VIEW_A_TICKET_PUBLIC", "True") == "True"
-)
-HELPDESK_SUBMIT_A_TICKET_PUBLIC = (
-    os.environ.get("HELPDESK_SUBMIT_A_TICKET_PUBLIC", "True") == "True"
-)
+HELPDESK_PUBLIC_ENABLED = True
+HELPDESK_VIEW_A_TICKET_PUBLIC = True
+HELPDESK_SUBMIT_A_TICKET_PUBLIC = True
 
 # Should the Knowledgebase be enabled?
-HELPDESK_KB_ENABLED = os.environ.get("HELPDESK_KB_ENABLED", "True") == "True"
+HELPDESK_KB_ENABLED = True
 
-HELPDESK_TICKETS_TIMELINE_ENABLED = (
-    os.environ.get("HELPDESK_TICKETS_TIMELINE_ENABLED", "True") == "True"
-)
+HELPDESK_TICKETS_TIMELINE_ENABLED = True
 
 # Allow users to change their passwords
-HELPDESK_SHOW_CHANGE_PASSWORD = (
-    os.environ.get("HELPDESK_SHOW_CHANGE_PASSWORD", "True") == "True"
-)
+HELPDESK_SHOW_CHANGE_PASSWORD = True
 
 # Instead of showing the public web portal first,
 # we can instead redirect users straight to the login page.
-HELPDESK_REDIRECT_TO_LOGIN_BY_DEFAULT = (
-    os.environ.get("HELPDESK_REDIRECT_TO_LOGIN_BY_DEFAULT", "False") == "True"
-)
+HELPDESK_REDIRECT_TO_LOGIN_BY_DEFAULT = False
 LOGIN_URL = "helpdesk:login"
 LOGIN_REDIRECT_URL = "helpdesk:home"
+# You can also redirect to a specific page after logging out (instead of logout page)
+# LOGOUT_REDIRECT_URL = 'helpdesk:home'
 
+# Database
+# - by default, we use SQLite3 for the demo, but you can also
+#   configure MySQL or PostgreSQL, see the docs for more:
+# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
-    # Setup postgress db with postgres as host and db name and read password from env var
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRES_DB", "postgres"),
-        "USER": os.environ.get("POSTGRES_USER", "postgres"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "postgres"),
-        "HOST": os.environ.get("POSTGRES_HOST", "postgres"),
-        "PORT": os.environ.get("POSTGRES_PORT", "5432"),
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
 
@@ -164,6 +157,14 @@ SITE_ID = 1
 # https://docs.djangoproject.com/en/1.11/topics/http/sessions
 
 SESSION_COOKIE_AGE = 86400  # = 1 day
+
+# For better default security, set these cookie flags, but
+# these are likely to cause problems when testing locally
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_HTTPONLY = True
+# SESSION_COOKIE_HTTPONLY = True
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -188,21 +189,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # This demo uses the console backend, which simply prints emails to the console
 # rather than actually sending them out.
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "example@example.com")
-SERVER_EMAIL = os.environ.get("SERVER_EMAIL", "example@example.com")
+DEFAULT_FROM_EMAIL = "helpdesk@example.com"
+SERVER_EMAIL = "helpdesk@example.com"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-if os.environ.get("EMAIL_HOST", None):
-    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-    try:
-        EMAIL_HOST = os.environ["EMAIL_HOST"]
-    except KeyError:
-        raise ImproperlyConfigured("Please set the EMAIL_HOST environment variable.")
-    try:
-        EMAIL_PORT = os.environ["EMAIL_PORT"]
-    except KeyError:
-        raise ImproperlyConfigured("Please set the EMAIL_PORT environment variable.")
-else:
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# If you want to test sending real emails, uncomment and modify the following:
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.example.com'
+# EMAIL_PORT = '25'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
@@ -223,39 +217,28 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-def normpath(*args):
-    return os.path.normpath(os.path.abspath(os.path.join(*args)))
 
-
-PROJECT_ROOT = normpath(__file__, "..", "..")
-STATIC_ROOT = os.environ.get(
-    "DJANGO_HELPDESK_STATIC_ROOT", normpath(PROJECT_ROOT, "static")
-)
-STATIC_URL = os.environ.get("DJANGO_HELPDESK_STATIC_URL", "/static/")
-
+STATIC_URL = "/static/"
+# static root needs to be defined in order to use collectstatic
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # MEDIA_ROOT is where media uploads are stored.
 # We set this to a directory to host file attachments created
 # with tickets.
 MEDIA_URL = "/media/"
-MEDIA_ROOT = "/data/media"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+# Fixtures
+# https://docs.djangoproject.com/en/1.11/ref/settings/#std:setting-FIXTURE_DIRS
+# - This is only necessary to make the demo project work, not needed for
+# your own projects unless you make your own fixtures
+FIXTURE_DIRS = [os.path.join(BASE_DIR, "fixtures")]
+
 
 # for Django 3.2+, set default for autofields:
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-        },
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["console"],
-            "level": "ERROR",  # Change to 'DEBUG' if you want to print all debug messages as well
-            "propagate": True,
-        },
-    },
-}
+try:
+    from .local_settings import *  # noqa
+except ImportError:
+    pass
