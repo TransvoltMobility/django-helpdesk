@@ -9,6 +9,68 @@
     background-color: #ffffff !important;
 }
 
+/* Ticket details responsive table improvements */
+.table-responsive {
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 100% !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 6px !important;
+}
+
+/* Enhanced scrollbar for ticket details */
+.table-responsive::-webkit-scrollbar {
+    height: 12px !important;
+    background-color: #f8f9fa !important;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background-color: #6c757d !important;
+    border-radius: 6px !important;
+    border: 2px solid #f8f9fa !important;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background-color: #495057 !important;
+}
+
+/* Ensure table doesn't break on small screens */
+.table-responsive table {
+    min-width: 600px !important;
+    margin-bottom: 0 !important;
+}
+
+/* Mobile responsive improvements */
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.875rem !important;
+        border-radius: 4px !important;
+    }
+    
+    .table-responsive table {
+        min-width: 500px !important;
+    }
+    
+    .table-responsive th,
+    .table-responsive td {
+        padding: 0.75rem 0.5rem !important;
+        white-space: nowrap !important;
+    }
+    
+    /* Enhanced mobile scrollbar */
+    .table-responsive::-webkit-scrollbar {
+        height: 15px !important;
+        background-color: #e9ecef !important;
+    }
+    
+    .table-responsive::-webkit-scrollbar-thumb {
+        background-color: #6c757d !important;
+        border-radius: 8px !important;
+        border: 2px solid #e9ecef !important;
+    }
+}
+
 .table-border th,
 .table-border td {
     border: 1px solid #e1e5e9 !important;
@@ -76,14 +138,14 @@
 }
 
 .ticket_toolbar .btn-warning {
-    background-color: #f39c12 !important;
-    border-color: #f39c12 !important;
+    background-color: #183b6b !important;
+    border-color: #183b6b !important;
     color: white !important;
 }
 
 .ticket_toolbar .btn-warning:hover {
-    background-color: #e67e22 !important;
-    border-color: #e67e22 !important;
+    background-color: #0f2847 !important;
+    border-color: #0f2847 !important;
     transform: translateY(-1px) !important;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
 }
@@ -97,6 +159,19 @@
 .ticket_toolbar .btn-danger:hover {
     background-color: #c0392b !important;
     border-color: #c0392b !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+}
+
+.ticket_toolbar .btn-secondary {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+    color: white !important;
+}
+
+.ticket_toolbar .btn-secondary:hover {
+    background-color: #545b62 !important;
+    border-color: #545b62 !important;
     transform: translateY(-1px) !important;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
 }
@@ -134,6 +209,19 @@
     background-color: #183b6b !important;
     border-color: #183b6b !important;
     color: white !important;
+}
+
+.ticket_toolbar .btn-primary {
+    background-color: #183b6b !important;
+    border-color: #183b6b !important;
+    color: white !important;
+}
+
+.ticket_toolbar .btn-primary:hover {
+    background-color: #0f2847 !important;
+    border-color: #0f2847 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
 }
 
 .table-border .btn-primary:hover {
@@ -235,7 +323,7 @@
                             <h3>{{ ticket.title }}</h3>
                             <span class='ticket_toolbar float-right'>
                                 <div class="btn-group">
-                                    <a href="{% url 'helpdesk:edit' ticket.id %}" class="btn btn-warning btn-sm ticket-edit">
+                                    <a href="{% url 'helpdesk:edit' ticket.id %}" class="btn btn-primary btn-sm ticket-edit">
                                         <i class="fas fa-pencil-alt"></i> {% trans "Edit" %}
                                     </a>
                                     <a href="{% url 'helpdesk:delete' ticket.id %}" class="btn btn-danger btn-sm ticket-delete">
@@ -244,14 +332,14 @@
                                     {% if ticket.on_hold %}
                                         <form class="form-inline ticket-hold" method='post' action='unhold/'>
                                             {% csrf_token %}
-                                            <button class="btn btn-warning btn-sm" type='submit'>
+                                            <button class="btn btn-secondary btn-sm" type='submit'>
                                                 <i class="fas fa-play"></i> {% trans "Unhold" %}
                                             </button>
                                         </form>
                                     {% else %}
                                         <form class="form-inline ticket-hold" method='post' action='hold/'>
                                             {% csrf_token %}
-                                            <button class="btn btn-warning btn-sm" type='submit'>
+                                            <button class="btn btn-secondary btn-sm" type='submit'>
                                                 <i class="fas fa-pause"></i> {% trans "Hold" %}
                                             </button>
                                         </form>
