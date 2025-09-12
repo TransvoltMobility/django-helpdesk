@@ -440,12 +440,12 @@ class TicketForm(AbstractTicketForm):
     """
 
     submitter_email = forms.EmailField(
-        label=_("Your Email ID"),
+        label=_("Submitter E-Mail"),
         widget=forms.TextInput(attrs={"class": "form-control", "type": "email"}),
-        #help_text=_(
-         #   "This e-mail address will receive copies of all public "
-          #  "updates to this ticket."
-        #),
+        help_text=_(
+            "This e-mail address will receive copies of all public "
+            "updates to this ticket."
+        ),
     )
     assigned_to = forms.ChoiceField(
         widget=(
