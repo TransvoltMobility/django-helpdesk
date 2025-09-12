@@ -13,6 +13,234 @@
     {% block helpdesk_head %}{% endblock %}
     {% include 'helpdesk/base_js.html' %}
     
+    <!-- Universal Horizontal Scrollbar CSS for All Tables -->
+    <style>
+        /* Universal Table Responsive Scrolling */
+        .table-responsive {
+            overflow-x: auto !important;
+            overflow-y: visible !important;
+            -webkit-overflow-scrolling: touch !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            display: block !important;
+        }
+        
+        /* Force scrollbar to always be visible on all tables */
+        .table-responsive::-webkit-scrollbar {
+            height: 12px !important;
+            background-color: #f1f1f1 !important;
+        }
+        
+        .table-responsive::-webkit-scrollbar-thumb {
+            background-color: #888 !important;
+            border-radius: 6px !important;
+        }
+        
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background-color: #555 !important;
+        }
+        
+        /* Universal table styling for proper scrolling */
+        .table-responsive table {
+            min-width: 800px !important;
+            width: 100% !important;
+            table-layout: auto !important;
+            margin-bottom: 0 !important;
+        }
+        
+        /* Container overflow control for all views */
+        .card-body {
+            overflow-x: hidden !important;
+        }
+        
+        .tab-content {
+            overflow-x: hidden !important;
+        }
+        
+        .tab-pane {
+            overflow-x: hidden !important;
+        }
+        
+        /* Mobile-specific table scrolling */
+        @media (max-width: 768px) {
+            .table-responsive {
+                overflow-x: scroll !important;
+                border: 1px solid #dee2e6 !important;
+                border-radius: 4px !important;
+            }
+            
+            .table-responsive table {
+                min-width: 600px !important;
+            }
+            
+            /* Enhanced scrollbar for mobile */
+            .table-responsive::-webkit-scrollbar {
+                height: 15px !important;
+                background-color: #e9ecef !important;
+            }
+            
+            .table-responsive::-webkit-scrollbar-thumb {
+                background-color: #6c757d !important;
+                border-radius: 8px !important;
+                border: 2px solid #e9ecef !important;
+            }
+            
+            .table-responsive::-webkit-scrollbar-thumb:hover {
+                background-color: #495057 !important;
+            }
+        }
+        
+        /* Tablet responsive */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .table-responsive table {
+                min-width: 900px !important;
+            }
+        }
+        
+        /* Desktop responsive */
+        @media (min-width: 1025px) {
+            .table-responsive table {
+                min-width: 1200px !important;
+            }
+        }
+        
+        /* Large desktop responsive */
+        @media (min-width: 1400px) {
+            .table-responsive table {
+                min-width: 1400px !important;
+            }
+        }
+        
+        /* DataTables specific scrolling enhancements */
+        .dataTables_wrapper .table-responsive {
+            overflow-x: auto !important;
+        }
+        
+        /* Ensure all DataTables have horizontal scroll */
+        .dataTables_scrollBody {
+            overflow-x: auto !important;
+            overflow-y: visible !important;
+        }
+        
+        /* Override any conflicting DataTables CSS */
+        .dataTables_scroll {
+            overflow: visible !important;
+        }
+        
+        .dataTables_scrollHead,
+        .dataTables_scrollFoot {
+            overflow: hidden !important;
+        }
+        
+        /* Universal container improvements */
+        .container-fluid {
+            overflow-x: hidden !important;
+            max-width: 100vw !important;
+        }
+        
+        /* Card improvements for better table containment */
+        .card {
+            overflow: hidden !important;
+        }
+        
+        /* Form table responsiveness */
+        form .table-responsive {
+            margin-bottom: 1rem !important;
+        }
+        
+        /* Reports table specific */
+        .report-table .table-responsive {
+            border: 1px solid #dee2e6 !important;
+            border-radius: 6px !important;
+        }
+        
+        /* Ensure buttons don't interfere with scrolling */
+        .action-buttons-container {
+            position: relative !important;
+            z-index: 10 !important;
+        }
+        
+        /* Small screen improvements */
+        @media (max-width: 480px) {
+            .table-responsive {
+                font-size: 0.875rem !important;
+            }
+            
+            .table-responsive table {
+                min-width: 500px !important;
+            }
+            
+            .table-responsive th,
+            .table-responsive td {
+                padding: 0.5rem 0.25rem !important;
+                white-space: nowrap !important;
+            }
+        }
+        
+        /* Additional universal table fixes */
+        .table {
+            margin-bottom: 0 !important;
+        }
+        
+        /* Ensure proper table cell wrapping */
+        .table td,
+        .table th {
+            word-wrap: break-word !important;
+            vertical-align: middle !important;
+        }
+        
+        /* Fix for any iframe or embedded content */
+        iframe {
+            max-width: 100% !important;
+        }
+        
+        /* Ensure proper form handling within tables */
+        .table-responsive form {
+            margin: 0 !important;
+        }
+        
+        /* Fix for dropdown menus within scrollable tables */
+        .table-responsive .dropdown-menu {
+            position: fixed !important;
+            z-index: 1050 !important;
+        }
+    </style>
+    
+    <!-- Universal DataTables Horizontal Scroll JavaScript -->
+    <script>
+        $(document).ready(function() {
+            // Enable horizontal scrolling for all DataTables
+            if (typeof $.fn.DataTable !== 'undefined') {
+                $.extend(true, $.fn.dataTable.defaults, {
+                    scrollX: true,
+                    scrollCollapse: true,
+                    responsive: false // Disable responsive to enable scrollX
+                });
+            }
+            
+            // Force all existing table-responsive divs to show scrollbars
+            $('.table-responsive').each(function() {
+                $(this).css({
+                    'overflow-x': 'auto',
+                    'overflow-y': 'visible',
+                    '-webkit-overflow-scrolling': 'touch'
+                });
+            });
+            
+            // Handle dynamic content loading
+            $(document).on('DOMNodeInserted', function(e) {
+                if ($(e.target).hasClass('table-responsive') || $(e.target).find('.table-responsive').length) {
+                    $('.table-responsive').css({
+                        'overflow-x': 'auto',
+                        'overflow-y': 'visible',
+                        '-webkit-overflow-scrolling': 'touch'
+                    });
+                }
+            });
+        });
+    </script>
+    </style>
+    
     <style>
         html, body {
             height: 100%;

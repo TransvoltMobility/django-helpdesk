@@ -2,6 +2,314 @@
 {% load static %}
 {% load helpdesk_util %}
 
+<style>
+/* Enhanced table styling for better visibility */
+.table-border {
+    border: 2px solid #e1e5e9 !important;
+    background-color: #ffffff !important;
+}
+
+/* Ticket details responsive table improvements */
+.table-responsive {
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 100% !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 6px !important;
+}
+
+/* Enhanced scrollbar for ticket details */
+.table-responsive::-webkit-scrollbar {
+    height: 12px !important;
+    background-color: #f8f9fa !important;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background-color: #6c757d !important;
+    border-radius: 6px !important;
+    border: 2px solid #f8f9fa !important;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background-color: #495057 !important;
+}
+
+/* Ensure table doesn't break on small screens */
+.table-responsive table {
+    min-width: 600px !important;
+    margin-bottom: 0 !important;
+}
+
+/* Mobile responsive improvements */
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.875rem !important;
+        border-radius: 4px !important;
+    }
+    
+    .table-responsive table {
+        min-width: 500px !important;
+    }
+    
+    .table-responsive th,
+    .table-responsive td {
+        padding: 0.75rem 0.5rem !important;
+        white-space: nowrap !important;
+    }
+    
+    /* Enhanced mobile scrollbar */
+    .table-responsive::-webkit-scrollbar {
+        height: 15px !important;
+        background-color: #e9ecef !important;
+    }
+    
+    .table-responsive::-webkit-scrollbar-thumb {
+        background-color: #6c757d !important;
+        border-radius: 8px !important;
+        border: 2px solid #e9ecef !important;
+    }
+}
+
+.table-border th,
+.table-border td {
+    border: 1px solid #e1e5e9 !important;
+    padding: 16px 20px !important;
+    vertical-align: middle !important;
+    background-color: #ffffff !important;
+}
+
+.table-border thead th {
+    background-color: #ffffff !important;
+    border-bottom: 2px solid #e1e5e9 !important;
+    font-weight: 600 !important;
+}
+
+.table-border .table-active {
+    background-color: #ffffff !important;
+    font-weight: 700 !important;
+    color: #2c3e50 !important;
+    width: 200px !important;
+    white-space: nowrap !important;
+    border-right: 2px solid #e1e5e9 !important;
+    font-size: 14px !important;
+    letter-spacing: 0.3px !important;
+}
+
+/* Header row styling */
+.table-border thead tr th {
+    position: relative;
+    padding: 20px 15px !important;
+}
+
+.table-border thead tr th h3 {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+    color: #183b6b !important;
+    display: inline-block !important;
+}
+
+/* Ticket toolbar alignment */
+.ticket_toolbar {
+    position: absolute !important;
+    top: 50% !important;
+    right: 15px !important;
+    transform: translateY(-50%) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.ticket_toolbar .btn-group {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.ticket_toolbar .btn {
+    white-space: nowrap !important;
+    font-size: 0.875rem !important;
+    padding: 8px 16px !important;
+    border-radius: 6px !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+}
+
+.ticket_toolbar .btn-warning {
+    background-color: #183b6b !important;
+    border-color: #183b6b !important;
+    color: white !important;
+}
+
+.ticket_toolbar .btn-warning:hover {
+    background-color: #0f2847 !important;
+    border-color: #0f2847 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+}
+
+.ticket_toolbar .btn-danger {
+    background-color: #e74c3c !important;
+    border-color: #e74c3c !important;
+    color: white !important;
+}
+
+.ticket_toolbar .btn-danger:hover {
+    background-color: #c0392b !important;
+    border-color: #c0392b !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+}
+
+.ticket_toolbar .btn-secondary {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+    color: white !important;
+}
+
+.ticket_toolbar .btn-secondary:hover {
+    background-color: #545b62 !important;
+    border-color: #545b62 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+}
+
+.ticket_toolbar .form-inline {
+    display: inline-block !important;
+    margin: 0 !important;
+}
+
+/* Remove the | separators and improve spacing */
+.ticket_toolbar .btn-group {
+    flex-wrap: nowrap !important;
+}
+
+/* Enhanced row hover effects */
+.table-border tbody tr:hover {
+    background-color: #f8fafe !important;
+    transition: background-color 0.2s ease !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+}
+
+.table-border tbody tr:hover .table-active {
+    background-color: #f8fafe !important;
+}
+
+/* Better form styling within table */
+.table-border .form-control {
+    border: 1px solid #ced4da !important;
+    border-radius: 4px !important;
+    padding: 6px 12px !important;
+    font-size: 0.875rem !important;
+}
+
+.table-border .btn-primary {
+    background-color: #183b6b !important;
+    border-color: #183b6b !important;
+    color: white !important;
+}
+
+.ticket_toolbar .btn-primary {
+    background-color: #183b6b !important;
+    border-color: #183b6b !important;
+    color: white !important;
+}
+
+.ticket_toolbar .btn-primary:hover {
+    background-color: #0f2847 !important;
+    border-color: #0f2847 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+}
+
+.table-border .btn-primary:hover {
+    background-color: #0e2c57 !important;
+    border-color: #0e2c57 !important;
+}
+
+/* Professional table content styling */
+.table-border tbody td {
+    font-size: 14px !important;
+    color: #2c3e50 !important;
+    line-height: 1.5 !important;
+}
+
+.table-border tbody td strong {
+    font-weight: 600 !important;
+    color: #1a252f !important;
+}
+
+/* Clean badge/button styling within table */
+.table-border .badge {
+    font-size: 12px !important;
+    padding: 6px 12px !important;
+    font-weight: 500 !important;
+    border-radius: 6px !important;
+}
+
+/* Professional spacing for table rows */
+.table-border tbody tr {
+    border-bottom: 1px solid #e1e5e9 !important;
+}
+
+.table-border tbody tr:last-child {
+    border-bottom: 2px solid #e1e5e9 !important;
+}
+
+/* Card styling improvements */
+.card {
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+}
+
+/* Table responsive improvements */
+.table-responsive {
+    border-radius: 8px !important;
+    overflow: hidden !important;
+}
+
+/* Priority cell styling */
+.table-warning {
+    background-color: #fff3cd !important;
+    border-color: #ffeaa7 !important;
+}
+
+/* Status indicators */
+.btn-info {
+    background-color: #17a2b8 !important;
+    border-color: #17a2b8 !important;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .ticket_toolbar {
+        position: static !important;
+        transform: none !important;
+        margin-top: 15px !important;
+        justify-content: flex-start !important;
+    }
+    
+    .ticket_toolbar .btn {
+        font-size: 0.8rem !important;
+        padding: 6px 12px !important;
+    }
+    
+    .table-border thead tr th h3 {
+        font-size: 1.5rem !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .table-border .table-active {
+        width: auto !important;
+        white-space: normal !important;
+    }
+}
+</style>
+
 <div class="card mb-3">
     <!--div class="card-header">
         {# trans "Ticket Summary" #}
@@ -12,27 +320,26 @@
                 <thead class="thead-light">
                     <tr class=''>
                         <th colspan='4'>
-                            <h3>{{ ticket.queue.slug }}-{{ ticket.id }}. {{ ticket.title }}</h3>
-                            {% blocktrans with ticket.queue as queue %}Queue: {{ queue }}{% endblocktrans %}
+                            <h3>{{ ticket.title }}</h3>
                             <span class='ticket_toolbar float-right'>
-                                <div class="btn-group" style="gap: 8px;">
-                                    <a href="{% url 'helpdesk:edit' ticket.id %}" class="btn btn-warning btn-sm ticket-edit">
+                                <div class="btn-group">
+                                    <a href="{% url 'helpdesk:edit' ticket.id %}" class="btn btn-primary btn-sm ticket-edit">
                                         <i class="fas fa-pencil-alt"></i> {% trans "Edit" %}
                                     </a>
-                                    | <a href="{% url 'helpdesk:delete' ticket.id %}" class="btn btn-danger btn-sm ticket-delete">
+                                    <a href="{% url 'helpdesk:delete' ticket.id %}" class="btn btn-danger btn-sm ticket-delete">
                                         <i class="fas fa-trash-alt"></i> {% trans "Delete" %}
                                     </a>
-                                    | {% if ticket.on_hold %}
+                                    {% if ticket.on_hold %}
                                         <form class="form-inline ticket-hold" method='post' action='unhold/'>
                                             {% csrf_token %}
-                                            <button class="btn btn-warning btn-sm" type='submit'>
+                                            <button class="btn btn-secondary btn-sm" type='submit'>
                                                 <i class="fas fa-play"></i> {% trans "Unhold" %}
                                             </button>
                                         </form>
                                     {% else %}
                                         <form class="form-inline ticket-hold" method='post' action='hold/'>
                                             {% csrf_token %}
-                                            <button class="btn btn-warning btn-sm" type='submit'>
+                                            <button class="btn btn-secondary btn-sm" type='submit'>
                                                 <i class="fas fa-pause"></i> {% trans "Hold" %}
                                             </button>
                                         </form>
@@ -141,8 +448,12 @@
                         <td class="{% if ticket.priority < 3 %}table-warning{% endif %}">
                             {{ ticket.get_priority_display }}
                         </td>
+                        <th class="table-active">{% trans "Department" %}</th>
+                        <td>{{ ticket.queue }}</td>
+                    </tr>
+                    <tr>
                         <th class="table-active">{% trans "Copies To" %}</th>
-                        <td>
+                        <td colspan="3">
                           {% if ticket.queue.enable_notifications_on_email_events %}
                             {{ ticketcc_string }}
                             <a class="btn btn-warning btn-sm float-right" data-toggle='tooltip' href='{% url 'helpdesk:ticket_cc' ticket.id %}' title='{% trans "Click here to add / remove people who should receive an e-mail whenever this ticket is updated." %}'>
