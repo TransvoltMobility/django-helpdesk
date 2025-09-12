@@ -4,17 +4,35 @@
 
 {% block helpdesk_head %}
 <style>
-    /* Improved styling for ticket sections */
+    /* Enhanced styling for admin ticket view */
+    body {
+        background-color: #f6f8fa;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+    }
+    
+    /* Main container styling */
+    .ticket-container {
+        max-width: 1800px;
+        margin: 0 auto;
+        padding: 0;
+        width: 100%;
+    }
+    
+    /* Improved card styling */
     .card {
         margin-bottom: 25px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        border: none;
+        border-radius: 8px;
+        overflow: hidden;
     }
     
     .card-header {
         background-color: #183b6b;
         color: white;
         font-weight: 600;
-        padding: 12px 20px;
+        padding: 15px 20px;
+        border-bottom: none;
     }
     
     .card-header i {
@@ -23,30 +41,170 @@
     
     .card-body {
         padding: 20px;
+        background-color: white;
+    }
+    
+    /* Enhanced ticket details table */
+    .ticket-details-panel {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+    
+    .table-responsive table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 0;
+    }
+    
+    .table-responsive th {
+        background-color: #f6f8fa;
+        color: #183b6b;
+        font-weight: 600;
+        padding: 15px 20px;
+        border-bottom: 1px solid #e9ecef;
+        width: 200px;
+        text-align: left;
+    }
+    
+    .table-responsive td {
+        padding: 15px 20px;
+        border-bottom: 1px solid #e9ecef;
+        line-height: 1.5;
+    }
+    
+    .table-responsive tr:last-child th,
+    .table-responsive tr:last-child td {
+        border-bottom: none;
     }
     
     /* Follow-ups styling */
     .list-group-item {
-        margin-bottom: 8px;
+        margin-bottom: 15px;
         border-left: 4px solid #183b6b;
-        border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        border-radius: 6px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border-top: 1px solid #dee2e6;
+        border-right: 1px solid #dee2e6;
+        border-bottom: 1px solid #dee2e6;
+        padding: 20px;
     }
     
     .list-group-item:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transform: translateY(-1px);
+        transition: all 0.2s ease;
+    }
+    
+    .list-group-item.bg-light {
         background-color: #f8f9fa;
+    }
+    
+    .list-group-item-heading {
+        color: #183b6b;
+        font-weight: 600;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
     }
     
     .list-group-item .mb-1 {
         color: #183b6b;
     }
     
-    /* Update section */
+    /* Comment wrapper styling */
+    .comment-wrapper {
+        margin-top: 15px;
+    }
+    
+    .comment-body {
+        line-height: 1.6;
+        color: #333;
+        padding: 10px 0;
+    }
+    
+    .changes {
+        background-color: #f8f9fa;
+        padding: 12px 15px;
+        margin-top: 15px;
+        border-radius: 4px;
+        border-left: 3px solid #28a745;
+    }
+    
+    .changes ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+    
+    .changes .meta {
+        font-weight: 500;
+        color: #28a745;
+    }
+    
+    /* Attachment styling */
+    .followup-attachment {
+        background-color: #f8f9fa;
+        padding: 8px 12px;
+        margin-top: 10px;
+        border-radius: 4px;
+        border-left: 3px solid #007bff;
+    }
+    
+    .attachment-size {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-left: 10px;
+    }
+    
+    /* Update section styling */
+    .update-ticket-section {
+        background: white;
+        border-radius: 8px;
+        padding: 25px;
+        margin-top: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        width: 100%;
+    }
+    
+    /* Form elements */
     #commentBox {
         width: 100%;
-        border: 1px solid #ced4da;
-        border-radius: 4px;
-        padding: 10px;
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        padding: 15px;
+        font-size: 1rem;
+        line-height: 1.5;
+        transition: border-color 0.2s ease;
+    }
+    
+    #commentBox:focus {
+        border-color: #183b6b;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(24, 59, 107, 0.1);
+    }
+    
+    textarea, 
+    select, 
+    input[type="text"],
+    input[type="email"],
+    input[type="date"] {
+        width: 100%;
+        max-width: 100%;
+        padding: 12px;
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        font-size: 1rem;
+        transition: border-color 0.2s ease;
+    }
+    
+    textarea:focus,
+    select:focus,
+    input:focus {
+        border-color: #183b6b;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(24, 59, 107, 0.1);
     }
     
     dl {
@@ -57,10 +215,11 @@
         font-weight: 600;
         color: #183b6b;
         margin-bottom: 8px;
+        font-size: 1rem;
     }
     
     dd {
-        margin-bottom: 15px;
+        margin-bottom: 20px;
     }
     
     /* Button styling */
@@ -68,46 +227,208 @@
         background-color: #183b6b;
         border-color: #183b6b;
         color: white;
+        font-weight: 500;
+        padding: 10px 20px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
     }
     
     .btn-warning:hover, .btn-primary:hover {
         background-color: #0e2c57;
         border-color: #0e2c57;
         color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 0.9rem;
     }
     
     /* Tab styling */
     .nav-tabs {
-        border-bottom: 1px solid #dee2e6;
+        border-bottom: 2px solid #183b6b;
+        margin-bottom: 0;
     }
     
     .nav-tabs .nav-item {
-        margin-bottom: -1px;
+        margin-bottom: -2px;
     }
     
     .nav-tabs .nav-link {
-        border: 1px solid transparent;
-        border-top-left-radius: 0.25rem;
-        border-top-right-radius: 0.25rem;
-        color: #6c757d;
+        border: none;
+        border-radius: 6px 6px 0 0;
+        padding: 12px 20px;
         font-weight: 500;
-        padding: 0.5rem 1rem;
+        color: #6c757d;
+        background-color: #f8f9fa;
+        margin-right: 2px;
+        transition: all 0.2s ease;
     }
     
-    .nav-tabs .nav-link:hover, 
-    .nav-tabs .nav-link:focus {
-        border-color: #e9ecef #e9ecef #dee2e6;
+    .nav-tabs .nav-link:hover {
         color: #183b6b;
+        background-color: #e9ecef;
+        border-color: transparent;
     }
     
     .nav-tabs .nav-link.active {
-        color: #183b6b;
-        background-color: #fff;
-        border-color: #dee2e6 #dee2e6 #fff;
+        color: white;
+        background-color: #183b6b;
+        border-color: #183b6b;
+        border-bottom: 2px solid #183b6b;
     }
     
     .tab-content {
-        padding: 15px 0;
+        background-color: white;
+        padding: 0;
+        border-radius: 0 0 8px 8px;
+    }
+    
+    /* Status radio buttons styling */
+    .radio-inline {
+        display: inline-block;
+        margin-right: 15px;
+        margin-bottom: 10px;
+        padding: 8px 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background-color: white;
+    }
+    
+    .radio-inline:hover {
+        border-color: #183b6b;
+        background-color: #f8f9fa;
+    }
+    
+    .radio-inline.active {
+        border-color: #183b6b;
+        background-color: #183b6b;
+        color: white;
+    }
+    
+    .radio-inline input[type="radio"] {
+        margin-right: 8px;
+    }
+    
+    /* File upload styling */
+    #FileUpload {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 6px;
+        margin-top: 15px;
+        border: 2px dashed #dee2e6;
+    }
+    
+    .btn-file {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-file input[type=file] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        min-width: 100%;
+        min-height: 100%;
+        font-size: 100px;
+        text-align: right;
+        filter: alpha(opacity=0);
+        opacity: 0;
+        outline: none;
+        cursor: inherit;
+        display: block;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 1200px) {
+        .ticket-container {
+            width: 95%;
+            max-width: 1400px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .ticket-container {
+            width: 100%;
+            padding: 0 10px;
+        }
+        
+        .card-header {
+            padding: 12px 15px;
+        }
+        
+        .card-body {
+            padding: 15px;
+        }
+        
+        .table-responsive th {
+            width: 120px;
+            padding: 10px 15px;
+        }
+        
+        .table-responsive td {
+            padding: 10px 15px;
+        }
+        
+        .nav-tabs .nav-link {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+        }
+    }
+    
+    /* Enhanced ticket title links */
+    table a.ticket-title,
+    table td a {
+        color: #183b6b;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s ease;
+    }
+    
+    table td a:hover {
+        color: #0e2c57;
+        text-decoration: underline;
+    }
+    
+    /* Alert styling */
+    .alert {
+        border-radius: 6px;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+    }
+    
+    /* Form help text */
+    .form_help_text {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-top: 5px;
+        line-height: 1.4;
+    }
+    
+    /* Merge ticket notification */
+    .card.card-body.bg-light {
+        background-color: #fff3cd !important;
+        border-left: 4px solid #ffc107;
+        padding: 20px;
+    }
+    
+    .card.card-body.bg-light h3 {
+        color: #856404;
+        margin-bottom: 0;
+    }
+    
+    /* Edit buttons styling */
+    .followup-edit .btn {
+        transition: all 0.2s ease;
+    }
+    
+    .followup-edit .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 </style>
 {% endblock %}
@@ -127,6 +448,7 @@
 {% endblock %}
 
 {% block helpdesk_body %}
+<div class="ticket-container">
     {% if form.errors %}
         {% include 'helpdesk/include/alert_form_errors.html' %}
     {% endif %}
@@ -166,7 +488,7 @@
                     {% else %}
                         {% include "helpdesk/ticket_desc_table.html" %}
                         
-                        <div class="card mb-3">
+                        <div class="card mb-3 update-ticket-section">
                             <div class="card-header"><i class="fas fa-reply fa-fw"></i>{% trans "Update Ticket" %}</div>
                             <div class="card-body">
 
@@ -176,24 +498,41 @@
                             <dl style="width: 100%;">
                                 {% if preset_replies %}
                                 <dt><label for='id_preset'>{% trans "Use a Pre-set Reply" %}</label> <span class='form_optional'>{% trans "(Optional)" %}</span></dt>
-                                <dd><select name='preset' id='id_preset' class="form-control"><option value=''>------</option>{% for preset in preset_replies %}<option value='{{ preset.id }}'>{{ preset.name }}</option>{% endfor %}</select></dd>
+                                <dd>
+                                    <select name='preset' id='id_preset'>
+                                        <option value=''>{% trans "Choose..." %}</option>
+                                        {% for preset in preset_replies %}
+                                        <option value='{{ preset.id }}'>{{ preset.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </dd>
                                 <dd class='form_help_text'>{% trans "Selecting a pre-set reply will over-write your comment below. You can then modify the pre-set reply to your liking before saving this update." %}</dd>
                                 {% endif %}
 
-                                <dt>
-                                    <label for='commentBox'>{% trans "Comment / Resolution" %}</label>
-                                </dt>
-                                <dd><textarea rows='8' class="form-control" name='comment' id='commentBox' style="width: 100%; max-width: 100%;">{% if form.errors %}{{ xform.comment }}{% endif %}</textarea></dd>
+                                <dt><label for='commentBox'>{% trans "Comment / Resolution" %}</label> <span class='form_optional'>{% trans "(Optional)" %}</span></dt>
+                                <dd><textarea rows='8' name='comment' id='commentBox'></textarea></dd>
                                 {% url "helpdesk:help_context" as context_help_url %}
-                                {% blocktrans %}
-                                <dd class='form_help_text'>You can insert ticket and queue details in your message. For more information, see the <a href='{{ context_help_url }}'>context help page</a>.</dd>
-                                {% endblocktrans %}
-                                
+
                                 {% if helpdesk_settings.HELPDESK_ENABLE_ATTACHMENTS %}
-                                {% if form.errors.attachment %}
-                                    <small class='error'>{{ form.errors.attachment }}</small>
-                                {% endif %}
-                                <dd><button type="button" class="btn btn-warning btn-sm" id='ShowFileUpload'>{% trans "Attach File(s) &raquo;" %}</button></dd>
+                                <dt><label>{% trans "Attach File(s)" %}</label> <span class='form_optional'>{% trans "(Optional)" %}</span></dt>
+                                <dd>
+                                    <div class="add_file_fields_wrap">
+                                        <div style="display: flex; gap: 10px; align-items: baseline; margin-bottom: 10px;">
+                                            <label class='btn btn-primary btn-sm btn-file' style="margin-bottom: 0; vertical-align: baseline;">
+                                                Browse... <input type="file" name='attachment' id='file0' style='display: none;'/>
+                                            </label>
+                                            <button class="add_file_field_button btn btn-success btn-sm" style="margin-bottom: 0; vertical-align: baseline;">{% trans "Add Another File" %}</button>
+                                            <span id='selectedfilename0' style="line-height: 31px; vertical-align: baseline;">{% trans 'No files selected.' %}</span>
+                                        </div>
+                                    </div>
+                                    <p id='ShowFileUploadPara' style='display: none;'>
+                                        <button class="btn btn-warning btn-sm" id='ShowFileUpload'>
+                                            <i class="fas fa-paperclip"></i> {% trans "Attach File(s)" %} &raquo;
+                                        </button>
+                                    </p>
+                                    <div id='FileUpload' style='display: none;'>
+                                    </div>
+                                </dd>
                                 {% endif %}
 
                                 <dt><label>{% trans "New Status" %}</label></dt>
@@ -251,21 +590,44 @@
 
                         </div>
 
-                        <div id='FileUpload' style='display: none;'>
+                        {% if ticket.checklists.exists %}
+                            <p>
+                                <button type="button" class="btn btn-warning btn-sm" id='ShowChecklistEditOptions'>
+                                    {% trans "Update checklists" %} &raquo;
+                                </button>
+                            </p>
 
-                            <dl>
-                                <dt><label for='id_file'>{% trans "Attach a File" %}</label></dt>
-                               <dd>
-                                    <div class="add_file_fields_wrap">
-                                        <button class="add_file_field_button btn btn-success btn-xs">{% trans "Add Another File" %}</button>
-                                        <div><label class='btn btn-primary btn-sm btn-file'>
-                                                Browse... <input type="file" name='attachment' id='file0' style='display: none;'/>
-                                        </label><span>&nbsp;</span><span id='selectedfilename0'>{% trans 'No files selected.' %}</span></div>
-                                    </div>
-                                </dd>
-                            </dl>
-
-                        </div>
+                            <div id="checklistEdit" style="display: none">
+                                <div class="row">
+                                    {% for checklist in ticket.checklists.all %}
+                                        <div class="col-sm-4 col-xs-12">
+                                            <div class="card mb-4">
+                                                <div class="card-header">
+                                                    <h5>{{ checklist }}</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="list-group">
+                                                        {% for task in checklist.tasks.all %}
+                                                            <div class="list-group-item"{% if task.completion_date %} title="{% trans "Completed on" %} {{ task.completion_date }}" {% endif %}>
+                                                                <label>
+                                                                    <input
+                                                                            name="checklist-{{ checklist.id }}"
+                                                                            type="checkbox"
+                                                                            value="{{ task.id }}"
+                                                                            {% if task.completion_date %}checked{% endif %}
+                                                                    />
+                                                                    {{ task.description }}
+                                                                </label>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
 
                         </fieldset>
 
@@ -365,7 +727,7 @@
         <!-- /.card-body -->
     </div>
     <!-- /.card -->
-
+</div>
 
 {% endblock %}
 
@@ -383,6 +745,10 @@ $( function() {
           $("#FurtherEditOptions").toggle();
       });
 
+      $("#ShowChecklistEditOptions").click(function() {
+          $("#checklistEdit").toggle();
+      });
+
       $('#id_preset').change(function() {
           preset = $('#id_preset').val();
           if (preset != '') {
@@ -392,12 +758,28 @@ $( function() {
           }
       });
 
+      // Preset name of checklist when a template is selected
+      $('#id_checklist_template').on('change', function() {
+          const nameField = $('#id_name')
+          const selectedTemplate = $(this).children(':selected')
+          if (nameField.val() === '' && selectedTemplate.val()) {
+              nameField.val(selectedTemplate.text())
+          }
+      })
+
+      $('.disabledTask').on('click', () => {
+          alert("{% trans 'If you want to update state of checklist tasks, please do a Follow-Up response and click on Update checklists' %}")
+      })
+
       $("[data-toggle=tooltip]").tooltip();
 
       {% if helpdesk_settings.HELPDESK_ENABLE_ATTACHMENTS %}
-      $("#ShowFileUpload").click(function() {
+      $("#ShowFileUpload").click(function(e) {
+          e.preventDefault();
+          e.stopPropagation();
           $("#FileUpload").fadeIn();
           $("#ShowFileUploadPara").hide();
+          return false;
       });
 
       // lists for file input change events, then updates the associated text label
@@ -407,27 +789,18 @@ $( function() {
       });
 
       var x = 0;
-      var wrapper = $(".add_file_fields_wrap"); //Fields wrapper
-      var add_button = $(".add_file_field_button"); //Add button ID
+      var wrapper = $(".add_file_fields_wrap");
+      var add_button = $(".add_file_field_button");
 
-      $(add_button).click(function(e){ //on add input button click
-          x++;
+      $(add_button).click(function(e){
           e.preventDefault();
-          $(wrapper).append("<div><label class='btn btn-primary btn-sm btn-file'>Browse... <input type='file' name='attachment' id='file" + x + "' multiple style='display: none;'/></label><span>&nbsp;</span><span id='selectedfilename" + x + "'>{% trans 'No files selected.' %}</span></div>"); //add input box
+          x++;
+          $(wrapper).append('<div style="display: flex; gap: 10px; align-items: baseline; margin-bottom: 10px;"><label class="btn btn-primary btn-sm btn-file" style="margin-bottom: 0; vertical-align: baseline;">Browse... <input type="file" name="attachment" id="file' + x + '" style="display: none;"/></label><span id="selectedfilename' + x + '" style="line-height: 31px; vertical-align: baseline;">No files selected.</span></div>');
       });
       {% endif %}
-      
-      // Tab functionality
-      $('#ticketTabs a').on('click', function (e) {
-          e.preventDefault();
-          $(this).tab('show');
-      });
   });
 
-  {% if helpdesk_settings.HELPDESK_ENABLE_ATTACHMENTS %}
-  // this function listens for changes on any file input, and
-  // emits the appropriate event to update the input's text.
-  // Needed to have properly styled file input buttons! (this really shouldn't be this hard...)
+  // Update filename display on file selection
   $(document).on('change', ':file', function() {
       var input = $(this),
           inputWidgetNum = $(this).attr('id').split("file")[1],
@@ -435,6 +808,5 @@ $( function() {
           label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
       input.trigger('fileselect', [numFiles, label, inputWidgetNum]);
   });
-  {% endif %}
-  </script>
+</script>
 {% endblock %}
