@@ -84,7 +84,7 @@ HELPDESK_ANON_ACCESS_RAISES_404 = getattr(
 
 # Disable Timeline on ticket list
 HELPDESK_TICKETS_TIMELINE_ENABLED = getattr(
-    settings, "HELPDESK_TICKETS_TIMELINE_ENABLED", False
+    settings, "HELPDESK_TICKETS_TIMELINE_ENABLED", True
 )
 
 # show extended navigation by default, to all users, irrespective of staff
