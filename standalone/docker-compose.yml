@@ -10,7 +10,7 @@ services:
     image: caddy:2
     restart: unless-stopped
     volumes:
-      - caddy_data:/data
+      - helpdesk_data:/data
       - caddy_config:/config
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
     ports:
