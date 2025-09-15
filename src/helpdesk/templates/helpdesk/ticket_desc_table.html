@@ -326,9 +326,9 @@
                                     <a href="{% url 'helpdesk:edit' ticket.id %}" class="btn btn-primary btn-sm ticket-edit">
                                         <i class="fas fa-pencil-alt"></i> {% trans "Edit" %}
                                     </a>
-                                    <a href="{% url 'helpdesk:delete' ticket.id %}" class="btn btn-danger btn-sm ticket-delete">
+                                    <!--<a href="{% url 'helpdesk:delete' ticket.id %}" class="btn btn-danger btn-sm ticket-delete">
                                         <i class="fas fa-trash-alt"></i> {% trans "Delete" %}
-                                    </a>
+                                    </a>-->
                                     {% if ticket.on_hold %}
                                         <form class="form-inline ticket-hold" method='post' action='unhold/'>
                                             {% csrf_token %}
