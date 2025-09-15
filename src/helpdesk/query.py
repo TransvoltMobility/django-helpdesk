@@ -226,7 +226,7 @@ class __Query__:
         events = []
 
         for ticket in self.get():
-            for followup in ticket.followup_set.all():
+            for followup in ticket.followup_set.order_by('-date'):
                 event = {
                     "start_date": self.mk_timeline_date(followup.date),
                     "text": {

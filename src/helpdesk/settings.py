@@ -300,7 +300,7 @@ if not (
 
 # show edit buttons in ticket follow ups.
 HELPDESK_SHOW_EDIT_BUTTON_FOLLOW_UP = getattr(
-    settings, "HELPDESK_SHOW_EDIT_BUTTON_FOLLOW_UP", True
+    settings, "HELPDESK_SHOW_EDIT_BUTTON_FOLLOW_UP", False
 )
 
 HELPDESK_SHOW_CUSTOM_FIELDS_FOLLOW_UP_LIST = getattr(
