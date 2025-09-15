@@ -1,4 +1,4 @@
-{% extend  "helpdesk/public_base.html" %}{% load i18n humanize %}
+{% extends  "helpdesk/public_base.html" %}{% load i18n humanize %}
 {% load static %}
 {% block helpdesk_title %}{% trans "View a Ticket" %}{% endblock %}
 
@@ -557,7 +557,7 @@
         </tbody>
     </table>
             
-            <form method='post' action="{% url 'helpdesk:update' ticket.id %}" enctype='multipart/form-data' class="comment-form">
+            <!--<form method='post' action="{% url 'helpdesk:update' ticket.id %}" enctype='multipart/form-data' class="comment-form">
                 <h3>{% trans "Update Ticket" %}</h3>
                 <input type="hidden" name="key" value="{{ key }}" />
                 <input type="hidden" name="mail" value="{{ mail }}" />
@@ -639,7 +639,7 @@
                 </div>
             
                 {% csrf_token %}
-            </form>
+            </form>-->
 </div>
         </div>
         
@@ -745,6 +745,9 @@
             {% if not forloop.last %} &raquo; {% endif %}
             {% endfor %}
         </div>
+        <a href="{% url 'helpdesk:delete' ticket.id %}" class="btn btn-danger btn-sm ticket-delete">
+                                        <i class="fas fa-trash-alt"></i> {% trans "Delete" %}
+                                    </a>
     </div>
     {% else %}
     <input type="hidden" name="new_status" value="{{ ticket.status }}" />
@@ -787,6 +790,10 @@
 
     {% csrf_token %}
 </form>
+
+<a href="{% url 'helpdesk:delete' ticket.id %}" class="btn btn-danger btn-sm ticket-delete" onclick="return confirm('Are you sure you want to delete this ticket?');">
+            <i class="fas fa-trash-alt"></i> {% trans "Delete" %}
+          </a>
 
 {% if helpdesk_settings.HELPDESK_ENABLE_ATTACHMENTS %}
 <script type='text/javascript'>
