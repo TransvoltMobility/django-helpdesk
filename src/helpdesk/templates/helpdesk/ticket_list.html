@@ -64,273 +64,59 @@
         /* Fix table header styling - ensure header is visible */
         #ticketTable {
             border-collapse: collapse !important;
-            border: none !important;
+            width: 100% !important;
+            background-color: #fff !important;
+            border: 1px solid #dee2e6 !important;
         }
         
+        /* Clean header styling that matches My Tickets */
         #ticketTable thead th {
             background-color: #183b6b !important;
-            color: white !important;
-            border: none !important;
-            border-right: 1px solid #2c5282 !important;
-            border-left: 1px solid #2c5282 !important;
-            padding: 6px 8px !important;
-            height: auto !important;
-            line-height: 1.3 !important;
-            font-size: 13px !important;
+            color: #fff !important;
+            font-weight: 500 !important;
+            text-align: left !important;
+            padding: 0.75rem 1rem !important;
+            border: 1px solid #0e2c57 !important;
+            font-size: 0.9rem !important;
             vertical-align: middle !important;
-            font-weight: 500 !important;
-            position: relative !important;
-            z-index: 10 !important;
         }
         
-        /* Ensure DataTables header is visible but remove extra borders */
-        .dataTables_scrollHead {
-            display: block !important;
-            background-color: transparent !important;
-            border: none !important;
-        }
-        
-        .dataTables_scrollHead thead th {
-            background-color: #183b6b !important;
-            color: white !important;
-            border: none !important;
-            border-right: 1px solid #2c5282 !important;
-            border-left: 1px solid #2c5282 !important;
-            padding: 6px 8px !important;
-            height: auto !important;
-        }
-        
-        /* Remove extra blue styling below table header */
+        /* Remove DataTables scroll styling conflicts */
+        .dataTables_scrollHead,
         .dataTables_scrollBody {
-            border-top: none !important;
             border: none !important;
+            box-shadow: none !important;
+            outline: none !important;
         }
         
-        /* Remove any wrapper borders that create extra lines */
-        .dataTables_wrapper {
-            border: none !important;
+        /* Ensure consistent cell styling */
+        #ticketTable tbody td {
+            padding: 0.75rem 1rem !important;
+            border: 1px solid #dee2e6 !important;
+            color: #333 !important;
+            vertical-align: middle !important;
         }
         
-        .dataTables_wrapper .dataTables_scroll {
-            border: none !important;
-        }
-        
-        /* Force remove all possible blue lines */
-        #ticketTable tbody tr:first-child td {
-            border-top: none !important;
-        }
-        
-        #ticketTable tbody tr td {
-            border-top: none !important;
-        }
-        
-        .dataTables_scrollBody table {
-            border-top: none !important;
-        }
-        
-        .dataTables_scrollBody table tbody tr:first-child td {
-            border-top: none !important;
-        }
-        
-        /* Remove any dividers or separators */
-        .dataTables_scroll .dataTables_scrollBody {
-            border-top: none !important;
-            margin-top: 0 !important;
-            padding-top: 0 !important;
-        }
-        
-        /* Make sure all table headers are styled consistently */
-        table.dataTable thead th {
-            background-color: #183b6b !important;
-            color: white !important;
-            border: none !important;
-            border-right: 1px solid #2c5282 !important;
-            border-left: 1px solid #2c5282 !important;
-        }
-        
-        /* Ensure table wrapper has proper styling */
-        .dataTables_wrapper .dataTables_scroll div.dataTables_scrollHead table {
-            background-color: transparent !important;
-            border: none !important;
-        }
-        
-        /* Additional header visibility fixes */
-        .table th {
-            background-color: #183b6b !important;
-            color: white !important;
-            border: none !important;
-            border-right: 1px solid #2c5282 !important;
-            border-left: 1px solid #2c5282 !important;
-            font-weight: 500 !important;
-            padding: 6px 8px !important;
-            height: auto !important;
-            font-size: 13px !important;
-        }
-        
-        /* Remove any table borders that create extra lines */
-        .table {
-            border: none !important;
-        }
-        
+        /* Remove all the complex border removal styles that were causing issues */
+        .dataTables_wrapper,
+        .dataTables_scroll,
         .table-responsive {
             border: none !important;
         }
         
-        /* Force remove all borders from DataTables elements */
-        .dataTables_wrapper .dataTables_scroll {
-            border: none !important;
+        /* Clean row hover effects */
+        #ticketTable tbody tr:nth-child(even) {
+            background-color: #f2f6fc !important;
         }
         
-        .dataTables_wrapper .dataTables_scrollHead table thead th {
-            border-top: none !important;
-            border-bottom: none !important;
+        #ticketTable tbody tr:hover {
+            background-color: #f3eab9 !important;
+            color: #183b6b !important;
         }
         
-        .dataTables_wrapper .dataTables_scrollBody {
-            border: none !important;
-        }
-        
-        /* Remove any Bootstrap table borders */
-        .table thead th {
-            border-top: none !important;
-            border-bottom: none !important;
-        }
-        
-        /* Ultimate fix - remove all possible blue lines */
-        .dataTables_wrapper * {
-            border-top: none !important;
-            border-bottom: none !important;
-        }
-        
-        .dataTables_wrapper table * {
-            border-top: none !important;
-            border-bottom: none !important;
-        }
-        
-        /* Target specific DataTables elements */
-        .dataTables_scrollHead,
-        .dataTables_scrollHead table,
-        .dataTables_scrollHead thead,
-        .dataTables_scrollHead thead tr,
-        .dataTables_scrollHead thead th,
-        .dataTables_scrollBody,
-        .dataTables_scrollBody table,
-        .dataTables_scrollBody tbody,
-        .dataTables_scrollBody tbody tr,
-        .dataTables_scrollBody tbody td {
-            border-top: none !important;
-            border-bottom: none !important;
-        }
-        
-        /* Force override any inherited borders */
-        #ticketTable,
-        #ticketTable thead,
-        #ticketTable tbody,
-        #ticketTable tr,
-        #ticketTable th,
-        #ticketTable td {
-            border-top: none !important;
-            border-bottom: none !important;
-        }
-        
-        /* Make sure no margin/padding creates visual lines */
-        .dataTables_scrollHead {
-            margin-bottom: 0 !important;
-            padding-bottom: 0 !important;
-            box-shadow: none !important;
-            outline: none !important;
-        }
-        
-        .dataTables_scrollBody {
-            margin-top: 0 !important;
-            padding-top: 0 !important;
-            box-shadow: none !important;
-            outline: none !important;
-        }
-        
-        /* Remove any shadows or outlines that might create lines */
-        .dataTables_wrapper,
-        .dataTables_wrapper *,
-        #ticketTable,
-        #ticketTable *,
-        .table,
-        .table * {
-            box-shadow: none !important;
-            outline: none !important;
-            text-shadow: none !important;
-        }
-        
-        /* Remove any pseudo-elements that might create lines */
-        .dataTables_scrollHead::before,
-        .dataTables_scrollHead::after,
-        .dataTables_scrollBody::before,
-        .dataTables_scrollBody::after,
-        #ticketTable::before,
-        #ticketTable::after,
-        #ticketTable thead::before,
-        #ticketTable thead::after {
-            display: none !important;
-            content: none !important;
-        }
-        
-        /* Force remove any DataTables styling that creates lines */
-        .dataTables_scrollHead table {
-            margin-bottom: 0 !important;
-            border-spacing: 0 !important;
-            border-collapse: collapse !important;
-        }
-        
-        .dataTables_scrollBody table {
-            margin-top: 0 !important;
-            border-spacing: 0 !important;
-            border-collapse: collapse !important;
-        }
-        
-        /* Nuclear option - force the scroll body to overlap slightly */
-        .dataTables_scrollBody {
-            margin-top: -1px !important;
-            position: relative !important;
-            z-index: 5 !important;
-        }
-        
-        /* Ensure the header stays on top */
-        .dataTables_scrollHead {
-            position: relative !important;
-            z-index: 10 !important;
-        }
-        
-        /* Target the specific line that's showing */
-        .dataTables_scroll .dataTables_scrollBody table {
-            border-top: none !important;
-            margin-top: -1px !important;
-        }
-        
-        /* Remove any separator between head and body */
-        .dataTables_wrapper .dataTables_scroll .dataTables_scrollHead + .dataTables_scrollBody {
-            border-top: none !important;
-            margin-top: -2px !important;
-        }
-        
-        /* Force remove line from table body first row */
-        .dataTables_scrollBody table tbody tr:first-child {
-            border-top: none !important;
-        }
-        
-        .dataTables_scrollBody table tbody tr:first-child td {
-            border-top: none !important;
-        }
-        
-        /* Make sure the thead element is visible */
-        table thead {
-            display: table-header-group !important;
-            background-color: #183b6b !important;
-        }
-        
-        /* Override any hiding styles */
-        #ticketTable thead {
-            display: table-header-group !important;
-            visibility: visible !important;
-            opacity: 1 !important;
+        #ticketTable tbody tr:hover a {
+            color: #0066cc !important;
+            text-decoration: underline !important;
         }
         
         /* Filter menu dropdown styling */
@@ -735,6 +521,147 @@
                 font-size: 16px !important;
             }
         }
+
+        /* Pagination Component Styles */
+        .pagination-nav {
+            margin-top: 20px;
+            padding: 15px 0;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .page-size-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .page-size-label {
+            font-size: 0.875rem;
+            color: #495057;
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
+
+        .page-size-select {
+            width: 80px;
+            height: 32px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .pagination-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ced4da;
+            font-size: 0.875rem;
+            border-radius: 4px;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-numbers {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .page-number {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ced4da;
+            font-size: 0.875rem;
+            border-radius: 4px;
+            background-color: white;
+            color: #495057;
+        }
+
+        .page-number.active {
+            background-color: #183b6b;
+            border-color: #183b6b;
+            color: white;
+        }
+
+        .page-number:hover:not(.active) {
+            background-color: #f8f9fa;
+            border-color: #adb5bd;
+        }
+
+        .page-ellipsis {
+            padding: 0 8px;
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+
+        .page-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .page-info-text {
+            font-size: 0.875rem;
+            color: #495057;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .page-input {
+            width: 60px;
+            height: 26px;
+            text-align: center;
+            border: 1px solid #ced4da;
+            border-radius: 3px;
+            font-size: 0.875rem;
+        }
+
+        .records-info {
+            text-align: center;
+        }
+
+        /* Mobile Responsive for Pagination */
+        @media (max-width: 768px) {
+            .pagination-container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            
+            .page-size-container,
+            .pagination-controls,
+            .page-info {
+                justify-content: center;
+            }
+            
+            .page-numbers {
+                overflow-x: auto;
+                padding: 5px 0;
+            }
+        }
     </style>
 {% endblock %}
 
@@ -903,24 +830,27 @@
                                 <table class="table table-sm table-bordered table-hover"
                                        id="ticketTable" data-page-length='{{ default_tickets_per_page }}'>
                                     <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>{% trans "Ticket" %}</th>
-                                    <th>{% trans "Priority" %}</th>
-                                    <th>{% trans "Queue" %}</th>
-                                    <th>{% trans "Status" %}</th>
-                                    <th>{% trans "Created" %}</th>
-                                    <th>{% trans "Due Date" %}</th>
-                                    <th>{% trans "Owner" %}</th>
-                                    <th>{% trans "Submitter" %}</th>
-                                    <th>{% trans "Last Followup" %}</th>
-                                    {% if helpdesk_settings.HELPDESK_ENABLE_TIME_SPENT_ON_TICKET %}<th>{% trans "Time Spent" %}</th>{% endif %}
-                                    {% if helpdesk_settings.HELPDESK_KB_ENABLED %}<th>{% trans "KB item" %}</th>{% endif %}
-                                </tr>
-                                </thead>
-                            </table>
+                                        <tr>
+                                            <th></th>
+                                            <th>{% trans "Ticket" %}</th>
+                                            <th>{% trans "Priority" %}</th>
+                                            <th>{% trans "Queue" %}</th>
+                                            <th>{% trans "Status" %}</th>
+                                            <th>{% trans "Created" %}</th>
+                                            <th>{% trans "Due Date" %}</th>
+                                            <th>{% trans "Owner" %}</th>
+                                            <th>{% trans "Submitter" %}</th>
+                                            <th>{% trans "Last Followup" %}</th>
+                                            {% if helpdesk_settings.HELPDESK_ENABLE_TIME_SPENT_ON_TICKET %}<th>{% trans "Time Spent" %}</th>{% endif %}
+                                            {% if helpdesk_settings.HELPDESK_KB_ENABLED %}<th>{% trans "KB item" %}</th>{% endif %}
+                                        </tr>
+                                    </thead>
+                                </table>
                         </div>
                         </div>
+
+                        <!-- Include the reusable pagination component -->
+                        {% include 'helpdesk/components/pagination.html' %}
 
                         <!-- Hidden form elements for mass actions -->
                         <div class="select-controls" style="display: none;">
@@ -1049,9 +979,14 @@
             
             // Ticket DataTable Initialization
 	    $.fn.dataTable.ext.errMode = function(settings, helpPage, message) {
+		console.error("DataTables Error:", message);
 		alert("{% trans 'Error fetching tickets occured, please contact the system administrators of this server providing the message below:\n    ' %}" + message)
 	    };
-            $('#ticketTable').DataTable({
+	    
+	    // Add debugging
+	    console.log("Initializing DataTable...");
+	    
+            var table = $('#ticketTable').DataTable({
                 language: {
                     "emptyTable": "{% trans 'No Tickets Match Your Selection' %}"
                 },
@@ -1060,11 +995,16 @@
                 ajax: {
                     "url": "{% url 'helpdesk:datatables_ticket_list' urlsafe_query %}",
                     "type": "GET",
+                    "error": function(xhr, error, code) {
+                        console.error("AJAX Error:", error, code, xhr.responseText);
+                    }
                 },
                 createdRow: function (row, data, dataIndex) {
                     $(row).addClass(data.row_class);
                 },
-                dom: 'ltBp',
+                dom: 'tB',
+                pageLength: 10,
+                lengthMenu: [5, 10, 25, 50, 100],
                 buttons: [
                     {
                         extend: 'colvis',
@@ -1091,6 +1031,7 @@
                 columns: [
                     {
                         data: "id",
+                        title: "",
                         orderable: false,
                         render: function (data, type, row, meta) {
                             const pk = data;
@@ -1102,6 +1043,7 @@
                     },
                     {
                         data: "ticket",
+                        title: "{% trans 'Ticket' %}",
                         render: function (data, type, row, meta) {
                             if (type === 'display') {
                                 data = '<div class="tickettitle"><a href="' + get_url(row) + '" class="ticket-title">' +
@@ -1113,6 +1055,7 @@
                     },
                     {
                         data: "priority",
+                        title: "{% trans 'Priority' %}",
                         render: function (data, type, row, meta) {
                             let priorityClass = "priority-5";
                             switch (data) {
@@ -1138,6 +1081,7 @@
                     },
                     {
                         data: "queue",
+                        title: "{% trans 'Queue' %}",
                         render: function (data, type, row, meta) {
                             return data.title;
                         },
@@ -1145,6 +1089,7 @@
                     },
                     {
                         data: "status",
+                        title: "{% trans 'Status' %}",
                         render: function (data, type, row) {
                             let statusClasses = {
                                 'Open': 'status-open',
@@ -1158,10 +1103,18 @@
                             return '<span class="ticket-status ' + statusClass + '">' + data + '</span>';
                         }
                     },
-                    {data: "created"},
-                    {data: "due_date", "visible": false},
+                    {
+                        data: "created",
+                        title: "{% trans 'Created' %}"
+                    },
+                    {
+                        data: "due_date",
+                        title: "{% trans 'Due Date' %}",
+                        visible: false
+                    },
                     {
                         data: "assigned_to",
+                        title: "{% trans 'Owner' %}",
                         render: function (data, type, row, meta) {
                             if (data !== "None") {
                                 return data;
@@ -1169,9 +1122,13 @@
                             return "";
                         }
                     },
-                    {data: "submitter"},
+                    {
+                        data: "submitter",
+                        title: "{% trans 'Submitter' %}"
+                    },
                     {
                         data: "last_followup",
+                        title: "{% trans 'Last Followup' %}",
                         render: function (data, type, row) {
                             let locale = navigator.language || navigator.userLanguage || window.helpdesk_settings.LANGUAGE_CODE;
                             
@@ -1190,16 +1147,70 @@
                                 hour12: true
                             });
                         }
-                    },
-                    {% if helpdesk_settings.HELPDESK_ENABLE_TIME_SPENT_ON_TICKET %}
-                    {data: "time_spent", "visible": false},
-                    {% endif %}
-                    {% if helpdesk_settings.HELPDESK_KB_ENABLED %}
-                    {data: "kbitem"},
-                    {% endif %}
+                    }{% if helpdesk_settings.HELPDESK_ENABLE_TIME_SPENT_ON_TICKET %},
+                    {
+                        data: "time_spent",
+                        title: "{% trans 'Time Spent' %}",
+                        visible: false
+                    }{% endif %}{% if helpdesk_settings.HELPDESK_KB_ENABLED %},
+                    {
+                        data: "kbitem",
+                        title: "{% trans 'KB item' %}"
+                    }{% endif %}
                 ],
-                order: []
+                order: [],
+                initComplete: function(settings, json) {
+                    console.log("DataTable initialized successfully");
+                    console.log("Data received:", json);
+                },
+                drawCallback: function(settings) {
+                    console.log("DataTable draw completed");
+                    console.log("Rows:", this.api().rows().count());
+                }
             });
+            
+            console.log("DataTable created successfully");
+            
+            // Get DataTable instance for pagination integration
+            var ticketTable = table;
+            
+            // Initialize custom pagination and integrate with DataTables
+            var ticketPagination;
+            
+            // Initialize pagination after DataTable is ready
+            ticketTable.on('init.dt', function () {
+                // Force the page length to be 10 on initial load
+                ticketTable.page.len(10);
+                
+                setTimeout(function() {
+                    ticketPagination = initPagination('.pagination-nav', {
+                        pageSize: 10,
+                        totalRecords: ticketTable.page.info().recordsTotal,
+                        currentPage: ticketTable.page.info().page + 1,
+                        onPageChange: function(page, pageSize) {
+                            ticketTable.page(page - 1).draw('page');
+                        },
+                        onPageSizeChange: function(pageSize, page) {
+                            ticketTable.page.len(pageSize).draw();
+                        }
+                    });
+                    
+                    // Force redraw to apply the page length
+                    ticketTable.draw();
+                }, 100);
+            });
+            
+            // Update pagination info when DataTable draws
+            ticketTable.on('draw.dt', function () {
+                if (ticketPagination) {
+                    var info = ticketTable.page.info();
+                    ticketPagination.updateTotalRecords(info.recordsTotal);
+                    ticketPagination.setCurrentPage(info.page + 1);
+                }
+            });
+            
+            // Hide default DataTables pagination elements
+            $('.dataTables_length, .dataTables_paginate').hide();
             
             // Fix positioning and styling of DataTables buttons
             setTimeout(function() {
@@ -1326,6 +1337,209 @@
                 $("#ticket_mass_update").submit();
             });
         })
+        
+        // Pagination Class
+        class ReusablePagination {
+            constructor(containerId, options = {}) {
+                this.container = document.getElementById(containerId) || document.querySelector(containerId);
+                this.options = {
+                    pageSize: options.pageSize || 10,
+                    currentPage: options.currentPage || 1,
+                    totalRecords: options.totalRecords || 0,
+                    maxVisiblePages: options.maxVisiblePages || 5,
+                    onPageChange: options.onPageChange || function() {},
+                    onPageSizeChange: options.onPageSizeChange || function() {},
+                    ...options
+                };
+                
+                this.totalPages = Math.ceil(this.options.totalRecords / this.options.pageSize);
+                this.init();
+            }
+            
+            init() {
+                this.bindEvents();
+                this.render();
+            }
+            
+            bindEvents() {
+                const pageSizeSelect = this.container.querySelector('#pageSize');
+                if (pageSizeSelect) {
+                    pageSizeSelect.addEventListener('change', (e) => {
+                        this.changePageSize(parseInt(e.target.value));
+                    });
+                }
+                
+                const prevBtn = this.container.querySelector('#prevBtn');
+                const nextBtn = this.container.querySelector('#nextBtn');
+                
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', () => this.previousPage());
+                }
+                
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', () => this.nextPage());
+                }
+                
+                const pageInput = this.container.querySelector('#pageInput');
+                if (pageInput) {
+                    pageInput.addEventListener('change', (e) => {
+                        const page = parseInt(e.target.value);
+                        if (page >= 1 && page <= this.totalPages) {
+                            this.goToPage(page);
+                        } else {
+                            e.target.value = this.options.currentPage;
+                        }
+                    });
+                }
+                
+                const pageNumbers = this.container.querySelector('#pageNumbers');
+                if (pageNumbers) {
+                    pageNumbers.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('page-number')) {
+                            const page = parseInt(e.target.dataset.page);
+                            this.goToPage(page);
+                        }
+                    });
+                }
+            }
+            
+            render() {
+                this.updatePageNumbers();
+                this.updatePageInfo();
+                this.updateRecordsInfo();
+                this.updateButtons();
+            }
+            
+            updatePageNumbers() {
+                const pageNumbers = this.container.querySelector('#pageNumbers');
+                if (!pageNumbers) return;
+                
+                pageNumbers.innerHTML = '';
+                
+                const start = Math.max(1, this.options.currentPage - Math.floor(this.options.maxVisiblePages / 2));
+                const end = Math.min(this.totalPages, start + this.options.maxVisiblePages - 1);
+                
+                if (start > 1) {
+                    pageNumbers.appendChild(this.createPageButton(1));
+                    if (start > 2) {
+                        pageNumbers.appendChild(this.createEllipsis());
+                    }
+                }
+                
+                for (let i = start; i <= end; i++) {
+                    pageNumbers.appendChild(this.createPageButton(i));
+                }
+                
+                if (end < this.totalPages) {
+                    if (end < this.totalPages - 1) {
+                        pageNumbers.appendChild(this.createEllipsis());
+                    }
+                    pageNumbers.appendChild(this.createPageButton(this.totalPages));
+                }
+            }
+            
+            createPageButton(page) {
+                const button = document.createElement('button');
+                button.className = `btn btn-sm ${page === this.options.currentPage ? 'btn-primary active' : 'btn-outline-secondary'} page-number`;
+                button.dataset.page = page;
+                button.textContent = page;
+                return button;
+            }
+            
+            createEllipsis() {
+                const span = document.createElement('span');
+                span.className = 'page-ellipsis';
+                span.textContent = '...';
+                return span;
+            }
+            
+            updatePageInfo() {
+                const pageInput = this.container.querySelector('#pageInput');
+                const totalPagesSpan = this.container.querySelector('#totalPages');
+                
+                if (pageInput) {
+                    pageInput.value = this.options.currentPage;
+                    pageInput.max = this.totalPages;
+                }
+                
+                if (totalPagesSpan) {
+                    totalPagesSpan.textContent = this.totalPages;
+                }
+            }
+            
+            updateRecordsInfo() {
+                const recordsStart = this.container.querySelector('#recordsStart');
+                const recordsEnd = this.container.querySelector('#recordsEnd');
+                const totalRecords = this.container.querySelector('#totalRecords');
+                
+                const start = (this.options.currentPage - 1) * this.options.pageSize + 1;
+                const end = Math.min(this.options.currentPage * this.options.pageSize, this.options.totalRecords);
+                
+                if (recordsStart) recordsStart.textContent = this.options.totalRecords > 0 ? start : 0;
+                if (recordsEnd) recordsEnd.textContent = end;
+                if (totalRecords) totalRecords.textContent = this.options.totalRecords;
+            }
+            
+            updateButtons() {
+                const prevBtn = this.container.querySelector('#prevBtn');
+                const nextBtn = this.container.querySelector('#nextBtn');
+                
+                if (prevBtn) {
+                    prevBtn.disabled = this.options.currentPage === 1;
+                }
+                
+                if (nextBtn) {
+                    nextBtn.disabled = this.options.currentPage === this.totalPages || this.totalPages === 0;
+                }
+            }
+            
+            goToPage(page) {
+                if (page >= 1 && page <= this.totalPages && page !== this.options.currentPage) {
+                    this.options.currentPage = page;
+                    this.render();
+                    this.options.onPageChange(page, this.options.pageSize);
+                }
+            }
+            
+            previousPage() {
+                this.goToPage(this.options.currentPage - 1);
+            }
+            
+            nextPage() {
+                this.goToPage(this.options.currentPage + 1);
+            }
+            
+            changePageSize(newSize) {
+                this.options.pageSize = newSize;
+                this.totalPages = Math.ceil(this.options.totalRecords / this.options.pageSize);
+                this.options.currentPage = 1;
+                this.render();
+                this.options.onPageSizeChange(newSize, this.options.currentPage);
+            }
+            
+            updateTotalRecords(totalRecords) {
+                this.options.totalRecords = totalRecords;
+                this.totalPages = Math.ceil(totalRecords / this.options.pageSize);
+                
+                if (this.options.currentPage > this.totalPages && this.totalPages > 0) {
+                    this.options.currentPage = this.totalPages;
+                }
+                
+                this.render();
+            }
+            
+            setCurrentPage(page) {
+                if (page >= 1 && page <= this.totalPages) {
+                    this.options.currentPage = page;
+                    this.render();
+                }
+            }
+        }
+        
+        // Global function for easy initialization
+        window.initPagination = function(containerId, options = {}) {
+            return new ReusablePagination(containerId, options);
+        };
     </script>
 {% endblock %}
 

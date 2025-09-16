@@ -230,6 +230,147 @@
             align-self: flex-end;
         }
     }
+
+    /* Pagination Component Styles */
+    .pagination-nav {
+        margin-top: 20px;
+        padding: 15px 0;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .pagination-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 10px;
+    }
+
+    .page-size-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .page-size-label {
+        font-size: 0.875rem;
+        color: #495057;
+        margin-bottom: 0;
+        white-space: nowrap;
+    }
+
+    .page-size-select {
+        width: 80px;
+        height: 32px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        font-size: 0.875rem;
+    }
+
+    .pagination-controls {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .pagination-btn {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ced4da;
+        font-size: 0.875rem;
+        border-radius: 4px;
+    }
+
+    .pagination-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .page-numbers {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+    }
+
+    .page-number {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ced4da;
+        font-size: 0.875rem;
+        border-radius: 4px;
+        background-color: white;
+        color: #495057;
+    }
+
+    .page-number.active {
+        background-color: #183b6b;
+        border-color: #183b6b;
+        color: white;
+    }
+
+    .page-number:hover:not(.active) {
+        background-color: #f8f9fa;
+        border-color: #adb5bd;
+    }
+
+    .page-ellipsis {
+        padding: 0 8px;
+        color: #6c757d;
+        font-size: 0.875rem;
+    }
+
+    .page-info {
+        display: flex;
+        align-items: center;
+    }
+
+    .page-info-text {
+        font-size: 0.875rem;
+        color: #495057;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .page-input {
+        width: 60px;
+        height: 26px;
+        text-align: center;
+        border: 1px solid #ced4da;
+        border-radius: 3px;
+        font-size: 0.875rem;
+    }
+
+    .records-info {
+        text-align: center;
+    }
+
+    /* Mobile Responsive for Pagination */
+    @media (max-width: 768px) {
+        .pagination-container {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+        }
+        
+        .page-size-container,
+        .pagination-controls,
+        .page-info {
+            justify-content: center;
+        }
+        
+        .page-numbers {
+            overflow-x: auto;
+            padding: 5px 0;
+        }
+    }
 </style>
 
 <div class="content-container">
@@ -255,53 +396,302 @@
                 </tbody>
             </table>
         </div>
-        <nav aria-label="{% trans 'Page navigation' %}">
-            <ul class="pagination" id="pagination">
-                <!-- Pagination buttons will be added here dynamically -->
-            </ul>
-        </nav>
+        <!-- Include the reusable pagination component -->
+        {% include 'helpdesk/components/pagination.html' %}
     </div>
 </div>
 
 <script>
+// Global pagination instance
+let myTicketsPagination = null;
+
+// Pagination Class
+class ReusablePagination {
+    constructor(containerId, options = {}) {
+        this.container = document.getElementById(containerId) || document.querySelector(containerId);
+        this.options = {
+            pageSize: options.pageSize || 10,
+            currentPage: options.currentPage || 1,
+            totalRecords: options.totalRecords || 0,
+            maxVisiblePages: options.maxVisiblePages || 5,
+            onPageChange: options.onPageChange || function() {},
+            onPageSizeChange: options.onPageSizeChange || function() {},
+            ...options
+        };
+        
+        this.totalPages = Math.ceil(this.options.totalRecords / this.options.pageSize);
+        this.init();
+    }
+    
+    init() {
+        this.bindEvents();
+        this.render();
+    }
+    
+    bindEvents() {
+        const pageSizeSelect = this.container.querySelector('#pageSize');
+        if (pageSizeSelect) {
+            pageSizeSelect.addEventListener('change', (e) => {
+                this.changePageSize(parseInt(e.target.value));
+            });
+        }
+        
+        const prevBtn = this.container.querySelector('#prevBtn');
+        const nextBtn = this.container.querySelector('#nextBtn');
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => this.previousPage());
+        }
+        
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => this.nextPage());
+        }
+        
+        const pageInput = this.container.querySelector('#pageInput');
+        if (pageInput) {
+            pageInput.addEventListener('change', (e) => {
+                const page = parseInt(e.target.value);
+                if (page >= 1 && page <= this.totalPages) {
+                    this.goToPage(page);
+                } else {
+                    e.target.value = this.options.currentPage;
+                }
+            });
+        }
+        
+        const pageNumbers = this.container.querySelector('#pageNumbers');
+        if (pageNumbers) {
+            pageNumbers.addEventListener('click', (e) => {
+                if (e.target.classList.contains('page-number')) {
+                    const page = parseInt(e.target.dataset.page);
+                    this.goToPage(page);
+                }
+            });
+        }
+    }
+    
+    render() {
+        this.updatePageNumbers();
+        this.updatePageInfo();
+        this.updateRecordsInfo();
+        this.updateButtons();
+    }
+    
+    updatePageNumbers() {
+        const pageNumbers = this.container.querySelector('#pageNumbers');
+        if (!pageNumbers) return;
+        
+        pageNumbers.innerHTML = '';
+        
+        const start = Math.max(1, this.options.currentPage - Math.floor(this.options.maxVisiblePages / 2));
+        const end = Math.min(this.totalPages, start + this.options.maxVisiblePages - 1);
+        
+        if (start > 1) {
+            pageNumbers.appendChild(this.createPageButton(1));
+            if (start > 2) {
+                pageNumbers.appendChild(this.createEllipsis());
+            }
+        }
+        
+        for (let i = start; i <= end; i++) {
+            pageNumbers.appendChild(this.createPageButton(i));
+        }
+        
+        if (end < this.totalPages) {
+            if (end < this.totalPages - 1) {
+                pageNumbers.appendChild(this.createEllipsis());
+            }
+            pageNumbers.appendChild(this.createPageButton(this.totalPages));
+        }
+    }
+    
+    createPageButton(page) {
+        const button = document.createElement('button');
+        button.className = `btn btn-sm ${page === this.options.currentPage ? 'btn-primary active' : 'btn-outline-secondary'} page-number`;
+        button.dataset.page = page;
+        button.textContent = page;
+        return button;
+    }
+    
+    createEllipsis() {
+        const span = document.createElement('span');
+        span.className = 'page-ellipsis';
+        span.textContent = '...';
+        return span;
+    }
+    
+    updatePageInfo() {
+        const pageInput = this.container.querySelector('#pageInput');
+        const totalPagesSpan = this.container.querySelector('#totalPages');
+        
+        if (pageInput) {
+            pageInput.value = this.options.currentPage;
+            pageInput.max = this.totalPages;
+        }
+        
+        if (totalPagesSpan) {
+            totalPagesSpan.textContent = this.totalPages;
+        }
+    }
+    
+    updateRecordsInfo() {
+        const recordsStart = this.container.querySelector('#recordsStart');
+        const recordsEnd = this.container.querySelector('#recordsEnd');
+        const totalRecords = this.container.querySelector('#totalRecords');
+        
+        const start = (this.options.currentPage - 1) * this.options.pageSize + 1;
+        const end = Math.min(this.options.currentPage * this.options.pageSize, this.options.totalRecords);
+        
+        if (recordsStart) recordsStart.textContent = this.options.totalRecords > 0 ? start : 0;
+        if (recordsEnd) recordsEnd.textContent = end;
+        if (totalRecords) totalRecords.textContent = this.options.totalRecords;
+    }
+    
+    updateButtons() {
+        const prevBtn = this.container.querySelector('#prevBtn');
+        const nextBtn = this.container.querySelector('#nextBtn');
+        
+        if (prevBtn) {
+            prevBtn.disabled = this.options.currentPage === 1;
+        }
+        
+        if (nextBtn) {
+            nextBtn.disabled = this.options.currentPage === this.totalPages || this.totalPages === 0;
+        }
+    }
+    
+    goToPage(page) {
+        if (page >= 1 && page <= this.totalPages && page !== this.options.currentPage) {
+            this.options.currentPage = page;
+            this.render();
+            this.options.onPageChange(page, this.options.pageSize);
+        }
+    }
+    
+    previousPage() {
+        this.goToPage(this.options.currentPage - 1);
+    }
+    
+    nextPage() {
+        this.goToPage(this.options.currentPage + 1);
+    }
+    
+    changePageSize(newSize) {
+        this.options.pageSize = newSize;
+        this.totalPages = Math.ceil(this.options.totalRecords / this.options.pageSize);
+        this.options.currentPage = 1;
+        this.render();
+        this.options.onPageSizeChange(newSize, this.options.currentPage);
+    }
+    
+    updateTotalRecords(totalRecords) {
+        this.options.totalRecords = totalRecords;
+        this.totalPages = Math.ceil(totalRecords / this.options.pageSize);
+        
+        if (this.options.currentPage > this.totalPages && this.totalPages > 0) {
+            this.options.currentPage = this.totalPages;
+        }
+        
+        this.render();
+    }
+    
+    setCurrentPage(page) {
+        if (page >= 1 && page <= this.totalPages) {
+            this.options.currentPage = page;
+            this.render();
+        }
+    }
+    
+    getPageSize() {
+        return this.options.pageSize;
+    }
+}
+
 window.addEventListener('load', function() {
     function fetchTickets(page = 1) {
-        const endpoint = '{% url "helpdesk:user_tickets-list" %}?page=' + page;
-
+        const pageSize = myTicketsPagination ? myTicketsPagination.getPageSize() : 10;
+        const endpoint = '/api/user_tickets/?page=' + page + '&page_size=' + pageSize;
+        
         $.get(endpoint, function(data) {
             $('#ticketsTable tbody').empty();
-            data.results.forEach(function(ticket) {
-                ticket.title = $('<div>').html(ticket.title).html();
+            
+            // Debug: Log the first ticket to see available properties
+            if (data.results && data.results.length > 0) {
+                console.log('First ticket data:', data.results[0]);
+            }
+            
+            if (data.results && data.results.length > 0) {
+                data.results.forEach(function(ticket) {
+                    // Handle queue display - API returns {title: "...", id: ...}
+                    let queueDisplay = 'N/A';
+                    if (ticket.queue && ticket.queue.title) {
+                        queueDisplay = ticket.queue.title;
+                    }
+                    
+                    // Handle status display - API returns the status string directly
+                    let statusDisplay = ticket.status || 'N/A';
+                    
+                    // Handle created date display - API returns humanized time
+                    let createdDisplay = ticket.created || 'N/A';
+                    
+                    // Handle submitter email - API field is 'submitter'
+                    let submitterEmail = ticket.submitter || '';
+                    
+                    // Handle secret key
+                    let secretKey = ticket.secret_key || '';
+                    
+                    $('#ticketsTable tbody').append(`
+                        <tr>
+                            <td>
+                                <a href='/view/?ticket=${ticket.id}&email=${submitterEmail}&key=${secretKey}'>${ticket.title}</a>
+                            </td>
+                            <td>${queueDisplay}</td>
+                            <td>${statusDisplay}</td>
+                            <td>${createdDisplay}</td>
+                        </tr>
+                    `);
+                });
+            } else {
                 $('#ticketsTable tbody').append(`
                     <tr>
-                        <td>
-                            <a href='{% url "helpdesk:public_view" %}?ticket=${ticket.id}&email=${ticket.submitter}&key=${ticket.secret_key}'>${ticket.title}</a>
+                        <td colspan="4" style="text-align: center; padding: 2rem; color: #6c757d;">
+                            No tickets found. <a href="/tickets/submit/" style="color: #183b6b;">Create your first ticket</a>
                         </td>
-                        <td>${ticket.queue.title}</td>
-                        <td>${ticket.status}</td>
-                        <td>${ticket.created}</td>
                     </tr>
                 `);
-            });
-
-            $('#pagination').empty();
-            for (let i = 1; i <= data.total_pages; i++) {
-                $('#pagination').append(`
-                    <li class="page-item ${i === data.page ? 'active' : ''}">
-                        <a class="page-link" href="#" data-page="${i}">${i}</a>
-                    </li>
-                `);
             }
+
+            // Update pagination component
+            if (myTicketsPagination) {
+                myTicketsPagination.updateTotalRecords(data.count || 0);
+            }
+        }).fail(function(xhr, status, error) {
+            console.error('Error fetching tickets:', error);
+            $('#ticketsTable tbody').empty();
+            $('#ticketsTable tbody').append(`
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 2rem; color: #dc3545;">
+                        Error loading tickets. Please try again later.
+                    </td>
+                </tr>
+            `);
         });
     }
 
-    fetchTickets();
-
-    // Event listener for pagination
-    $(document).on('click', '.page-link', function(e) {
-        e.preventDefault();
-        fetchTickets($(this).data('page'));
+    // Initialize pagination component first
+    myTicketsPagination = new ReusablePagination('.pagination-nav', {
+        pageSize: 10,
+        totalRecords: 0, // Will be updated when tickets are loaded
+        onPageChange: function(page, pageSize) {
+            fetchTickets(page);
+        },
+        onPageSizeChange: function(pageSize, page) {
+            fetchTickets(1);
+        }
     });
+
+    // Load initial data
+    fetchTickets(1);
 });
 </script>
 
