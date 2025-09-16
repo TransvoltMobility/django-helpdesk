@@ -19,15 +19,29 @@
     background-color: #183b6b;
 }
 
+/* Fix double header issue - hide DataTables scroll header */
+.dataTables_scrollHead {
+    display: none !important;
+}
+
+/* Ensure only one header is visible */
+#ticketTable thead:not(:first-child) {
+    display: none !important;
+}
+
 #ticketTable thead th {
     font-weight: 600;
-    color: #ffffff;
+    color: #ffffff !important;
     border-bottom: 0;
     padding: 12px 16px;
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     vertical-align: middle;
+    background-color: #183b6b !important;
+    border: 1px solid #0e2c57 !important;
+    text-align: left !important;
+    display: table-cell !important;
 }
 
 #ticketTable tbody td {

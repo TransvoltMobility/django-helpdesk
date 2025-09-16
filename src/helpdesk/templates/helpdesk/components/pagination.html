@@ -1,0 +1,67 @@
+<nav aria-label="Page navigation" class="pagination-nav">
+    <div class="pagination-container">
+        <!-- Page Size Selector -->
+        <div class="page-size-container">
+            <label for="pageSize" class="page-size-label">Page Size:</label>
+            <select class="form-control form-control-sm page-size-select" id="pageSize" data-default="10">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination-controls">
+            <!-- Previous Button -->
+            <button class="btn btn-sm btn-outline-secondary pagination-btn" 
+                    id="prevBtn" 
+                    data-action="prev" 
+                    disabled>
+                <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <!-- Page Numbers Container -->
+            <div class="page-numbers" id="pageNumbers">
+                <button class="btn btn-sm btn-primary page-number active" 
+                        data-page="1">1</button>
+                <button class="btn btn-sm btn-outline-secondary page-number" 
+                        data-page="2">2</button>
+                <button class="btn btn-sm btn-outline-secondary page-number" 
+                        data-page="3">3</button>
+                <span class="page-ellipsis">...</span>
+                <button class="btn btn-sm btn-outline-secondary page-number" 
+                        data-page="10">10</button>
+            </div>
+
+            <!-- Next Button -->
+            <button class="btn btn-sm btn-outline-secondary pagination-btn" 
+                    id="nextBtn" 
+                    data-action="next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Page Info -->
+        <div class="page-info">
+            <span class="page-info-text">
+                Page <input type="number" 
+                           class="form-control form-control-sm page-input" 
+                           id="pageInput" 
+                           value="1" 
+                           min="1" 
+                           max="1"> 
+                of <span id="totalPages">1</span>
+            </span>
+        </div>
+    </div>
+
+    <!-- Records Info -->
+    <div class="records-info">
+        <small class="text-muted">
+            Showing <span id="recordsStart">1</span> to <span id="recordsEnd">10</span> 
+            of <span id="totalRecords">0</span> entries
+        </small>
+    </div>
+</nav>

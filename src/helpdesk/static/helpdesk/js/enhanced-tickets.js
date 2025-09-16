@@ -99,6 +99,14 @@ $(document).ready(function() {
                 
                 // Make sure the entries control is properly styled
                 $('.entries-control select').addClass('form-control-sm');
+                
+                // Hide pagination elements to remove pagination UI
+                wrapper.find('.dataTables_paginate').hide();
+                wrapper.find('.entries-control').hide();
+                wrapper.find('.dt-controls').hide();
+                wrapper.find('.dataTables_length').hide();
+                wrapper.find('.dataTables_info').hide();
+                
             }, 100); // Small delay to ensure all elements are ready
         }
     });
