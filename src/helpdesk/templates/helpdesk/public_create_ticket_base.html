@@ -9,11 +9,8 @@
                     <i class="fas fa-plus-circle mr-2"></i>{% trans "Submit a Ticket" %}
                 </div>
                 <div class="form-body">
-                    <div class="form-intro">
-                        <p>
-                            {% trans "Unless otherwise stated, all fields are required." %}
-                            {% trans "Please provide as descriptive a title and description as possible." %}
-                        </p>
+                    <div class="form-intro" style="background-color: #f8f9fa; padding: 10px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #183b6b;">
+                        <p style="margin-bottom: 0;"><i class="fas fa-info-circle" style="margin-right: 5px;"></i>{% trans "Fields marked with" %} <span class="text-danger">*</span> {% trans "are required." %}</p>
                     </div>
                     
                     {% if form.errors %}
@@ -22,45 +19,208 @@
                     
                     <form role="form" method='post' enctype='multipart/form-data'>
                         {% csrf_token %}
+                        
+                        {# Handle hidden fields first #}
+                        {% for field in form %}
+                            {% if field.is_hidden %}
+                                {{ field }}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {# 1. First line: Queue and Priority fields #}
+                        <div class="form-row">
+                            {# Queue field #}
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for='id_queue' class="form-label">
+                                        {% trans "Select Department for Query" %}{% if form.queue.field.required %} <span class="text-danger">*</span>{% endif %}
+                                        {% if not form.queue.field.required %}
+                                            <span class="text-muted">({% trans "Optional" %})</span>
+                                        {% endif %}
+                                    </label>
+                                    <div class="select-wrapper">
+                                        {{ form.queue }}
+                                    </div>
+                                    {% if form.queue.errors %}
+                                        <div class='form-error'>{{ form.queue.errors }}</div>
+                                    {% endif %}
+                                    {% if form.queue.help_text %}
+                                        <small class='form-help'>{% trans form.queue.help_text %}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            {# Priority field if available #}
+                            {% if form.priority %}
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for='id_priority' class="form-label">
+                                        {{ form.priority.label }}{% if form.priority.field.required %} <span class="text-danger">*</span>{% endif %}
+                                        {% if not form.priority.field.required %}
+                                            <span class="text-muted">({% trans "Optional" %})</span>
+                                        {% endif %}
+                                    </label>
+                                    <div class="select-wrapper">
+                                        {{ form.priority }}
+                                    </div>
+                                    {% if form.priority.errors %}
+                                        <div class='form-error'>{{ form.priority.errors }}</div>
+                                    {% endif %}
+                                    {% if form.priority.help_text %}
+                                        <small class='form-help'>{% trans form.priority.help_text %}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% else %}
+                            {# Empty column if priority field is not available #}
+                            <div class="form-col"></div>
+                            {% endif %}
+                        </div>
+                        
+                        {# 2. Second line: Due date and Attachment fields if available #}
+                        {% if form.due_date or form.attachment %}
+                        <div class="form-row">
+                            {# Due Date field if available #}
+                            {% if form.due_date %}
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for='id_due_date' class="form-label">
+                                        {{ form.due_date.label }}{% if form.due_date.field.required %} <span class="text-danger">*</span>{% endif %}
+                                        {% if not form.due_date.field.required %}
+                                            <span class="text-muted">({% trans "Optional" %})</span>
+                                        {% endif %}
+                                    </label>
+                                    {{ form.due_date }}
+                                    {% if form.due_date.errors %}
+                                        <div class='form-error'>{{ form.due_date.errors }}</div>
+                                    {% endif %}
+                                    {% if form.due_date.help_text %}
+                                        <small class='form-help'>{% trans form.due_date.help_text %}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="form-col"></div>
+                            {% endif %}
+                            
+                            {# Attachment field if available #}
+                            {% if form.attachment %}
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for='id_attachment' class="form-label">
+                                        {{ form.attachment.label }}{% if form.attachment.field.required %} <span class="text-danger">*</span>{% endif %}
+                                        {% if not form.attachment.field.required %}
+                                            <span class="text-muted">({% trans "Optional" %})</span>
+                                        {% endif %}
+                                    </label>
+                                    <div class="file-upload">
+                                        {{ form.attachment }}
+                                    </div>
+                                    {% if form.attachment.errors %}
+                                        <div class='form-error'>{{ form.attachment.errors }}</div>
+                                    {% endif %}
+                                    {% if form.attachment.help_text %}
+                                        <small class='form-help'>{% trans form.attachment.help_text %}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="form-col"></div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        
+                        {# 3. Third line: Submitter Email field #}
+                        {% if form.submitter_email %}
                         <div class="form-row">
                             <div class="form-col">
                                 <div class="form-group">
-                                    <label for="id_queue" class="form-label">
-                                        {% trans "Select Department for Query" %}{% if form.queue.field.required %} <span class="text-danger">*</span>{% endif %}
+                                    <label for='id_submitter_email' class="form-label">
+                                        {{ form.submitter_email.label }}{% if form.submitter_email.field.required %} <span class="text-danger">*</span>{% endif %}
+                                        {% if not form.submitter_email.field.required %}
+                                            <span class="text-muted">({% trans "Optional" %})</span>
+                                        {% endif %}
                                     </label>
-                                    {{ form.queue }}
-                                    {% if form.queue.errors %}
-                                        <div class="form-error">{{ form.queue.errors }}</div>
+                                    <input type="email" name="submitter_email" id="id_submitter_email" class="form-control" value="{{ form.submitter_email.value|default:'' }}" readonly>
+                                    {% if form.submitter_email.errors %}
+                                        <div class='form-error'>{{ form.submitter_email.errors }}</div>
                                     {% endif %}
-                                    {% if form.queue.help_text %}
-                                        <small class="form-help">{{ form.queue.help_text }}</small>
+                                    {% if form.submitter_email.help_text %}
+                                        <small class='form-help'>{% trans form.submitter_email.help_text %}</small>
                                     {% endif %}
                                 </div>
-                                
-                                {% for field in form %}
-                                    {% if field.name != 'queue' and field.name != 'assigned_to' %}
-                                        <div class="form-group">
-                                            <label for="id_{{ field.name }}" class="form-label">
-                                                {% if field.name == 'title' %}{% trans "Subject" %}{% else %}{{ field.label }}{% endif %}{% if field.field.required %} <span class="text-danger">*</span>{% endif %}
-                                            </label>
-                                            {% if field.name == 'submitter_email' %}
-                                                <input type="email" name="{{ field.name }}" value="{% if field.value %}{{ field.value }}{% endif %}" id="id_{{ field.name }}" class="form-control" readonly>
-                                            {% else %}
-                                                {{ field }}
-                                            {% endif %}
-                                            {% if field.errors %}
-                                                <div class="form-error">{{ field.errors }}</div>
-                                            {% endif %}
-                                            {% if field.help_text %}
-                                                <small class="form-help">{{ field.help_text }}</small>
-                                            {% endif %}
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
                             </div>
+                            
+                            {# Hidden input to maintain assigned_to value if present #}
+                            {% if form.assigned_to.value %}
+                                <input type="hidden" name="assigned_to" value="{{ form.assigned_to.value }}">
+                            {% endif %}
+                            
+                            {# Empty column for consistency #}
+                            <div class="form-col"></div>
                         </div>
+                        {% endif %}
                         
-                        <div class="text-center mt-4">
+                        {# 4. Fourth line: Summary (Title) field #}
+                        {% if form.title %}
+                        <div class="form-group">
+                            <label for='id_title' class="form-label">
+                                {% trans "Subject" %}{% if form.title.field.required %} <span class="text-danger">*</span>{% endif %}
+                                {% if not form.title.field.required %}
+                                    <span class="text-muted">({% trans "Optional" %})</span>
+                                {% endif %}
+                            </label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class='form-error'>{{ form.title.errors }}</div>
+                            {% endif %}
+                            {% if form.title.help_text %}
+                                <small class='form-help'>{% trans form.title.help_text %}</small>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        
+                        {# 5. Fifth line: Description (Body) field #}
+                        {% if form.body %}
+                        <div class="form-group">
+                            <label for='id_body' class="form-label">
+                                {{ form.body.label }}{% if form.body.field.required %} <span class="text-danger">*</span>{% endif %}
+                                {% if not form.body.field.required %}
+                                    <span class="text-muted">({% trans "Optional" %})</span>
+                                {% endif %}
+                            </label>
+                            {{ form.body }}
+                            {% if form.body.errors %}
+                                <div class='form-error'>{{ form.body.errors }}</div>
+                            {% endif %}
+                            {% if form.body.help_text %}
+                                <small class='form-help'>{% trans form.body.help_text %}</small>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        
+                        {# Handle any remaining fields that weren't explicitly placed above #}
+                        {% for field in form %}
+                            {% if not field.is_hidden and field.name != 'queue' and field.name != 'priority' and field.name != 'due_date' and field.name != 'attachment' and field.name != 'submitter_email' and field.name != 'assigned_to' and field.name != 'title' and field.name != 'body' %}
+                                <div class="form-group">
+                                    <label for='id_{{ field.name }}' class="form-label">
+                                        {{ field.label }}{% if field.field.required %} <span class="text-danger">*</span>{% endif %}
+                                        {% if not field.field.required %}
+                                            <span class="text-muted">({% trans "Optional" %})</span>
+                                        {% endif %}
+                                    </label>
+                                    {{ field }}
+                                    {% if field.errors %}
+                                        <div class='form-error'>{{ field.errors }}</div>
+                                    {% endif %}
+                                    {% if field.help_text %}
+                                        <small class='form-help'>{% trans field.help_text %}</small>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        <div class="form-group">
                             <button type="submit" class="submit-btn">
                                 <i class="fas fa-paper-plane"></i> {% trans "Submit Ticket" %}
                             </button>

@@ -191,6 +191,48 @@
         width: 100% !important;
         max-width: 100% !important;
     }
+    
+    /* Override any conflicting styles */
+    #id_queue, #id_priority {
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        padding: 0.75rem !important;
+        font-size: 1rem !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Fix for footer positioning */
+    .content-footer {
+        margin-top: 2rem !important;
+        position: static !important;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .ticket-form-container {
+            width: 98%;
+            max-width: 100%;
+            padding: 0 15px;
+            margin-bottom: 6rem; /* More space for footer on mobile */
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .ticket-form-container {
+            width: 100%;
+            padding: 0 10px;
+        }
+        
+        .form-row {
+            flex-direction: column;
+        }
+        
+        .form-col {
+            padding: 0 5px;
+        }
+    }
 </style>
 {% endblock %}
 
