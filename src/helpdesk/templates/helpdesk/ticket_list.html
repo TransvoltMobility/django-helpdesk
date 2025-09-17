@@ -81,12 +81,51 @@
             vertical-align: middle !important;
         }
         
+        /* Additional DataTables header overrides to ensure text visibility */
+        .dataTables_scrollHead table thead th,
+        .dataTables_scrollHeadInner table thead th,
+        #ticketTable_wrapper thead th,
+        table.dataTable thead th {
+            background-color: #183b6b !important;
+            color: #ffffff !important;
+            font-weight: 500 !important;
+            text-align: left !important;
+            padding: 0.75rem 1rem !important;
+            border: 1px solid #0e2c57 !important;
+            font-size: 0.9rem !important;
+            vertical-align: middle !important;
+        }
+        
+        /* Ensure header text is not hidden by any overflow or clipping */
+        #ticketTable thead th,
+        .dataTables_scrollHead thead th {
+            overflow: visible !important;
+            white-space: nowrap !important;
+            text-overflow: initial !important;
+        }
+        
         /* Remove DataTables scroll styling conflicts */
         .dataTables_scrollHead,
         .dataTables_scrollBody {
             border: none !important;
             box-shadow: none !important;
             outline: none !important;
+        }
+        
+        /* Force header text to be visible in all DataTables containers */
+        .dataTables_wrapper .dataTables_scrollHead .dataTables_scrollHeadInner table thead th,
+        .dataTables_wrapper .dataTables_scrollBody table thead th,
+        .dataTables_wrapper table.dataTable thead th {
+            background-color: #183b6b !important;
+            color: #ffffff !important;
+            font-weight: 500 !important;
+            text-align: left !important;
+            padding: 0.75rem 1rem !important;
+            border: 1px solid #0e2c57 !important;
+            font-size: 0.9rem !important;
+            vertical-align: middle !important;
+            visibility: visible !important;
+            opacity: 1 !important;
         }
         
         /* Ensure consistent cell styling */
@@ -373,6 +412,35 @@
         /* Hide DataTables background */
         .dt-button-background {
             display: none !important;
+        }
+
+        /* Loading/Processing indicator styling */
+        .dataTables_processing {
+            position: absolute !important;
+            top: 50% !important;
+            left: 50% !important;
+            width: auto !important;
+            height: auto !important;
+            margin-left: -100px !important;
+            margin-top: -25px !important;
+            padding: 20px 40px !important;
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            border: 2px solid #183b6b !important;
+            border-radius: 8px !important;
+            color: #183b6b !important;
+            font-weight: bold !important;
+            font-size: 16px !important;
+            text-align: center !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+            z-index: 1050 !important;
+            display: block !important;
+        }
+        
+        /* Ensure processing indicator stays visible */
+        .dataTables_wrapper .dataTables_processing {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
         }
 
         /* Large screen responsive improvements */
@@ -662,6 +730,23 @@
                 padding: 5px 0;
             }
         }
+
+        #ticketTable thead {
+    background-color: #183b6b;
+}
+
+/* Fix double header issue - hide DataTables scroll header */
+/* The following rule is the main cause of the issue and will be removed. */
+/*
+.dataTables_scrollHead {
+    display: none !important;
+}
+*/
+
+/* Ensure only one header is visible */
+#ticketTable thead:not(:first-child) {
+    display: none;
+}
     </style>
 {% endblock %}
 
@@ -834,14 +919,24 @@
                                             <th></th>
                                             <th>{% trans "Ticket" %}</th>
                                             <th>{% trans "Priority" %}</th>
-                                            <th>{% trans "Queue" %}</th>
                                             <th>{% trans "Status" %}</th>
                                             <th>{% trans "Created" %}</th>
-                                            <th>{% trans "Due Date" %}</th>
                                             <th>{% trans "Owner" %}</th>
                                             <th>{% trans "Submitter" %}</th>
                                             <th>{% trans "Last Followup" %}</th>
-                                            {% if helpdesk_settings.HELPDESK_ENABLE_TIME_SPENT_ON_TICKET %}<th>{% trans "Time Spent" %}</th>{% endif %}
+                                            {% if helpdesk_settings.HELPDESK_KB_ENABLED %}<th>{% trans "KB item" %}</th>{% endif %}
+                                        </tr>
+                                    </thead>
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>{% trans "Ticket" %}</th>
+                                            <th>{% trans "Priority" %}</th>
+                                            <th>{% trans "Status" %}</th>
+                                            <th>{% trans "Created" %}</th>
+                                            <th>{% trans "Owner" %}</th>
+                                            <th>{% trans "Submitter" %}</th>
+                                            <th>{% trans "Last Followup" %}</th>
                                             {% if helpdesk_settings.HELPDESK_KB_ENABLED %}<th>{% trans "KB item" %}</th>{% endif %}
                                         </tr>
                                     </thead>
@@ -988,7 +1083,9 @@
 	    
             var table = $('#ticketTable').DataTable({
                 language: {
-                    "emptyTable": "{% trans 'No Tickets Match Your Selection' %}"
+                    "emptyTable": "{% trans 'No Tickets Match Your Selection' %}",
+                    "processing": "{% trans 'Loading tickets...' %}",
+                    "loadingRecords": "{% trans 'Loading...' %}"
                 },
                 processing: true,
                 serverSide: true,
@@ -1005,6 +1102,8 @@
                 dom: 'tB',
                 pageLength: 10,
                 lengthMenu: [5, 10, 25, 50, 100],
+                deferRender: true,
+                stateSave: false,
                 buttons: [
                     {
                         extend: 'colvis',
@@ -1080,14 +1179,6 @@
                         visible: true,
                     },
                     {
-                        data: "queue",
-                        title: "{% trans 'Queue' %}",
-                        render: function (data, type, row, meta) {
-                            return data.title;
-                        },
-                        visible: false,
-                    },
-                    {
                         data: "status",
                         title: "{% trans 'Status' %}",
                         render: function (data, type, row) {
@@ -1106,11 +1197,6 @@
                     {
                         data: "created",
                         title: "{% trans 'Created' %}"
-                    },
-                    {
-                        data: "due_date",
-                        title: "{% trans 'Due Date' %}",
-                        visible: false
                     },
                     {
                         data: "assigned_to",
@@ -1147,12 +1233,7 @@
                                 hour12: true
                             });
                         }
-                    }{% if helpdesk_settings.HELPDESK_ENABLE_TIME_SPENT_ON_TICKET %},
-                    {
-                        data: "time_spent",
-                        title: "{% trans 'Time Spent' %}",
-                        visible: false
-                    }{% endif %}{% if helpdesk_settings.HELPDESK_KB_ENABLED %},
+                    }{% if helpdesk_settings.HELPDESK_KB_ENABLED %},
                     {
                         data: "kbitem",
                         title: "{% trans 'KB item' %}"
@@ -1160,19 +1241,50 @@
                 ],
                 order: [],
                 initComplete: function(settings, json) {
-                    console.log("DataTable initialized successfully");
-                    console.log("Data received:", json);
+                    // Add column names to the header since DataTables creates empty headers
+                    console.log("Adding column names to header...");
+                    var columnNames = [
+                        '', // First column is checkbox, no title
+                        '{% trans "Ticket" %}',
+                        '{% trans "Priority" %}', 
+                        '{% trans "Status" %}',
+                        '{% trans "Created" %}',
+                        '{% trans "Owner" %}',
+                        '{% trans "Submitter" %}',
+                        '{% trans "Last Followup" %}'{% if helpdesk_settings.HELPDESK_KB_ENABLED %},
+                        '{% trans "KB item" %}'{% endif %}
+                    ];
+                    
+                    // Add column names to all header cells
+                    $('#ticketTable thead th').each(function(index) {
+                        if (index < columnNames.length) {
+                            $(this).text(columnNames[index]);
+                        }
+                    });
                 },
                 drawCallback: function(settings) {
-                    console.log("DataTable draw completed");
-                    console.log("Rows:", this.api().rows().count());
+                    // Ensure column names stay after each redraw
+                    var columnNames = [
+                        '', // First column is checkbox, no title
+                        '{% trans "Ticket" %}',
+                        '{% trans "Priority" %}', 
+                        '{% trans "Status" %}',
+                        '{% trans "Created" %}',
+                        '{% trans "Owner" %}',
+                        '{% trans "Submitter" %}',
+                        '{% trans "Last Followup" %}'{% if helpdesk_settings.HELPDESK_KB_ENABLED %},
+                        '{% trans "KB item" %}'{% endif %}
+                    ];
+                    
+                    $('#ticketTable thead th').each(function(index) {
+                        if (index < columnNames.length && $(this).text().trim() === '') {
+                            $(this).text(columnNames[index]);
+                        }
+                    });
                 }
             });
-            
-            console.log("DataTable created successfully");
-            
-            // Get DataTable instance for pagination integration
-            var ticketTable = table;
+
+            var ticketPagination;
             
             // Initialize custom pagination and integrate with DataTables
             var ticketPagination;
