@@ -16,22 +16,47 @@
 }
 
 #ticketTable thead {
-    background-color: #183b6b;
+    background-color: #183b6b !important; /* Dark blue - back to original */
+    display: table-header-group !important;
+    visibility: visible !important;
 }
 
-/* Fix double header issue - hide DataTables scroll header */
+/* SUPER AGGRESSIVE DEBUG STYLES - THESE SHOULD OVERRIDE EVERYTHING */
+table#ticketTable thead {
+    background-color: #183b6b !important; /* Dark blue */
+    background: #183b6b !important;
+}
+
+table#ticketTable thead th {
+    background-color: #183b6b !important; /* Dark blue */
+    background: #183b6b !important;
+    color: #ffffff !important; /* White text */
+    border: 1px solid #0e2c57 !important; /* Darker blue border */
+}
+
+/* Hide duplicate DataTables scroll header but keep the main header visible */
 .dataTables_scrollHead {
     display: none !important;
 }
 
-/* Ensure only one header is visible */
-#ticketTable thead:not(:first-child) {
-    display: none !important;
+/* Show all table headers initially */
+#ticketTable thead:first-child {
+    display: table-header-group !important;
+    visibility: visible !important;
+    background-color: #183b6b !important; /* Dark blue for first header */
+    background: #183b6b !important;
+}
+
+#ticketTable thead:nth-child(2) {
+    display: table-header-group !important;
+    visibility: visible !important;
+    background-color: #183b6b !important; /* Dark blue for second header */
+    background: #183b6b !important;
 }
 
 #ticketTable thead th {
     font-weight: 600;
-    color: #ffffff !important;
+    color: #ffffff !important; /* White text */
     border-bottom: 0;
     padding: 12px 16px;
     font-size: 0.9rem;
@@ -39,9 +64,10 @@
     letter-spacing: 0.5px;
     vertical-align: middle;
     background-color: #183b6b !important;
-    border: 1px solid #0e2c57 !important;
+    border: 1px solid #0e2c57 !important; /* Dark blue border */
     text-align: left !important;
     display: table-cell !important;
+    visibility: visible !important;
 }
 
 #ticketTable tbody td {
@@ -632,6 +658,8 @@ table.dataTable thead th {
     border-bottom: 0 !important;
     padding: 10px 16px !important;
     font-weight: 500 !important;
+    text-align: left !important; /* Ensure text alignment */
+    vertical-align: middle !important; /* Ensure vertical alignment */
 }
 
 /* Better row selection buttons */
