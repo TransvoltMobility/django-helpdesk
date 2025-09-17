@@ -29,12 +29,18 @@
     /* New Layout for Dashboard */
     .dashboard-container {
         display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .dashboard-stats-row {
+        display: flex;
+        flex-wrap: wrap;
         gap: 1.5rem;
     }
 
     .dashboard-left-column {
-        flex: 0 0 300px;
-        max-width: 300px;
+        flex: 1;
     }
 
     .dashboard-right-column {
@@ -47,8 +53,9 @@
         color: #fff;
         padding: 2.5rem 1rem; /* Increased vertical padding to increase height */
         border-radius: 8px;
-        margin-bottom: 1rem;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        flex: 1;
+        min-width: 250px;
     }
 
     .stat-item h3 {
@@ -108,13 +115,8 @@
     
     /* Responsive Adjustments */
     @media (max-width: 992px) {
-        .dashboard-container {
+        .dashboard-stats-row {
             flex-direction: column;
-        }
-        .dashboard-left-column,
-        .dashboard-right-column {
-            flex: none;
-            max-width: 100%;
         }
     }
     @media (max-width: 768px) {
@@ -142,85 +144,65 @@
 {% block helpdesk_body %}
 
 <div class="dashboard-container">
-    <div class="dashboard-left-column">
+    <div class="dashboard-stats-row">
         {% include 'helpdesk/include/stats.html' %}
     </div>
 
     <div class="dashboard-right-column">
         <div class="card mb-3">
-            <div class="card-body">
+            <!--<div class="card-body">
                 <div class="alert alert-warning mb-0">
                     <p>{% trans "Welcome to your Helpdesk Dashboard! From here you can quickly see tickets assigned to you, tickets you have submitted, and those that have no owner." %}</p>
                 </div>
-            </div>
+            </div>-->
         </div>
-
-        <div class="card">
-            <div class="card-header">
-                <ul class="nav nav-tabs">
-                    <li class="nav-item" style="width: auto;">
-                        <h5 class="query-results-title">{% trans "Quick View" %}:</h5>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" id="assigned-tab" data-toggle="tab" href="#assigned-tickets" role="tab" aria-controls="assigned-tickets" aria-selected="true">
-                            <i class="fas fa-user-tag"></i> {% trans "Assigned to You" %}
-                        </a>
-                    </li>
-                    
-                    {% if all_tickets_reported_by_current_user %}
-                    <li class="nav-item">
-                        <a class="nav-link" id="reported-tab" data-toggle="tab" href="#reported-tickets" role="tab" aria-controls="reported-tickets" aria-selected="false">
-                            <i class="fas fa-file-invoice"></i> {% trans "Submitted by You" %}
-                        </a>
-                    </li>
-                    {% endif %}
-
-                    <li class="nav-item">
-                        <a class="nav-link" id="unassigned-tab" data-toggle="tab" href="#unassigned-tickets" role="tab" aria-controls="unassigned-tickets" aria-selected="false">
-                            <i class="fas fa-user-slash"></i> {% trans "Unassigned" %}
-                        </a>
-                    </li>
-                    
-                    {% if user_tickets_closed_resolved %}
-                    <li class="nav-item">
-                        <a class="nav-link" id="closed-tab" data-toggle="tab" href="#closed-tickets" role="tab" aria-controls="closed-tickets" aria-selected="false">
-                            <i class="fas fa-check-double"></i> {% trans "Closed & Resolved" %}
-                        </a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </div>
-
-            <div class="card-body">
-                <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="assigned-tickets" role="tabpanel" aria-labelledby="assigned-tab">
+        
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="assigned-tickets-tab" data-toggle="tab" href="#assigned-tickets" role="tab" aria-controls="assigned-tickets" aria-selected="true">{% trans "Tickets Assigned to You" %}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="submitted-tickets-tab" data-toggle="tab" href="#submitted-tickets" role="tab" aria-controls="submitted-tickets" aria-selected="false">{% trans "Tickets Submitted by You" %}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="unassigned-tickets-tab" data-toggle="tab" href="#unassigned-tickets" role="tab" aria-controls="unassigned-tickets" aria-selected="false">{% trans "Unassigned Tickets" %}</a>
+            </li>
+            
+        </ul>
+        
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="assigned-tickets" role="tabpanel" aria-labelledby="assigned-tickets-tab">
+                <div class="card mb-3">
+                    <div class="card-body">
                         {% trans "Open Tickets assigned to you (you are working on this ticket)" as ticket_list_caption %}
                         {% trans "You have no tickets assigned to you." as no_assigned_tickets %}
                         {% trans "ut_page" as page_var %}
                         {% include 'helpdesk/include/tickets.html' with ticket_list=user_tickets ticket_list_empty_message=no_assigned_tickets page_var=page_var %}
                     </div>
-
-                    {% if all_tickets_reported_by_current_user %}
-                    <div class="tab-pane fade" id="reported-tickets" role="tabpanel" aria-labelledby="reported-tab">
+                </div>
+            </div>
+            
+            <div class="tab-pane fade" id="submitted-tickets" role="tabpanel" aria-labelledby="submitted-tickets-tab">
+                {% if all_tickets_reported_by_current_user %}
+                <div class="card mb-3">
+                    <div class="card-body">
                         {% trans "All Tickets submitted by you" as ticket_list_caption %}
                         {% trans "atrbcu_page" as page_var %}
                         {% include 'helpdesk/include/tickets.html' with ticket_list=all_tickets_reported_by_current_user ticket_list_empty_message="" page_var=page_var %}
                     </div>
-                    {% endif %}
-
-                    <div class="tab-pane fade" id="unassigned-tickets" role="tabpanel" aria-labelledby="unassigned-tab">
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="tab-pane fade" id="unassigned-tickets" role="tabpanel" aria-labelledby="unassigned-tickets-tab">
+                <div class="card mb-3">
+                    <div class="card-body">
                         {% include 'helpdesk/include/unassigned.html' %}
                     </div>
-
-                    {% if user_tickets_closed_resolved %}
-                    <div class="tab-pane fade" id="closed-tickets" role="tabpanel" aria-labelledby="closed-tab">
-                        {% trans "Closed & resolved Tickets you used to work on" as ticket_list_caption %}
-                        {% trans "utcr_page" as page_var %}
-                        {% include 'helpdesk/include/tickets.html' with ticket_list=user_tickets_closed_resolved ticket_list_empty_message="" page_var=page_var %}
-                    </div>
-                    {% endif %}
                 </div>
             </div>
+            
+            
         </div>
     </div>
 </div>
