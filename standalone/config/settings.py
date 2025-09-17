@@ -237,8 +237,14 @@ STATIC_URL = os.environ.get("DJANGO_HELPDESK_STATIC_URL", "/static/")
 # MEDIA_ROOT is where media uploads are stored.
 # We set this to a directory to host file attachments created
 # with tickets.
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.environ.get('DJANGO_HELPDESK_MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
+
+#MEDIA_URL = '/media/'
+#MEDIA_ROOT = os.environ.get('DJANGO_HELPDESK_MEDIA_ROOT', os.path.join(BASE_DIR, 'media'))
+
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = "/data/media/"
+
  
 # for Django 3.2+, set default for autofields:
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
