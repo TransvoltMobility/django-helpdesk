@@ -361,9 +361,11 @@
                         </ol>
                     </nav>
                     
+                    {% if not hide_ticket_button %}
                     <a href="{% url 'helpdesk:submit' %}" class="header-action-btn">
                         <i class="fas fa-plus-circle"></i> {% trans " Ticket" %}
                     </a>
+                    {% endif %}
                 </div>
             
                 {% block helpdesk_body %}{% endblock %}

@@ -49,6 +49,30 @@
   border-color: #e3e6f0;
 }
 
+/* Fix search button alignment */
+.navbar .input-group {
+  display: flex;
+  align-items: stretch;
+}
+
+.navbar .input-group .form-control {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.navbar .input-group .btn {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  height: auto;
+  display: flex;
+  align-items: center;
+}
+
+/* Ensure hamburger menu stays on left */
+#sidebarToggle {
+  order: -1;
+}
+
 .navbar .form-control:focus {
   border-color: #183b6b;
   box-shadow: 0 0 0 0.2rem rgba(24, 59, 107, 0.25);
