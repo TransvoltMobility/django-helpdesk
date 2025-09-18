@@ -238,9 +238,9 @@
 
 {% block helpdesk_breadcrumb %}
     <li class="breadcrumb-item">
-        <a href="{% url 'helpdesk:home' %}">Public</a>
+        <a href="{% url 'helpdesk:list' %}">{% trans "Tickets" %}</a>
     </li>
-    <li class="breadcrumb-item active">Create Ticket</li>
+    <li class="breadcrumb-item active">{% trans "Create Ticket" %}</li>
 {% endblock %}
 
 {% block helpdesk_body %}

@@ -23,9 +23,11 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 from helpdesk import settings as helpdesk_settings
 from helpdesk.decorators import is_helpdesk_staff, protect_view
+from helpdesk.forms import TicketForm
 from helpdesk.lib import text_is_spam
 from helpdesk.models import Queue, Ticket, UserSettings
-from helpdesk.user import huser_from_request
+from helpdesk.user import huser_from_request, HelpdeskUser
+from helpdesk.views.staff import get_user_queues
 import helpdesk.views.abstract_views as abstract_views
 import helpdesk.views.staff as staff
 from importlib import import_module
@@ -37,10 +39,39 @@ logger = logging.getLogger(__name__)
 
 
 def create_ticket(request, *args, **kwargs):
-    if is_helpdesk_staff(request.user):
-        return staff.CreateTicketView.as_view()(request, *args, **kwargs)
-    else:
-        return protect_view(CreateTicketView.as_view())(request, *args, **kwargs)
+    # Use unified CreateTicketView for both admin and regular users
+    return UnifiedCreateTicketView.as_view()(request, *args, **kwargs)
+
+
+class UnifiedCreateTicketView(abstract_views.AbstractCreateTicketMixin, FormView):
+    """
+    Unified ticket creation view that uses the same form and template for both
+    staff and regular users, ensuring consistent dropdown options and behavior.
+    """
+    template_name = "helpdesk/create_ticket.html"
+    form_class = TicketForm
+
+    def get_initial(self):
+        initial_data = super().get_initial()
+        return initial_data
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["queue_choices"] = get_user_queues(self.request.user)
+        return kwargs
+
+    def form_valid(self, form):
+        self.ticket = form.save(
+            user=self.request.user if self.request.user.is_authenticated else None
+        )
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        request = self.request
+        if HelpdeskUser(request.user).can_access_queue(self.ticket.queue):
+            return self.ticket.get_absolute_url()
+        else:
+            return reverse("helpdesk:dashboard")
 
 
 class BaseCreateTicketView(abstract_views.AbstractCreateTicketMixin, FormView):
