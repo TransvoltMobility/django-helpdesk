@@ -51,6 +51,11 @@ class UnifiedCreateTicketView(abstract_views.AbstractCreateTicketMixin, FormView
     template_name = "helpdesk/create_ticket.html"
     form_class = TicketForm
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['hide_ticket_button'] = True
+        return context
+
     def get_initial(self):
         initial_data = super().get_initial()
         return initial_data
@@ -67,11 +72,12 @@ class UnifiedCreateTicketView(abstract_views.AbstractCreateTicketMixin, FormView
         return super().form_valid(form)
 
     def get_success_url(self):
-        request = self.request
-        if HelpdeskUser(request.user).can_access_queue(self.ticket.queue):
+        # For staff users, use the staff ticket view
+        if is_helpdesk_staff(self.request.user):
             return self.ticket.get_absolute_url()
+        # For regular users, use the public ticket view URL (relative URL to avoid domain issues)
         else:
-            return reverse("helpdesk:dashboard")
+            return reverse("helpdesk:public_view") + f"?ticket={self.ticket.ticket_for_url}&email={self.ticket.submitter_email}&key={self.ticket.secret_key}"
 
 
 class BaseCreateTicketView(abstract_views.AbstractCreateTicketMixin, FormView):
@@ -190,6 +196,11 @@ class SuccessIframeView(TemplateView):
 
 class CreateTicketView(BaseCreateTicketView):
     template_name = "helpdesk/public_create_ticket.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['hide_ticket_button'] = True
+        return context
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
