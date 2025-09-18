@@ -474,9 +474,14 @@
     <div style="display: flex; align-items: center;">
         <span style="background-color: #183b6b; padding: 8px 16px; border-radius: 4px; font-weight: 600;">{% trans "Ticket Details" %}</span>
     </div>
-    <span class="ticket-status {% if 'Resolved' in ticket.get_status %}resolved{% elif 'Closed' in ticket.get_status %}closed{% elif 'Hold' in ticket.get_status %}hold{% else %}open{% endif %}">
-        {{ ticket.get_status }}
-    </span>
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <a href="{% url 'helpdesk:home' %}" class="btn btn-primary" style="background-color: #28a745; border-color: #28a745; padding: 8px 16px; border-radius: 4px; color: white; text-decoration: none; font-weight: 500;">
+            <i class="fas fa-plus"></i> {% trans "New Ticket" %}
+        </a>
+        <span class="ticket-status {% if 'Resolved' in ticket.get_status %}resolved{% elif 'Closed' in ticket.get_status %}closed{% elif 'Hold' in ticket.get_status %}hold{% else %}open{% endif %}">
+            {{ ticket.get_status }}
+        </span>
+    </div>
 </div>
 
 <div class="ticket-tabs">

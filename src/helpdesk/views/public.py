@@ -67,11 +67,12 @@ class UnifiedCreateTicketView(abstract_views.AbstractCreateTicketMixin, FormView
         return super().form_valid(form)
 
     def get_success_url(self):
-        request = self.request
-        if HelpdeskUser(request.user).can_access_queue(self.ticket.queue):
+        # For staff users, use the staff ticket view
+        if is_helpdesk_staff(self.request.user):
             return self.ticket.get_absolute_url()
+        # For regular users, use the public ticket view URL (relative URL to avoid domain issues)
         else:
-            return reverse("helpdesk:dashboard")
+            return reverse("helpdesk:public_view") + f"?ticket={self.ticket.ticket_for_url}&email={self.ticket.submitter_email}&key={self.ticket.secret_key}"
 
 
 class BaseCreateTicketView(abstract_views.AbstractCreateTicketMixin, FormView):
