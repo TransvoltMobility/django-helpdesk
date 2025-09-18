@@ -414,6 +414,13 @@
             display: none !important;
         }
 
+        /* Hide column visibility button */
+        .dt-buttons,
+        .buttons-colvis,
+        .custom-colvis-button {
+            display: none !important;
+        }
+
         /* Loading/Processing indicator styling */
         .dataTables_processing {
             position: absolute !important;
@@ -766,7 +773,7 @@
         <li class="breadcrumb-item active">{% trans "Overview" %}</li>
     {% endif %}
 {% endblock %}
-
+  
 
 {% block helpdesk_body %}
     <div class="card">
@@ -788,7 +795,7 @@
                         {% trans "Timeline" %}
                     </a>
                 </li>-->
-                <li class="nav-item" style="margin-left: 15px; margin-top: 4px;">
+                <!-- <li class="nav-item" style="margin-left: 15px; margin-top: 4px;">
                     <div class="select-dropdown dropdown">
                         <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="selectOptionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border: 1px solid #dee2e6;">
                             {% trans "Select" %}
@@ -799,7 +806,7 @@
                             <a class="dropdown-item" href="#" id="select_inverse_btn"><i class="fas fa-exchange-alt"></i> {% trans "Invert" %}</a>
                         </div>
                     </div>
-                </li>
+                </li> -->
             </ul>
             
             <!-- Action buttons container for all controls -->
@@ -811,7 +818,7 @@
                         <i class="fas fa-filter"></i> {% trans "Filters" %}
                     </button>
                     <div class="dropdown-menu dropdown-menu-right filter-dropdown-menu" aria-labelledby="filterMenuButton">
-                        <form method="get" class="px-3 py-2">
+                        <form method="get" action="{% url 'helpdesk:list' %}" class="px-3 py-2" id="filterForm">
                             <!-- Sorting Filter -->
                             <div class="form-group">
                                 <label for='id_sort' class="font-weight-bold">{% trans "Sorting" %}:</label>
@@ -872,10 +879,10 @@
                 </div>
                 
                 <!-- Column Visibility button will be placed here by DataTables -->
-                <div id="column-visibility-container" style="margin-right: 10px;"></div>
+                <!-- <div id="column-visibility-container" style="margin-right: 10px;"></div> -->
                 
                 <!-- With Selected Tickets Dropdown -->
-                <div class="dropdown with-selected-dropdown">
+                <!-- <div class="dropdown with-selected-dropdown">
                     <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="withSelectedDropdown" 
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border: 1px solid #dee2e6;">
                         <i class="fas fa-tasks"></i> {% trans "Actions" %}
@@ -898,7 +905,7 @@
                         {% endfor %}
                         {% endif %}
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
         {% endif %}
@@ -1447,6 +1454,23 @@
                 
                 // Submit the form
                 $("#ticket_mass_update").submit();
+            });
+
+            {# Handle filter form submission #}
+            $("#filterForm").on('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form data
+                var formData = $(this).serialize();
+                
+                // Build the URL with filter parameters
+                var baseUrl = "{% url 'helpdesk:list' %}";
+                var newUrl = baseUrl + '?' + formData;
+                
+                // Redirect to the filtered URL
+                window.location.href = newUrl;
+                
+                return false;
             });
         })
         
