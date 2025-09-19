@@ -3,19 +3,19 @@
 
 <div class="stat-item" style="background-color: #E8EEF9; color: #4472C4; border: 1px solid #4472C4;">
     <a href="{% if basic_ticket_stats.open_tickets > 0 %}{% url 'helpdesk:list' %}?status__in=1,2,3,4{% else %}#{% endif %}" style="text-decoration: none; color: inherit;">
-        <h3>{{ basic_ticket_stats.open_tickets }}</h3>
-        <p>{% trans "Open Tickets" %}</p>
+        <h3><b>{{ basic_ticket_stats.open_tickets }}</b></h3>
+        <p><b>{% trans "Open Tickets" %}</b></p>
     </a>
 </div>
 <div class="stat-item" style="background-color: #E1F6E5; color: #548235; border: 1px solid #548235;">
     <a href="{% if basic_ticket_stats.on_hold_tickets > 0 %}{% url 'helpdesk:list' %}?status__in=2{% else %}#{% endif %}" style="text-decoration: none; color: inherit;">
-        <h3>{{ basic_ticket_stats.on_hold_tickets }}</h3>
-        <p>{% trans "Tickets on Hold" %}</p>
+        <h3><b>{{ basic_ticket_stats.on_hold_tickets }}</b></h3>
+        <p><b>{% trans "Tickets on Hold" %}</b></p>
     </a>
 </div>
 <div class="stat-item" style="background-color: #FFEFDD; color: #9C5529; border: 1px solid #9C5529;">
     <a href="{% if basic_ticket_stats.resolved_tickets > 0 %}{% url 'helpdesk:list' %}?status__in=5{% else %}#{% endif %}" style="text-decoration: none; color: inherit;">
-        <h3>{{ basic_ticket_stats.resolved_tickets }}</h3>
-        <p>{% trans "Resolved Tickets" %}</p>
+        <h3><b>{{ basic_ticket_stats.resolved_tickets }}</b></h3>
+        <p><b>{% trans "Resolved Tickets" %}</b></p>
     </a>
 </div>

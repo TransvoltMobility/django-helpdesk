@@ -213,7 +213,7 @@ else:
 # See CONTRIBUTING.rst for more info.
 LANGUAGE_CODE = "en-US"
  
-TIME_ZONE = "UTC"
+TIME_ZONE = "IST"
  
 USE_I18N = True
 
