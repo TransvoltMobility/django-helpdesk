@@ -360,12 +360,10 @@
                             {% block helpdesk_breadcrumb %}{% endblock %}
                         </ol>
                     </nav>
-                    
-                    {% if request.resolver_match.url_name == 'list' or request.resolver_match.url_name == 'my-tickets' %}
+
                     <a href="{% url 'helpdesk:submit' %}" class="header-action-btn">
                         <i class="fas fa-plus-circle"></i> {% trans " Ticket" %}
                     </a>
-                    {% endif %}
                 </div>
             
                 {% block helpdesk_body %}{% endblock %}
