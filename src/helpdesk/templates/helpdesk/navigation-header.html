@@ -6,7 +6,7 @@
     <nav class="navbar navbar-expand navbar-light bg-white static-top">
 
       <a class="navbar-brand text-primary" href="{% url 'helpdesk:home' %}">
-        <img src="{% static 'helpdesk/img/SuportVoltColorlogo2.svg' %}" alt="SupportVolt" height="30" class="mr-2">
+        <img src="{% static 'helpdesk/img/TransvoltLogoBlack2.png' %}" alt="SupportVolt" height="15" class="mr-2">
       </a>
 
       <button class="btn btn-link btn-sm text-white order-1 order-sm-0 mr-auto" id="sidebarToggle" href="#">
@@ -16,11 +16,11 @@
       {% if helpdesk_settings.HELPDESK_NAVIGATION_ENABLED and user.is_authenticated or user|is_helpdesk_staff %}
       <!-- Navbar Search -->
       <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0" id='searchform' method='get' action="{% url 'helpdesk:list' %}">
-        <div class="input-group">
-          <input type="text" class="form-control" name='q' size='15' placeholder='{% trans "Search..." %}' id='search_query' title='{% trans "Enter a keyword, or a ticket number to jump straight to that ticket." %}' aria-label="Search" aria-describedby="basic-addon2">
+        <div class="input-group" style="width: 300px;">
+          <input type="text" class="form-control" name='q' size='15' placeholder='{% trans "Search..." %}' id='search_query' title='{% trans "Enter a keyword, or a ticket number to jump straight to that ticket." %}' aria-label="Search" aria-describedby="basic-addon2" style="border-top-right-radius: 0; border-bottom-right-radius: 0; height: 38px;">
           <input type='hidden' name='status' value='1' /><input type='hidden' name='status' value='2' /><input type='hidden' name='status' value='3' /><input type='hidden' name='search_type' value='header' />
           <div class="input-group-append">
-            <button class="btn btn-primary" type="submit">
+            <button class="btn btn-primary" type="submit" style="border-top-left-radius: 0; border-bottom-left-radius: 0; height: 38px; line-height: 1.2; display: flex; align-items: center;">
               <i class="fas fa-search"></i> {% trans 'Go' %}
             </button>
           </div>

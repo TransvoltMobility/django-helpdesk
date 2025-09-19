@@ -474,9 +474,11 @@
     <div style="display: flex; align-items: center;">
         <span style="background-color: #183b6b; padding: 8px 16px; border-radius: 4px; font-weight: 600;">{% trans "Ticket Details" %}</span>
     </div>
+
     <span class="ticket-status {% if 'Resolved' in ticket.get_status %}resolved{% elif 'Closed' in ticket.get_status %}closed{% elif 'Hold' in ticket.get_status %}hold{% else %}open{% endif %}">
         {{ ticket.get_status }}
     </span>
+
 </div>
 
 <div class="ticket-tabs">
