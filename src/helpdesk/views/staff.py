@@ -1284,11 +1284,6 @@ class CreateTicketView(
     template_name = "helpdesk/create_ticket.html"
     form_class = TicketForm
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['hide_ticket_button'] = True
-        return context
-
     def get_initial(self):
         initial_data = super().get_initial()
         return initial_data
