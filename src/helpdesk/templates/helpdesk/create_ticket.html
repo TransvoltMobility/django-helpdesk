@@ -10,10 +10,6 @@
 {% endblock %}
 
 {% block helpdesk_head %}
-<!-- jQuery UI for date picker -->
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-
 <style>
     /* Reduce the height of the navbar to match public page */
     .navbar {
@@ -463,18 +459,6 @@
 {% block helpdesk_js %}
     {{ form.media.js }}
     <script>
-        $(document).ready(function() {
-            // Initialize date picker for due date field
-            $('#id_due_date').datepicker({
-                dateFormat: 'yy-mm-dd',
-                showOtherMonths: true,
-                selectOtherMonths: true,
-                changeMonth: true,
-                changeYear: true,
-                yearRange: '2020:2030'
-            });
-        });
-        
         $(document).on('change', ':file', function () {
             const input = $(this),
                 inputWidgetNum = $(this).attr('id').split("file")[1],
