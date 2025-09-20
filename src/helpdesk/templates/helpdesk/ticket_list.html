@@ -853,9 +853,11 @@
                                 <label for='id_priority' class="font-weight-bold">{% trans "Priority" %}:</label>
                                 <select id='id_priority' name='priority' class="form-control form-control-sm">
                                     <option value=''>{% trans "Any" %}</option>
-                                    {% for p in priorities %}
-                                        <option value='{{ p.pk }}'{% if query_params.filtering.priority__in and p.pk|in_list:query_params.filtering.priority__in %} selected='selected'{% endif %}>{{ p }}</option>
-                                    {% endfor %}
+                                    <option value='1'>Critical</option>
+                                    <option value='2'>High</option>
+                                    <option value='3'>Normal</option>
+                                    <option value='4'>Low</option>
+                                    <option value='5'>Very Low</option>
                                 </select>
                             </div>
                             
@@ -1163,25 +1165,16 @@
                         data: "priority",
                         title: "{% trans 'Priority' %}",
                         render: function (data, type, row, meta) {
-                            let priorityClass = "priority-5";
-                            switch (data) {
-                                case 1:
-                                    priorityClass = "priority-1";
-                                    break;
-                                case 2:
-                                    priorityClass = "priority-2";
-                                    break;
-                                case 3:
-                                    priorityClass = "priority-3";
-                                    break;
-                                case 4:
-                                    priorityClass = "priority-4";
-                                    break;
-                                case 5:
-                                    priorityClass = "priority-5";
-                                    break;
-                            }
-                            return '<span class="' + priorityClass + '">' + data + '</span>';
+                            var priorityNames = {
+                                1: "Critical",
+                                2: "High",
+                                3: "Normal",
+                                4: "Low",
+                                5: "Very Low"
+                            };
+                            let priorityClass = "priority-" + data;
+                            let name = priorityNames[data] || data;
+                            return '<span class="' + priorityClass + '">' + name + '</span>';
                         },
                         visible: true,
                     },
