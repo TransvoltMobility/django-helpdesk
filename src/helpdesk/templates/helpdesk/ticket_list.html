@@ -763,15 +763,23 @@
 
 
 {% block helpdesk_breadcrumb %}
-    <li class="breadcrumb-item">
-        <a href="{% url 'helpdesk:list' %}">{% trans "Tickets" %}</a>
-    </li>
-    {% if from_saved_query and saved_query.user == user %}
-        <li class="breadcrumb-item">{% trans "Saved Query" %}</li>
-        <li class="breadcrumb-item active">{{ saved_query.title }}</li>
-    {% else %}
-        <li class="breadcrumb-item active">{% trans "Overview" %}</li>
-    {% endif %}
+<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+    <ol class="breadcrumb" style="margin-bottom: 0; background: none; padding: 0;">
+        <li class="breadcrumb-item">
+            <a href="{% url 'helpdesk:list' %}">{% trans "Tickets" %}</a>
+        </li>
+        {% if from_saved_query and saved_query.user == user %}
+            <li class="breadcrumb-item">{% trans "Saved Query" %}</li>
+            <li class="breadcrumb-item active">{{ saved_query.title }}</li>
+        {% else %}
+            <li class="breadcrumb-item active">{% trans "Overview" %}</li>
+        {% endif %}
+    </ol>
+    <a href="{% url 'helpdesk:submit' %}" class="header-action-btn"
+       style="background-color:#1c7319;color:white;border:none;border-radius:4px;padding:0.75rem 2rem;font-size:1rem;font-weight:600;display:inline-flex;align-items:center;transition:background-color 0.2s;min-width:180px;justify-content:center;margin-left:10px;">
+        <i class="fas fa-plus-circle"></i> {% trans " Ticket" %}
+    </a>
+</div>
 {% endblock %}
   
 
@@ -811,6 +819,8 @@
             
             <!-- Action buttons container for all controls -->
             <div class="action-buttons-container" style="display: flex; align-items: center; justify-content: flex-end; height: 35px;">
+                <!-- + Ticket Button -->
+               
                 <!-- Filter Dropdown -->
                 <div class="dropdown filter-menu-dropdown" style="margin-right: 10px;">
                     <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="filterMenuButton" 

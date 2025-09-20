@@ -170,11 +170,13 @@
     /* Form elements */
     #commentBox {
         width: 100%;
-        border: 2px solid #e9ecef;
-        border-radius: 6px;
-        padding: 15px;
-        font-size: 1rem;
-        line-height: 1.5;
+        border: 2px solid #183b6b !important;
+        border-radius: 8px !important;
+        background: #fff !important;
+        font-size: 1.1rem;
+        padding: 18px;
+        box-shadow: 0 1px 4px rgba(24,59,107,0.04);
+        margin-bottom: 18px;
         transition: border-color 0.2s ease;
     }
     
@@ -430,6 +432,20 @@
         transform: translateY(-1px);
         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
+
+    /* Update Ticket header styling */
+    .comment-form h3 {
+        background: linear-gradient(90deg, #183b6b 80%, #2e5fa7 100%);
+        color: #fff;
+        padding: 16px 24px;
+        border-radius: 8px 8px 0 0;
+        margin-top: 0;
+        margin-bottom: 24px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        border-bottom: 2px solid #183b6b;
+        box-shadow: 0 2px 8px rgba(24,59,107,0.08);
+    }
 </style>
 {% endblock %}
 
@@ -489,7 +505,7 @@
                         {% include "helpdesk/ticket_desc_table.html" %}
                         
                         <div class="card mb-3 update-ticket-section">
-                            <div class="card-header"><i class="fas fa-reply fa-fw"></i>{% trans "Update Ticket" %}</div>
+                            <div class="card-header"><i class="fas fa-reply fa-fw"></i>{% trans "Update Tickettt" %}</div>
                             <div class="card-body">
 
                          <form method="post" action="{% url 'helpdesk:update' ticket.id %}" enctype="multipart/form-data" style="width: 100%">
@@ -518,7 +534,7 @@
                                 <dd>
                                     <div class="add_file_fields_wrap">
                                         <div style="display: flex; gap: 10px; align-items: baseline; margin-bottom: 10px;">
-                                            <label class='btn btn-primary btn-sm btn-file' style="margin-bottom: 0; vertical-align: baseline;">
+                                            <label class='btn btn-primary btn-sm btn-file' style="margin-bottom: 0; vertical-align: baseline;"></label>
                                                 Browse... <input type="file" name='attachment' id='file0' style='display: none;'/>
                                             </label>
                                             <button class="add_file_field_button btn btn-success btn-sm" style="margin-bottom: 0; vertical-align: baseline;">{% trans "Add Another File" %}</button>
@@ -546,7 +562,7 @@
                                 {% if helpdesk_settings.HELPDESK_UPDATE_PUBLIC_DEFAULT %}
                                 <input type='hidden' name='public' value='1'>
                                 {% else %}
-                                <dt>
+                                <dt></dt>
                                     <label for='id_public'>{% trans "Is this update public?" %}</label> <span class='form_optional'>{% trans "(Optional)" %}</span>
                                 </dt>
                                 <dd><input type='checkbox' name='public' value='1' checked='checked' />&nbsp; {% trans 'Yes, make this update public.' %}</dd>
