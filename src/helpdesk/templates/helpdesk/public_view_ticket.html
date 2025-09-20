@@ -46,84 +46,95 @@
         border-radius: 20px;
         font-size: 1rem;
         font-weight: 500;
-    <form method='post' action="{% url 'helpdesk:update' ticket.id %}" enctype='multipart/form-data' class="comment-form">
-        <h3>{% trans "Update Ticket" %}</h3>
-        <input type="hidden" name="key" value="{{ key }}" />
-        <input type="hidden" name="mail" value="{{ mail }}" />
-        {% if preset_replies %}
-        <div class="form-group">
-            <label for='id_preset'>{% trans "Use a Pre-set Reply" %} <span style="color: #6c757d; font-weight: normal;">{% trans "(Optional)" %}</span></label>
-            <select name='preset' id='id_preset' class="form-control">
-                <option value=''>-- {% trans "Select a pre-set reply" %} --</option>
-                {% for preset in preset_replies %}
-                <option value='{{ preset.id }}'>{{ preset.name }}</option>
-                {% endfor %}
-            </select>
-            <p class="form-help-text">{% trans "Selecting a pre-set reply will over-write your comment below. You can then modify the pre-set reply to your liking before saving this update." %}</p>
-        </div>
-        {% endif %}
-        <div class="form-group">
-            <label for='commentBox'>{% trans "Comment / Resolution" %}</label>
-            <textarea rows='8' name='comment' id='commentBox' class="form-control" placeholder="{% trans 'Enter your comment or resolution here...' %}"></textarea>
-            {% url "helpdesk:help_context" as context_help_url %}
-            <p class="form-help-text">
-                {% blocktrans %}You can insert ticket and queue details in your message. For more information, see the <a href='{{ context_help_url }}'>context help page</a>.{% endblocktrans %}
-            </p>
-        </div>
-        {% if not ticket.can_be_resolved %}
-        <div class="form-group">
-            <div class="alert alert-warning">
-                {% trans "This ticket cannot be resolved or closed until the tickets it depends on are resolved." %}
-            </div>
-        </div>
-        {% endif %}
-        {% if ticket.status != 1 %}
-        <div class="form-group">
-            <label>{% trans "Status" %}</label>
-            <div class="status-options">
-                {% for status_choice in ticket.get_allowed_status_flow %}
-                <label for='st_{{ status_choice.1|lower }}' class='{% if ticket.status == status_choice.0 %}active{% endif %}'>
-                    <input type='radio' name='new_status' value='{{ status_choice.0 }}' id='st_{{ status_choice.1|lower }}'
-                        {% if ticket.status == status_choice.0 %} checked='checked'{% endif %}>
-                    {{ status_choice.1 }}
-                </label>
-                {% if not forloop.last %} &raquo; {% endif %}
-                {% endfor %}
-            </div>
-            <a href="{% url 'helpdesk:delete' ticket.id %}" class="btn btn-danger btn-sm ticket-delete">
-                <i class="fas fa-trash-alt"></i> {% trans "Delete" %}
-            </a>
-        </div>
-        {% else %}
-        <input type="hidden" name="new_status" value="{{ ticket.status }}" />
-        {% endif %}
-        <input type='hidden' name='public' value='1'>
-        {% if helpdesk_settings.HELPDESK_ENABLE_ATTACHMENTS %}
-        <div class="form-group">
-            <p id='ShowFileUploadPara'>
-                <button class="btn btn-warning" id='ShowFileUpload' onclick="$('#FileUpload')[0].style.display='block'; $(this).parent().hide(); return false;">
-                    <i class="fas fa-paperclip" style="margin-right: 5px;"></i> {% trans "Attach File(s)" %}
-                </button>
-            </p>
-            <div id='FileUpload' style='display: none;'>
-                <div class="form-group">
-                    <label for='id_file'>{% trans "Attach a File" %}</label>
-                    <div class="add_file_fields_wrap">
-                        <!-- ...existing code for file fields... -->
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endif %}
-        <div class="form-group" style="margin-top: 30px;">
-            <button class="btn btn-primary btn-lg" type='submit'>
-                <i class="fas fa-paper-plane" style="margin-right: 5px;"></i> {% trans "Update This Ticket" %}
-            </button>
-        </div>
-        {% csrf_token %}
-    </form>
-        border-radius: 0 0 8px 8px;
     }
+    
+    /* Ticket Details Card Styling */
+.ticket-details-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(24,59,107,0.10);
+    margin: 40px 0 0 0;
+    overflow: hidden;
+    border: none;
+}
+
+.ticket-details-header {
+    background: #183b6b;
+    color: #fff;
+    padding: 28px 32px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1.25rem;
+    font-weight: 600;
+    position: relative;
+}
+
+.ticket-details-header .ticket-status-btn {
+    background: #22c55e;
+    color: #fff;
+    border-radius: 24px;
+    padding: 10px 28px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 2px 8px rgba(24,59,107,0.08);
+    position: absolute;
+    right: 32px;
+    top: 28px;
+    cursor: default;
+}
+
+.ticket-details-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+.ticket-details-table th, .ticket-details-table td {
+    padding: 18px 24px;
+    font-size: 1rem;
+    background: #fff;
+    border-bottom: 1px solid #f2f4f8;
+    color: #183b6b;
+    text-align: left;
+}
+
+.ticket-details-table th {
+    font-weight: 700;
+    width: 220px;
+    background: #f6f8fa;
+    color: #183b6b;
+}
+
+.ticket-details-table tr:last-child td, .ticket-details-table tr:last-child th {
+    border-bottom: none;
+}
+
+@media (max-width: 768px) {
+    .ticket-details-card {
+        border-radius: 8px;
+        margin: 20px 0 0 0;
+    }
+    .ticket-details-header {
+        padding: 18px 12px;
+        font-size: 1rem;
+    }
+    .ticket-details-header .ticket-status-btn {
+        right: 12px;
+        top: 18px;
+        padding: 8px 18px;
+        font-size: 1rem;
+    }
+    .ticket-details-table th, .ticket-details-table td {
+        padding: 10px 12px;
+        font-size: 0.95rem;
+    }
+    .ticket-details-table th {
+        width: 120px;
+    }
+}
     
     .ticket-description h3 {
         margin-top: 0;
@@ -469,7 +480,7 @@
 {% block helpdesk_body %}
 <div class="ticket-container">
 
-<div class="ticket-header">
+<!-- <div class="ticket-header">
     <div style="display: flex; align-items: center;">
         <span style="background-color: #183b6b; padding: 8px 16px; border-radius: 4px; font-weight: 600;">{% trans "Ticket Details" %}</span>
     </div>
@@ -478,224 +489,138 @@
         {{ ticket.get_status }}
     </span>
 
-</div>
+</div> -->
 
-<div class="ticket-tabs">
-    <ul class="nav nav-tabs" id="ticketTabs" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">
-                <i class="fas fa-info-circle"></i> {% trans "Details" %}
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="followups-tab" data-toggle="tab" href="#followups" role="tab" aria-controls="followups" aria-selected="false">
-                <i class="fas fa-comments"></i> {% trans "History" %}
-            </a>
-        </li>
-    </ul>
-    
-    <div class="tab-content" id="ticketTabsContent">
-        <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
-            <div class="ticket-details">
-                <table>
+<div class="ticket-details-card">
+    <div class="ticket-details-header">
+        <span>{% trans "Ticket Details" %}</span>
+        <span class="ticket-status-btn">
+            {{ ticket.get_status_display|default:ticket.get_status }}
+        </span>
+    </div>
+    <div>
+        <ul class="nav nav-tabs" id="ticketTabs" role="tablist" style="margin-top: 0;">
+            <li class="nav-item">
+                <a class="nav-link active" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">
+                    <i class="fas fa-info-circle"></i> {% trans "Details" %}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="followups-tab" data-toggle="tab" href="#followups" role="tab" aria-controls="followups" aria-selected="false">
+                    <i class="fas fa-comments"></i> {% trans "History" %}
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content" id="ticketTabsContent">
+            <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
+                <table class="ticket-details-table">
                     <tbody>
-            <tr>
-                <th>{% blocktrans with ticket.queue as queue_name %}Queue{% endblocktrans %}</th>
-                <td>{{ ticket.queue }}</td>
-            </tr>
-            <tr>
-                <th>{% trans "Submitted On" %}</th>
-                <td>{{ ticket.created|date:"DATETIME_FORMAT" }} ({{ ticket.created|naturaltime }})</td>
-            </tr>
-            
-            {% if ticket.due_date %}
-                <tr>
-                    <th>{% trans "Due On" %}</th>
-                    <td>{{ ticket.due_date|date:"DATETIME_FORMAT" }} ({{ ticket.due_date|naturaltime }})</td>
-                </tr>
-            {% endif %}
-            
-            <tr>
-                <th>{% trans "Submitter E-Mail" %}</th>
-                <td>{{ ticket.submitter_email }}</td>
-            </tr>
-            
-            <tr>
-                <th>{% trans "Priority" %}</th>
-                <td>{{ ticket.get_priority_display }}</td>
-            </tr>
-            
-            {% for customfield in ticket.ticketcustomfieldvalue_set.all %}
-                <tr>
-                    <th>{{ customfield.field.label }}</th>
-                    <td>{{ customfield.value|default:"" }}</td>
-                </tr>
-            {% endfor %}
-            
-            {% if tags_enabled %}
-            <tr>
-                <th>{% trans "Tags" %}</th>
-                <td>{{ ticket.tags }}</td>
-            </tr>
-            {% endif %}
-            
-            <tr>
-                <th>{% trans "Description" %}</th>
-                <td>{{ ticket.description|force_escape|urlizetrunc:50|linebreaksbr }}</td>
-            </tr>
-            
-            {% if ticket.resolution %}
-            <tr>
-                <th>{% trans "Resolution" %}</th>
-                <td>
-                    {{ ticket.resolution|urlizetrunc:50|linebreaksbr }}
-                    {% if ticket.get_status_display == "Resolved" %}
-                        <div style="margin-top: 10px;">
-                            <a href='{{ ticket.ticket_url }}&close' class="btn btn-primary btn-sm">
-                                {% trans "Accept and Close" %}
-                            </a>
-                        </div>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endif %}
-        </tbody>
-    </table>
-            
-            <!--<form method='post' action="{% url 'helpdesk:update' ticket.id %}" enctype='multipart/form-data' class="comment-form">
-                <h3>{% trans "Update Ticket" %}</h3>
-                <input type="hidden" name="key" value="{{ key }}" />
-                <input type="hidden" name="mail" value="{{ mail }}" />
-            
-                {% if preset_replies %}
-                <div class="form-group">
-                    <label for='id_preset'>{% trans "Use a Pre-set Reply" %} <span style="color: #6c757d; font-weight: normal;">{% trans "(Optional)" %}</span></label>
-                    <select name='preset' id='id_preset' class="form-control">
-                        <option value=''>-- {% trans "Select a pre-set reply" %} --</option>
-                        {% for preset in preset_replies %}
-                        <option value='{{ preset.id }}'>{{ preset.name }}</option>
+                        <tr>
+                            <th>{% blocktrans with ticket.queue as queue_name %}Queue{% endblocktrans %}</th>
+                            <td>{{ ticket.queue }}</td>
+                        </tr>
+                        <tr>
+                            <th>{% trans "Submitted On" %}</th>
+                            <td>{{ ticket.created|date:"DATETIME_FORMAT" }} ({{ ticket.created|naturaltime }})</td>
+                        </tr>
+                        {% if ticket.due_date %}
+                        <tr>
+                            <th>{% trans "Due On" %}</th>
+                            <td>{{ ticket.due_date|date:"DATETIME_FORMAT" }} ({{ ticket.due_date|naturaltime }})</td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <th>{% trans "Submitter E-Mail" %}</th>
+                            <td>{{ ticket.submitter_email }}</td>
+                        </tr>
+                        <tr>
+                            <th>{% trans "Priority" %}</th>
+                            <td>{{ ticket.get_priority_display }}</td>
+                        </tr>
+                        <tr>
+                            <th>{% trans "Description" %}</th>
+                            <td>{{ ticket.description|force_escape|urlizetrunc:50|linebreaksbr }}</td>
+                        </tr>
+                        {% for customfield in ticket.ticketcustomfieldvalue_set.all %}
+                        <tr>
+                            <th>{{ customfield.field.label }}</th>
+                            <td>{{ customfield.value|default:"" }}</td>
+                        </tr>
                         {% endfor %}
-                    </select>
-                    <p class="form-help-text">{% trans "Selecting a pre-set reply will over-write your comment below. You can then modify the pre-set reply to your liking before saving this update." %}</p>
-                </div>
-                {% endif %}
-            
-                <div class="form-group">
-                    <label for='commentBox'>{% trans "Comment / Resolution" %}</label>
-                    <textarea rows='8' name='comment' id='commentBox' class="form-control" placeholder="{% trans 'Enter your comment or resolution here...' %}"></textarea>
-                    {% url "helpdesk:help_context" as context_help_url %}
-                    <p class="form-help-text">
-                        {% blocktrans %}You can insert ticket and queue details in your message. For more information, see the <a href='{{ context_help_url }}'>context help page</a>.{% endblocktrans %}
-                    </p>
-                </div>
-            
-                {% if not ticket.can_be_resolved %}
-                <div class="form-group">
-                    <div class="alert alert-warning">
-                        {% trans "This ticket cannot be resolved or closed until the tickets it depends on are resolved." %}
-                    </div>
-                </div>
-                {% endif %}
-                
-                {% if ticket.status != 1 %}
-                <div class="form-group">
-                    <label>{% trans "Status" %}</label>
-                    <div class="status-options">
-                        <label><input type="radio" name='new_status' value='1' /> {% trans "Open" %}</label>
-                        <label><input type="radio" name='new_status' value='2' /> {% trans "Reopened" %}</label>
-                        <label><input type="radio" name='new_status' value='3' /> {% trans "Resolved" %}</label>
-                        <label><input type="radio" name='new_status' value='4' /> {% trans "Closed" %}</label>
-                        <label><input type="radio" name='new_status' value='5' /> {% trans "Duplicate" %}</label>
-                    </div>
-                </div>
-                {% else %}
-                <input type="hidden" name="new_status" value="{{ ticket.status }}" />
-                {% endif %}
-            
-                <input type='hidden' name='public' value='1'>
-                    
-            {% if helpdesk_settings.HELPDESK_ENABLE_ATTACHMENTS %}
-                <div class="form-group">
-                    <p id='ShowFileUploadPara'>
-                        <button type='button' id='ShowFileUpload' class='btn btn-primary btn-sm'>{% trans "Attach File" %}</button>
-                        <span class='small'>{% trans "Maximum of 5 files, each no larger than 2MB" %}</span>
-                    </p>
-                    
-                    <div id='FileUpload' style='display: none;'>
-                        <div class='add_file_fields_wrap'>
-                            <div>
-                                <label class='btn btn-primary btn-sm btn-file'>
-                                    {% trans "Browse..." %} <input type='file' name='attachment' id='file0' multiple style='display: none;'/>
-                                </label>
-                                <span>&nbsp;</span>
-                                <span id='selectedfilename0'>{% trans "No files selected." %}</span>
-                            </div>
-                        </div>
-                        <em>{% trans "Note that large file uploads will take some time, depending on your upload speed. Please be patient." %}</em>
-                        <button type='button' class='btn btn-primary btn-sm add_file_field_button'>{% trans "Add another file" %}</button>
-                    </div>
-                </div>
-            {% endif %}
-            
-                <div class="form-group" style="margin-top: 30px;">
-                    <button class="btn btn-primary btn-lg" type='submit'>
-                        {% trans "Update This Ticket" %}
-                    </button>
-                </div>
-            
-                {% csrf_token %}
-            </form>-->
-</div>
-        </div>
-        
-        <div class="tab-pane fade" id="followups" role="tabpanel" aria-labelledby="followups-tab">
-            {% if ticket.followup_set.public_followups %}
-            <div class="followups-section">
-                <h3>{% trans "History" %}</h3>
-                <div class="followups-container">
-        {% load ticket_to_link %}
-        {% for followup in ticket.followup_set.public_followups %}
-        <div class="followup">
-            <div class="followup-header">
-                <h4 class="followup-title">{{ followup.title }}</h4>
-                <span class="followup-meta">
-                    {% if followup.user %}by {{ followup.user }}{% endif %}
-                    <span title='{{ followup.date|date:"DATETIME_FORMAT" }}'>{{ followup.date|naturaltime }}</span>
-                </span>
+                        {% if tags_enabled %}
+                        <tr>
+                            <th>{% trans "Tags" %}</th>
+                            <td>{{ ticket.tags }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if ticket.resolution %}
+                        <tr>
+                            <th>{% trans "Resolution" %}</th>
+                            <td>
+                                {{ ticket.resolution|urlizetrunc:50|linebreaksbr }}
+                                {% if ticket.get_status_display == "Resolved" %}
+                                <div style="margin-top: 10px;">
+                                    <a href='{{ ticket.ticket_url }}&close' class="btn btn-primary btn-sm">
+                                        {% trans "Accept and Close" %}
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
             </div>
-        <div class="followup-content">
-            {{ followup.comment|force_escape|urlizetrunc:50|num_to_link|linebreaksbr }}
-        </div>
-        
-        {% if followup.ticketchange_set.all %}
-        <div class="changes">
-            <ul>
-                {% for change in followup.ticketchange_set.all %}
-                <li>{% blocktrans with change.field as field and change.old_value as old_value and change.new_value as new_value %}Changed {{ field }} from {{ old_value }} to {{ new_value }}.{% endblocktrans %}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
-        
-        {% if helpdesk_settings.HELPDESK_ENABLE_ATTACHMENTS %}
-        {% for attachment in followup.followupattachment_set.all %}
-            {% if forloop.first %}
-            <div class="attachments" style="margin-top: 10px; padding: 10px; background-color: #f8f9fa; border-radius: 4px;">
-                <h5 style="margin-top: 0; font-size: 1rem; color: #183b6b;">Attachments:</h5>
+            
+            <div class="tab-pane fade" id="followups" role="tabpanel" aria-labelledby="followups-tab">
+                {% if ticket.followup_set.public_followups %}
+                <div class="followups-section">
+                    <h3>{% trans "History" %}</h3>
+                    <div class="followups-container">
+            {% load ticket_to_link %}
+            {% for followup in ticket.followup_set.public_followups %}
+            <div class="followup">
+                <div class="followup-header">
+                    <h4 class="followup-title">{{ followup.title }}</h4>
+                    <span class="followup-meta">
+                        {% if followup.user %}by {{ followup.user }}{% endif %}
+                        <span title='{{ followup.date|date:"DATETIME_FORMAT" }}'>{{ followup.date|naturaltime }}</span>
+                    </span>
+                </div>
+            <div class="followup-content">
+                {{ followup.comment|force_escape|urlizetrunc:50|num_to_link|linebreaksbr }}
+            </div>
+            
+            {% if followup.ticketchange_set.all %}
+            <div class="changes">
                 <ul>
-            {% endif %}
-                <li><a href='{{ attachment.file.url }}'>{{ attachment.filename }}</a> ({{ attachment.mime_type }}, {{ attachment.size|filesizeformat }})</li>
-            {% if forloop.last %}
+                    {% for change in followup.ticketchange_set.all %}
+                    <li>{% blocktrans with change.field as field and change.old_value as old_value and change.new_value as new_value %}Changed {{ field }} from {{ old_value }} to {{ new_value }}.{% endblocktrans %}</li>
+                    {% endfor %}
                 </ul>
             </div>
             {% endif %}
-        {% endfor %}
-        {% endif %}
+            
+            {% if helpdesk_settings.HELPDESK_ENABLE_ATTACHMENTS %}
+            {% for attachment in followup.followupattachment_set.all %}
+                {% if forloop.first %}
+                <div class="attachments" style="margin-top: 10px; padding: 10px; background-color: #f8f9fa; border-radius: 4px;">
+                    <h5 style="margin-top: 0; font-size: 1rem; color: #183b6b;">Attachments:</h5>
+                    <ul>
+                {% endif %}
+                    <li><a href='{{ attachment.file.url }}'>{{ attachment.filename }}</a> ({{ attachment.mime_type }}, {{ attachment.size|filesizeformat }})</li>
+                {% if forloop.last %}
+                    </ul>
+                </div>
+                {% endif %}
+            {% endfor %}
+            {% endif %}
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
-</div>
-{% endif %}
+    {% endif %}
+            </div>
         </div>
     </div>
 </div>
