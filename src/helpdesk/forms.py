@@ -301,14 +301,14 @@ class AbstractTicketForm(CustomFieldMixin, forms.Form):
         help_text=_("Please select a priority carefully. If unsure, leave it as '3'."),
     )
 
-    due_date = forms.DateField(
+    due_date = forms.DateTimeField(
         widget=forms.TextInput(attrs={"class": "form-control", "autocomplete": "off"}),
         required=False,
         input_formats=[
+            "%Y-%m-%d %H:%M:%S%z",
+            "%Y-%m-%d %H:%M:%S",
+            "%Y-%m-%d %H:%M",
             "%Y-%m-%d",
-            "%d/%m/%Y",
-            "%m/%d/%Y",
-            "%d.%m.%Y",
         ],
         label=_("Due on"),
     )
