@@ -24,10 +24,20 @@
 
             <div class="container-fluid">
 
-                <!-- Breadcrumbs-->
-                <ol class="breadcrumb">
-                    {% block helpdesk_breadcrumb %}{% endblock %}
-                </ol>
+                <!-- Breadcrumbs and Header-->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <ol class="breadcrumb" style="margin-bottom: 0;">
+                        {% block helpdesk_breadcrumb %}{% endblock %}
+                    </ol>
+                </div>
+
+                {% if request.resolver_match.url_name == 'my-tickets' %}
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem; padding-right: 4rem;">
+                    <a href="{% url 'helpdesk:submit' %}" class="header-action-btn" style="background-color: #1c7319; color: white; border: none; border-radius: 4px; padding: 0.75rem 2rem; font-size: 1rem; font-weight: 600; display: inline-flex; align-items: center; transition: background-color 0.2s; min-width: 180px; justify-content: center; text-decoration: none;">
+                        <i class="fas fa-plus-circle" style="margin-right: 5px;"></i> {% trans "Ticket" %}
+                    </a>
+                </div>
+                {% endif %}
 
                 {% block helpdesk_body %}{% endblock %}
 

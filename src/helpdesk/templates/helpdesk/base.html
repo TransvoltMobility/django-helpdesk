@@ -295,20 +295,22 @@
         }
         
         .header-action-btn {
-            background-color: #183b6b;
+            background-color: #1c7319;
             color: white;
             border: none;
             border-radius: 4px;
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
             transition: background-color 0.2s;
+            min-width: 180px;
+            justify-content: center;
         }
         
         .header-action-btn:hover {
-            background-color: #0e2c57;
+            background-color: #1e420b;
             color: white;
             text-decoration: none;
         }
@@ -358,10 +360,10 @@
                             {% block helpdesk_breadcrumb %}{% endblock %}
                         </ol>
                     </nav>
-                    
-                    <a href="{% url 'helpdesk:submit' %}" class="header-action-btn">
+
+                    <!-- <a href="{% url 'helpdesk:submit' %}" class="header-action-btn">
                         <i class="fas fa-plus-circle"></i> {% trans " Ticket" %}
-                    </a>
+                    </a> -->
                 </div>
             
                 {% block helpdesk_body %}{% endblock %}

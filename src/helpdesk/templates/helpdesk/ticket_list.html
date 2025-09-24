@@ -414,6 +414,13 @@
             display: none !important;
         }
 
+        /* Hide column visibility button */
+        .dt-buttons,
+        .buttons-colvis,
+        .custom-colvis-button {
+            display: none !important;
+        }
+
         /* Loading/Processing indicator styling */
         .dataTables_processing {
             position: absolute !important;
@@ -756,17 +763,25 @@
 
 
 {% block helpdesk_breadcrumb %}
-    <li class="breadcrumb-item">
-        <a href="{% url 'helpdesk:list' %}">{% trans "Tickets" %}</a>
-    </li>
-    {% if from_saved_query and saved_query.user == user %}
-        <li class="breadcrumb-item">{% trans "Saved Query" %}</li>
-        <li class="breadcrumb-item active">{{ saved_query.title }}</li>
-    {% else %}
-        <li class="breadcrumb-item active">{% trans "Overview" %}</li>
-    {% endif %}
+<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+    <ol class="breadcrumb" style="margin-bottom: 0; background: none; padding: 0;">
+        <li class="breadcrumb-item">
+            <a href="{% url 'helpdesk:list' %}">{% trans "Tickets" %}</a>
+        </li>
+        {% if from_saved_query and saved_query.user == user %}
+            <li class="breadcrumb-item">{% trans "Saved Query" %}</li>
+            <li class="breadcrumb-item active">{{ saved_query.title }}</li>
+        {% else %}
+            <li class="breadcrumb-item active">{% trans "Overview" %}</li>
+        {% endif %}
+    </ol>
+    <a href="{% url 'helpdesk:submit' %}" class="header-action-btn"
+       style="background-color:#1c7319;color:white;border:none;border-radius:4px;padding:0.75rem 2rem;font-size:1rem;font-weight:600;display:inline-flex;align-items:center;transition:background-color 0.2s;min-width:180px;justify-content:center;margin-left:10px;">
+        <i class="fas fa-plus-circle"></i> {% trans " Ticket" %}
+    </a>
+</div>
 {% endblock %}
-
+  
 
 {% block helpdesk_body %}
     <div class="card">
@@ -788,7 +803,7 @@
                         {% trans "Timeline" %}
                     </a>
                 </li>-->
-                <li class="nav-item" style="margin-left: 15px; margin-top: 4px;">
+                <!-- <li class="nav-item" style="margin-left: 15px; margin-top: 4px;">
                     <div class="select-dropdown dropdown">
                         <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="selectOptionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border: 1px solid #dee2e6;">
                             {% trans "Select" %}
@@ -799,11 +814,13 @@
                             <a class="dropdown-item" href="#" id="select_inverse_btn"><i class="fas fa-exchange-alt"></i> {% trans "Invert" %}</a>
                         </div>
                     </div>
-                </li>
+                </li> -->
             </ul>
             
             <!-- Action buttons container for all controls -->
             <div class="action-buttons-container" style="display: flex; align-items: center; justify-content: flex-end; height: 35px;">
+                <!-- + Ticket Button -->
+               
                 <!-- Filter Dropdown -->
                 <div class="dropdown filter-menu-dropdown" style="margin-right: 10px;">
                     <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="filterMenuButton" 
@@ -811,7 +828,7 @@
                         <i class="fas fa-filter"></i> {% trans "Filters" %}
                     </button>
                     <div class="dropdown-menu dropdown-menu-right filter-dropdown-menu" aria-labelledby="filterMenuButton">
-                        <form method="get" class="px-3 py-2">
+                        <form method="get" action="{% url 'helpdesk:list' %}" class="px-3 py-2" id="filterForm">
                             <!-- Sorting Filter -->
                             <div class="form-group">
                                 <label for='id_sort' class="font-weight-bold">{% trans "Sorting" %}:</label>
@@ -846,9 +863,11 @@
                                 <label for='id_priority' class="font-weight-bold">{% trans "Priority" %}:</label>
                                 <select id='id_priority' name='priority' class="form-control form-control-sm">
                                     <option value=''>{% trans "Any" %}</option>
-                                    {% for p in priorities %}
-                                        <option value='{{ p.pk }}'{% if query_params.filtering.priority__in and p.pk|in_list:query_params.filtering.priority__in %} selected='selected'{% endif %}>{{ p }}</option>
-                                    {% endfor %}
+                                    <option value='1'>Critical</option>
+                                    <option value='2'>High</option>
+                                    <option value='3'>Normal</option>
+                                    <option value='4'>Low</option>
+                                    <option value='5'>Very Low</option>
                                 </select>
                             </div>
                             
@@ -872,10 +891,10 @@
                 </div>
                 
                 <!-- Column Visibility button will be placed here by DataTables -->
-                <div id="column-visibility-container" style="margin-right: 10px;"></div>
+                <!-- <div id="column-visibility-container" style="margin-right: 10px;"></div> -->
                 
                 <!-- With Selected Tickets Dropdown -->
-                <div class="dropdown with-selected-dropdown">
+                <!-- <div class="dropdown with-selected-dropdown">
                     <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="withSelectedDropdown" 
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border: 1px solid #dee2e6;">
                         <i class="fas fa-tasks"></i> {% trans "Actions" %}
@@ -898,7 +917,7 @@
                         {% endfor %}
                         {% endif %}
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
         {% endif %}
@@ -945,7 +964,7 @@
                         </div>
 
                         <!-- Include the reusable pagination component -->
-                        {% include 'helpdesk/components/pagination.html' %}
+                        <!-- {# {% include 'helpdesk/components/pagination.html' %} #} -->
 
                         <!-- Hidden form elements for mass actions -->
                         <div class="select-controls" style="display: none;">
@@ -1156,25 +1175,16 @@
                         data: "priority",
                         title: "{% trans 'Priority' %}",
                         render: function (data, type, row, meta) {
-                            let priorityClass = "priority-5";
-                            switch (data) {
-                                case 1:
-                                    priorityClass = "priority-1";
-                                    break;
-                                case 2:
-                                    priorityClass = "priority-2";
-                                    break;
-                                case 3:
-                                    priorityClass = "priority-3";
-                                    break;
-                                case 4:
-                                    priorityClass = "priority-4";
-                                    break;
-                                case 5:
-                                    priorityClass = "priority-5";
-                                    break;
-                            }
-                            return '<span class="' + priorityClass + '">' + data + '</span>';
+                            var priorityNames = {
+                                1: "Critical",
+                                2: "High",
+                                3: "Normal",
+                                4: "Low",
+                                5: "Very Low"
+                            };
+                            let priorityClass = "priority-" + data;
+                            let name = priorityNames[data] || data;
+                            return '<span class="' + priorityClass + '">' + name + '</span>';
                         },
                         visible: true,
                     },
@@ -1447,6 +1457,23 @@
                 
                 // Submit the form
                 $("#ticket_mass_update").submit();
+            });
+
+            {# Handle filter form submission #}
+            $("#filterForm").on('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form data
+                var formData = $(this).serialize();
+                
+                // Build the URL with filter parameters
+                var baseUrl = "{% url 'helpdesk:list' %}";
+                var newUrl = baseUrl + '?' + formData;
+                
+                // Redirect to the filtered URL
+                window.location.href = newUrl;
+                
+                return false;
             });
         })
         

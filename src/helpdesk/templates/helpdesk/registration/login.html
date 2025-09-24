@@ -85,16 +85,24 @@
         height: 36px;
       }
       .login-checkbox {
-        margin-bottom: 1rem;
         display: flex;
         align-items: center;
+        gap: 10px;
+        margin-bottom: 1rem;
       }
-      .login-checkbox input {
-        margin-right: 0.5rem;
+
+      .login-checkbox input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        margin: 0;
+        accent-color: #183b6b;
       }
+
       .login-checkbox label {
-        font-size: 0.85rem;
+        font-size: 1.1rem;
         color: #555;
+        margin: 0;
+        font-weight: 400;
       }
       .login-btn {
         width: 100%;
@@ -184,7 +192,7 @@
       @keyframes shakeX {10%,90%{transform:translateX(-2px);}20%,80%{transform:translateX(4px);}30%,50%,70%{transform:translateX(-8px);}40%,60%{transform:translateX(8px);}}
     </style>
     <div id="login-fullscreen">
-      <img src="/static/helpdesk/img/SuportVoltColorlogo2.svg" alt="SupportVolt Logo" style="width: 200px; margin-bottom: 20px;">
+      <img src="/static/helpdesk/img/TransvoltLogoBlack2.png" alt="SupportVolt Logo" style="width: 200px; margin-bottom: 20px;">
 
       
       <div class="login-card">
@@ -226,5 +234,38 @@
         </div>
       </div>
     </footer>
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Autofill if credentials are stored
+  if (localStorage.getItem("rememberMe") === "true") {
+    if (localStorage.getItem("username")) {
+      document.getElementById("username").value = localStorage.getItem("username");
+    }
+    if (localStorage.getItem("password")) {
+      var passwordField = document.getElementById("password");
+      passwordField.value = localStorage.getItem("password");
+      passwordField.setAttribute('value', localStorage.getItem("password"));
+    }
+    document.getElementById("rememberMe").checked = true;
+  }
+
+  // Save credentials on form submit
+  var form = document.querySelector("form[role='form']");
+  form.addEventListener("submit", function() {
+    var rememberMe = document.getElementById("rememberMe").checked;
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+    if (rememberMe) {
+      localStorage.setItem("rememberMe", "true");
+      localStorage.setItem("username", username);
+      localStorage.setItem("password", password);
+    } else {
+      localStorage.removeItem("rememberMe");
+      localStorage.removeItem("username");
+      localStorage.removeItem("password");
+    }
+  });
+});
+</script>
 {% endif %}
 {% endblock %}

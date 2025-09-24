@@ -124,7 +124,7 @@ class EditTicketForm(CustomFieldMixin, forms.ModelForm):
         )
 
     class Media:
-        js = ("helpdesk/js/init_due_date.js",)
+        js = ("helpdesk/js/init_due_date.js")
 
     def __init__(self, *args, **kwargs):
         """
@@ -301,14 +301,14 @@ class AbstractTicketForm(CustomFieldMixin, forms.Form):
         help_text=_("Please select a priority carefully. If unsure, leave it as '3'."),
     )
 
-    due_date = forms.DateField(
+    due_date = forms.DateTimeField(
         widget=forms.TextInput(attrs={"class": "form-control", "autocomplete": "off"}),
         required=False,
         input_formats=[
+            "%Y-%m-%d %H:%M:%S%z",
+            "%Y-%m-%d %H:%M:%S",
+            "%Y-%m-%d %H:%M",
             "%Y-%m-%d",
-            "%d/%m/%Y",
-            "%m/%d/%Y",
-            "%d.%m.%Y",
         ],
         label=_("Due on"),
     )
@@ -328,7 +328,7 @@ class AbstractTicketForm(CustomFieldMixin, forms.Form):
         )
 
     class Media:
-        js = ("helpdesk/js/init_due_date.js",)
+        js = ("helpdesk/js/init_due_date.js")
 
     def __init__(self, kbcategory=None, *args, **kwargs):
         super().__init__(*args, **kwargs)

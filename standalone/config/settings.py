@@ -188,21 +188,33 @@ AUTH_PASSWORD_VALIDATORS = [
  
 # This demo uses the console backend, which simply prints emails to the console
 # rather than actually sending them out.
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "example@example.com")
-SERVER_EMAIL = os.environ.get("SERVER_EMAIL", "example@example.com")
+#DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "example@example.com")
+#SERVER_EMAIL = os.environ.get("SERVER_EMAIL", "example@example.com")
+# Default from address for outgoing emails
+DEFAULT_FROM_EMAIL = "info.transvolt@gmail.com"
+SERVER_EMAIL = "info.transvolt@gmail.com"
+
+# Settings for sending real emails via SMTP for Microsoft 365
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'info.transvolt@gmail.com'
+EMAIL_HOST_PASSWORD = os.environ.get('your_email_password')  # Your provided password
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
  
-if os.environ.get("EMAIL_HOST", None):
-    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-    try:
-        EMAIL_HOST = os.environ["EMAIL_HOST"]
-    except KeyError:
-        raise ImproperlyConfigured("Please set the EMAIL_HOST environment variable.")
-    try:
-        EMAIL_PORT = os.environ["EMAIL_PORT"]
-    except KeyError:
-        raise ImproperlyConfigured("Please set the EMAIL_PORT environment variable.")
-else:
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+#if os.environ.get("EMAIL_HOST", None):
+#    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+#    try:
+#        EMAIL_HOST = os.environ["EMAIL_HOST"]
+#    except KeyError:
+#        raise ImproperlyConfigured("Please set the EMAIL_HOST environment variable.")
+#    try:
+#        EMAIL_PORT = os.environ["EMAIL_PORT"]
+#    except KeyError:
+#        raise ImproperlyConfigured("Please set the EMAIL_PORT environment variable.")
+#else:
+#    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
  
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
@@ -213,7 +225,7 @@ else:
 # See CONTRIBUTING.rst for more info.
 LANGUAGE_CODE = "en-US"
  
-TIME_ZONE = "IST"
+TIME_ZONE = "Asia/Kolkata"
  
 USE_I18N = True
 

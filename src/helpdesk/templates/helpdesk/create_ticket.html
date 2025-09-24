@@ -457,14 +457,11 @@
 {% endblock %}
 
 {% block helpdesk_js %}
-    {{ form.media.js }}
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <script>
-        $(document).on('change', ':file', function () {
-            const input = $(this),
-                inputWidgetNum = $(this).attr('id').split("file")[1],
-                numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-            input.trigger('fileselect', [numFiles, label, inputWidgetNum]);
+        $(function() {
+            $("#id_due_date").datepicker({dateFormat: 'yy-mm-dd'});
         });
     </script>
 {% endblock %}

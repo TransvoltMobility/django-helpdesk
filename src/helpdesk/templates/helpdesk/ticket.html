@@ -159,22 +159,40 @@
     
     /* Update section styling */
     .update-ticket-section {
-        background: white;
+        background: #f6f8fa; /* matches page bg, but card stands out */
         border-radius: 8px;
-        padding: 25px;
+        box-shadow: 0 4px 12px rgba(24,59,107,0.08);
+        padding: 0;
         margin-top: 30px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        width: 100%;
+        border: 1px solid #e9ecef;
+    }
+    
+    .update-ticket-section .card-header {
+        background: linear-gradient(90deg, #183b6b 80%, #2e5fa7 100%);
+        color: #fff !important;
+        font-weight: 700;
+        font-size: 1.3rem;
+        border-radius: 8px 8px 0 0;
+        padding: 18px 24px;
+        border-bottom: 2px solid #183b6b;
+        box-shadow: 0 2px 8px rgba(24,59,107,0.08);
+    }
+    
+    .update-ticket-section .card-body {
+        background: #fff;
+        border-radius: 0 0 8px 8px;
+        padding: 24px;
     }
     
     /* Form elements */
     #commentBox {
-        width: 100%;
-        border: 2px solid #e9ecef;
-        border-radius: 6px;
-        padding: 15px;
-        font-size: 1rem;
-        line-height: 1.5;
+        border: 2px solid #183b6b !important;
+        border-radius: 8px !important;
+        background: #fff !important;
+        font-size: 1.1rem;
+        padding: 18px;
+        box-shadow: 0 1px 4px rgba(24,59,107,0.04);
+        margin-bottom: 18px;
         transition: border-color 0.2s ease;
     }
     
@@ -324,23 +342,42 @@
     }
     
     .btn-file {
+        background: #183b6b !important;
+        color: #fff !important;
+        border-radius: 6px !important;
+        font-weight: 600;
+        padding: 8px 18px !important;
+        border: none !important;
+        display: inline-block;
+        cursor: pointer;
         position: relative;
-        overflow: hidden;
     }
     
-    .btn-file input[type=file] {
+    .btn-file input[type="file"] {
         position: absolute;
-        top: 0;
-        right: 0;
-        min-width: 100%;
-        min-height: 100%;
-        font-size: 100px;
-        text-align: right;
-        filter: alpha(opacity=0);
+        top: 0; left: 0;
+        width: 100%; height: 100%;
         opacity: 0;
-        outline: none;
-        cursor: inherit;
-        display: block;
+        cursor: pointer;
+    }
+    
+    /* Make Browse button text white and inside the button */
+    .btn-file::before {
+        content: "Browse...";
+        color: #fff;
+        position: relative;
+        left: 0;
+        font-weight: 600;
+        padding-right: 8px;
+    }
+    
+    /* Remove extra Browse... text outside button */
+    .add_file_fields_wrap label.btn-file {
+        color: #fff !important;
+    }
+    .add_file_fields_wrap label.btn-file > input[type="file"] + span,
+    .add_file_fields_wrap label.btn-file > input[type="file"] {
+        display: none !important;
     }
     
     /* Responsive design */
@@ -359,6 +396,7 @@
         
         .card-header {
             padding: 12px 15px;
+            
         }
         
         .card-body {
@@ -429,6 +467,20 @@
     .followup-edit .btn:hover {
         transform: translateY(-1px);
         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* Update Ticket header styling */
+    .comment-form h3 {
+        background: linear-gradient(90deg, #183b6b 80%, #2e5fa7 100%);
+        color: #fff;
+        padding: 16px 24px;
+        border-radius: 8px 8px 0 0;
+        margin-top: 0;
+        margin-bottom: 24px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        border-bottom: 2px solid #183b6b;
+        box-shadow: 0 2px 8px rgba(24,59,107,0.08);
     }
 </style>
 {% endblock %}
@@ -519,7 +571,7 @@
                                     <div class="add_file_fields_wrap">
                                         <div style="display: flex; gap: 10px; align-items: baseline; margin-bottom: 10px;">
                                             <label class='btn btn-primary btn-sm btn-file' style="margin-bottom: 0; vertical-align: baseline;">
-                                                Browse... <input type="file" name='attachment' id='file0' style='display: none;'/>
+                                             <input type="file" name='attachment' id='file0' style='display: none;'/>
                                             </label>
                                             <button class="add_file_field_button btn btn-success btn-sm" style="margin-bottom: 0; vertical-align: baseline;">{% trans "Add Another File" %}</button>
                                             <span id='selectedfilename0' style="line-height: 31px; vertical-align: baseline;">{% trans 'No files selected.' %}</span>
@@ -546,7 +598,7 @@
                                 {% if helpdesk_settings.HELPDESK_UPDATE_PUBLIC_DEFAULT %}
                                 <input type='hidden' name='public' value='1'>
                                 {% else %}
-                                <dt>
+                                <dt></dt>
                                     <label for='id_public'>{% trans "Is this update public?" %}</label> <span class='form_optional'>{% trans "(Optional)" %}</span>
                                 </dt>
                                 <dd><input type='checkbox' name='public' value='1' checked='checked' />&nbsp; {% trans 'Yes, make this update public.' %}</dd>
@@ -795,7 +847,7 @@ $( function() {
       $(add_button).click(function(e){
           e.preventDefault();
           x++;
-          $(wrapper).append('<div style="display: flex; gap: 10px; align-items: baseline; margin-bottom: 10px;"><label class="btn btn-primary btn-sm btn-file" style="margin-bottom: 0; vertical-align: baseline;">Browse... <input type="file" name="attachment" id="file' + x + '" style="display: none;"/></label><span id="selectedfilename' + x + '" style="line-height: 31px; vertical-align: baseline;">No files selected.</span></div>');
+          $(wrapper).append('<div style="display: flex; gap: 10px; align-items: baseline; margin-bottom: 10px;"><label class="btn btn-primary btn-sm btn-file" style="margin-bottom: 0; vertical-align: baseline;"><input type="file" name="attachment" id="file' + x + '" style="display: none;"/></label><span id="selectedfilename' + x + '" style="line-height: 31px; vertical-align: baseline;">No files selected.</span></div>');
       });
       {% endif %}
   });
