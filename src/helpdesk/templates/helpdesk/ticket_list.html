@@ -943,7 +943,9 @@
                                             <th>{% trans "Owner" %}</th>
                                             <th>{% trans "Submitter" %}</th>
                                             <th>{% trans "Last Followup" %}</th>
-                                            {% if helpdesk_settings.HELPDESK_KB_ENABLED %}<th>{% trans "KB item" %}</th>{% endif %}
+                                            <!-- {% if helpdesk_settings.HELPDESK_KB_ENABLED %}
+                                            <th>{% trans "KB item" %}</th>
+                                            {% endif %} -->
                                         </tr>
                                     </thead>
                                     <thead>
@@ -956,7 +958,7 @@
                                             <th>{% trans "Owner" %}</th>
                                             <th>{% trans "Submitter" %}</th>
                                             <th>{% trans "Last Followup" %}</th>
-                                            {% if helpdesk_settings.HELPDESK_KB_ENABLED %}<th>{% trans "KB item" %}</th>{% endif %}
+                                            <!-- {% if helpdesk_settings.HELPDESK_KB_ENABLED %}<th>{% trans "KB item" %}</th>{% endif %} -->
                                         </tr>
                                     </thead>
                                 </table>
@@ -1243,11 +1245,12 @@
                                 hour12: true
                             });
                         }
-                    }{% if helpdesk_settings.HELPDESK_KB_ENABLED %},
-                    {
-                        data: "kbitem",
-                        title: "{% trans 'KB item' %}"
-                    }{% endif %}
+                    }
+                    // {% if helpdesk_settings.HELPDESK_KB_ENABLED %},
+                    // {
+                    //     data: "kbitem",
+                    //     title: "{% trans 'KB item' %}"
+                    // }{% endif %}
                 ],
                 order: [],
                 initComplete: function(settings, json) {
@@ -1261,8 +1264,8 @@
                         '{% trans "Created" %}',
                         '{% trans "Owner" %}',
                         '{% trans "Submitter" %}',
-                        '{% trans "Last Followup" %}'{% if helpdesk_settings.HELPDESK_KB_ENABLED %},
-                        '{% trans "KB item" %}'{% endif %}
+                        '{% trans "Last Followup" %}',
+                        '{% trans "KB item" %}'
                     ];
                     
                     // Add column names to all header cells
@@ -1282,8 +1285,8 @@
                         '{% trans "Created" %}',
                         '{% trans "Owner" %}',
                         '{% trans "Submitter" %}',
-                        '{% trans "Last Followup" %}'{% if helpdesk_settings.HELPDESK_KB_ENABLED %},
-                        '{% trans "KB item" %}'{% endif %}
+                        '{% trans "Last Followup" %}',
+                        '{% trans "KB item" %}'
                     ];
                     
                     $('#ticketTable thead th').each(function(index) {
