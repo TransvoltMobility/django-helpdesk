@@ -191,14 +191,14 @@ AUTH_PASSWORD_VALIDATORS = [
 #DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "example@example.com")
 #SERVER_EMAIL = os.environ.get("SERVER_EMAIL", "example@example.com")
 # Default from address for outgoing emails
-DEFAULT_FROM_EMAIL = "info.transvolt@gmail.com"
-SERVER_EMAIL = "info.transvolt@gmail.com"
+DEFAULT_FROM_EMAIL = os.environ.get('your_host_email')
+SERVER_EMAIL = os.environ.get('your_host_email')
 
 # Settings for sending real emails via SMTP for Microsoft 365
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'info.transvolt@gmail.com'
+EMAIL_HOST_USER = os.environ.get('your_host_email')
 EMAIL_HOST_PASSWORD = os.environ.get('your_email_password')  # Your provided password
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
